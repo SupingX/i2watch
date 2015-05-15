@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">I2_WATHCH</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_connect">ConnectActivity</string>
+    <string name="title_activity_reminder">ReminderActivity</string>
+    <string name="title_activity_base_dialog">BaseDialogActivity</string>
+    <string name="title_activity_interval_dialog">IntervalDialogActivity</string>
+    <string name="title_activity_start_time">StartTimeActivity</string>
+    <string name="title_activity_end_time">EndTimeActivity</string>
+    <string name="title_activity_sleep_monitor">SleepMonitorActivity</string>
+    <string name="title_activity_sleep_monitor_target">SleepMonitorTargetActivity</string>
+    <string name="title_activity_sleep_monitor_start">SleepMonitorStartActivity</string>
+    <string name="title_activity_sleep_monitor_end">SleepMonitorEndActivity</string>
+    <string name="title_activity_clock">ClockActivity</string>
+    <string name="title_activity_clock_set_activity_1">ClockSetActivity_1</string>
+    <string name="title_activity_clock_set_activity_2">ClockSetActivity_2</string>
+    <string name="title_activity_clock_set_activity_3">ClockSetActivity_3</string>
+    <string name="title_activity_signature_set">SignatureSetActivity</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_information">InformationActivity</string>
+    <string name="title_activity_height">HeightActivity</string>
+    <string name="title_activity_weight">WeightActivity</string>
+    <string name="title_activity_birthday">BirthdayActivity</string>
+    <string name="title_activity_pedometer">PedometerActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
+
+</resources>

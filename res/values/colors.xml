@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_top_bg">#ff5298db</color>
+    <color name="color_top_text">#ffffffff</color>
+    <color name="color_top_text_pressed">#fff39c12</color>
+    <color name="color_btn_text_pressed">#33f39c12</color>
+    <color name="color_top_text_pressed_light">#22f39c12</color>
+    <color name="color_sleep_text">#ff855AAF</color>
+    <color name="color_sport_text">#ff46CC71</color>
+    <color name="color_sleep_sport_title">#ff858585</color>
+    <color name="white">#ffffffff</color>
+    <color name="grey">#FFA9A9A9</color>
+    <color name="menu_pressed">#44A9A9A9</color>
+    <color name="confirm">#ff58B0E0</color>
+    <color name="confirm_light">#2258B0E0</color>
+      <color name="settings_goal_selected_text_color">#575FAA</color>
+    <color name="settings_goal_text_color">#ff888888</color>
+
+</resources>

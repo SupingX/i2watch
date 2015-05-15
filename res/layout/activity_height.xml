@@ -1,0 +1,97 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="250dp"
+    tools:context="${packageName}.${activityClass}" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" >
+
+            <LinearLayout
+                 android:id="@+id/ll_ft"
+                 android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="40dp"
+                 >
+
+                <NumberPicker
+                    android:id="@+id/np_feet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                   
+                    android:clickable="false"
+                    android:focusable="false" />
+                <NumberPicker
+                    android:id="@+id/np_inch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:clickable="false"
+                    android:focusable="false" />
+
+            </LinearLayout>
+
+            <NumberPicker
+                android:id="@+id/np_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                  android:layout_marginRight="40dp"
+                android:focusable="false" />
+
+            <NumberPicker
+                android:id="@+id/np_cm"
+                 android:visibility="visible"
+                 android:layout_marginLeft="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp" >
+
+        <TextView
+            android:id="@+id/tv_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="45dp"
+            android:padding="8dp"
+            android:text="Confirm"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@drawable/selector_text_confirm" />
+
+        <TextView
+            android:id="@+id/tv_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="45dp"
+            android:clickable="true"
+           	android:focusable="true"
+            android:padding="8dp"
+            android:text="Cancel"
+            android:textColor="@drawable/selector_text_cancel" />
+    </RelativeLayout>
+
+</RelativeLayout>

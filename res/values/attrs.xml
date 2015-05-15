@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircleSeekBar">
+        <attr name="android:thumb" />
+        <attr name="progress_width" format="dimension" />
+        <attr name="progress_background" format="color" />
+        <attr name="progress_front" format="color" />
+        <attr name="progress_max" format="integer" />
+        <attr name="show_progress_text" format="boolean" />
+        <attr name="progress_text_stroke_width" format="dimension" />
+        <attr name="progress_text_color" format="color" />
+        <attr name="progress_text_size" format="dimension" />
+    </declare-styleable>
+	
+    <!-- 自定义view属性 -->
+    <attr name="background_color" format="color" />
+    <attr name="small_background_color" format="color" />
+    <attr name="radius" format="dimension" />
+    <attr name="small_radius" format="dimension" />
+    <attr name="stroke" format="dimension" />
+    <attr name="small_stroke" format="dimension" />
+    <attr name="max" format="integer" />
+    <attr name="progress" format="integer" />
+
+    <declare-styleable name="ColorsCircle">
+        <attr name="background_color" />
+        <attr name="small_background_color" />
+        <attr name="radius" />
+        <attr name="small_radius" />
+        <attr name="stroke" />
+        <attr name="small_stroke" />
+        <attr name="max" />
+        <attr name="progress" />
+        <attr name="width" format="dimension"></attr>
+        <attr name="height" format="dimension"></attr>
+        <attr name="progress_color" format="color" />
+    </declare-styleable>
+    
+     <declare-styleable name="HoloCircleSeekBar">
+        <attr name="wheel_size" format="dimension" />
+        <attr name="pointer_size" format="dimension" />
+        <attr name="max" />
+        <attr name="show_text" format="boolean"></attr>
+        <attr name="start_angle" format="integer"></attr>
+        <attr name="end_angle" format="dimension"></attr>
+        <attr name="text_size" format="dimension"></attr>
+        <attr name="init_position" format="integer"></attr>
+        <attr name="color" format="string"></attr>
+        <attr name="wheel_active_color" format="string"></attr>
+        <attr name="wheel_unactive_color" format="string"></attr>
+        <attr name="pointer_color" format="string"></attr>
+        <attr name="pointer_halo_color" format="string"></attr>
+        <attr name="text_color" format="string"></attr>
+    </declare-styleable>
+
+</resources>

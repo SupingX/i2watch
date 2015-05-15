@@ -1,0 +1,250 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}" >
+
+    <include layout="@layout/top_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            >
+
+            <RelativeLayout
+                android:id="@+id/rl_name"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:focusable="false"
+           		 android:clickable="false"
+                style="@style/itemlist"
+   				 android:focusableInTouchMode="true"  
+               >
+
+                <TextView
+                    android:id="@+id/tv_name"
+                  	android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                  	android:text="Name" 
+                  	android:textSize="16sp"/>
+
+                <com.suping.i2_watch.view.CleanEditText
+                    android:hint="Input your name."
+                    android:singleLine="true"
+                    android:id="@+id/ed_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/tv_name"
+                    android:imeOptions="actionDone" 
+                    android:background="@drawable/edit_bg"
+                    />
+                    
+            </RelativeLayout>
+
+            <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_gender"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="false"
+                android:focusable="false"
+                 style="@style/itemlist" >
+                <TextView
+                    android:id="@+id/tv_gender"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="true"
+                    android:text="Gender" 
+                    android:textSize="16sp"
+                    />
+                
+                <ImageView
+                    android:id="@+id/img_male"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                         android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_gender"
+                     />
+                <ImageView
+                    android:id="@+id/img_female"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/img_male"
+                     />
+            </RelativeLayout>
+
+            <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_height"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                style="@style/itemlist"
+                android:clickable="true"
+                android:focusable="true"
+               >
+				  <TextView
+                    android:id="@+id/tv_height"
+               android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="true"
+                    android:text="Height" 
+                    
+                    android:textSize="16sp"
+                    />
+				  
+            <TextView
+                    android:id="@+id/tv_height_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/tv_height"
+                       android:textColor="@color/grey"
+                    android:text="92" />
+ 			<TextView
+                    android:id="@+id/tv_height_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/tv_height_value"
+                       android:textColor="@color/grey"
+                    android:text="cm" />
+              
+
+                <ImageView
+                    android:id="@+id/img_right_3"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
+            </RelativeLayout>
+            <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+               <RelativeLayout
+                android:id="@+id/rl_weight"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                style="@style/itemlist"
+                android:clickable="true"
+                android:focusable="true"
+               >
+				  <TextView
+                    android:id="@+id/tv_weight"
+             android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="true"
+                    android:text="Weight" 
+                    android:textSize="16sp"
+                    />
+				  
+            <TextView
+                    android:id="@+id/tv_weight_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/tv_weight"
+                       android:textColor="@color/grey"
+                    android:text="62" />
+ 			<TextView
+                    android:id="@+id/tv_weight_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                       android:textColor="@color/grey"
+                    android:layout_toRightOf="@id/tv_weight_value"
+                    android:text="lb" />
+              
+
+                <ImageView
+                    android:id="@+id/img_right_3"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
+                </RelativeLayout>
+            <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+               <RelativeLayout
+                android:id="@+id/rl_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                style="@style/itemlist"
+                android:clickable="true"
+                android:focusable="true"
+               >
+				  <TextView
+                    android:id="@+id/tv_birthday"
+             android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="true"
+                    android:text="Birthday" 
+                    android:textSize="16sp"
+                    />
+				  
+            <TextView
+                    android:id="@+id/tv_birhtday_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/tv_birthday"
+                    android:text="1003-02-23" 
+                    android:textColor="@color/grey"/>
+              
+
+                <ImageView
+                    android:id="@+id/img_right_3"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
+                </RelativeLayout>
+                   <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
