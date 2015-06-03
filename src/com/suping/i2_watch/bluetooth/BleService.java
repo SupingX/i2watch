@@ -1,6 +1,7 @@
 package com.suping.i2_watch.bluetooth;
 
-import java.util.UUID;
+import java.util.*;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.*;
@@ -58,7 +59,9 @@ public class BleService extends Service {
 	private Handler mHandler;
 	private boolean isConnected = false;
 
-	
+//	private BluetoothGattCharacteristic mWriteChar;
+//	private BluetoothGattCharacteristic mNotiChar;
+//	
 
 	private final LeScanCallback mLeScanCallback = new LeScanCallback() {
 
@@ -95,6 +98,7 @@ public class BleService extends Service {
 			// TODO Auto-generated method stub
 			super.onServicesDiscovered(gatt, status);
 			bleServiceDiscovered(gatt.getDevice());
+			List<BluetoothGattService> services = gatt.getServices();
 		}
 
 		@Override

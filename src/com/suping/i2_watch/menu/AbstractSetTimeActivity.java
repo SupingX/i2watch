@@ -1,31 +1,21 @@
 package com.suping.i2_watch.menu;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 import android.widget.NumberPicker.Formatter;
-import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
-
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.R.id;
-import com.suping.i2_watch.R.layout;
 
 public abstract class AbstractSetTimeActivity extends Activity {
 	public NumberPicker np_min;
 	public NumberPicker np_sec;
 	public String[] values;
-
 	public TextView tv_cancel;
 	public TextView tv_confirm;
 	public Bundle b;
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

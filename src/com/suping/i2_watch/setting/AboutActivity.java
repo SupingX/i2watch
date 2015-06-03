@@ -1,8 +1,6 @@
 package com.suping.i2_watch.setting;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.R.id;
-import com.suping.i2_watch.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

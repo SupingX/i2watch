@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">I2_WATHCH</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">I2 Watch</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_connect">ConnectActivity</string>
@@ -27,5 +26,31 @@
     <string name="title_activity_birthday">BirthdayActivity</string>
     <string name="title_activity_pedometer">PedometerActivity</string>
     <string name="title_activity_about">AboutActivity</string>
+    <string name="title_activity_incoming">IncomingActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_incoming_starttime">IncomingStarttimeActivity</string>
+    <string name="title_activity_incoming_endtime">IncomingEndtimeActivity</string>
+    <string name="title_activity_abstract_set2">AbstractSet2Activity</string>
+    <string name="title_activity_callfaker">CallfakerActivity</string>
+    <string name="title_activity_callfaker_from">CallfakerFromActivity</string>
+    <string name="incoming_message">来电联系人</string>
+    <string name="cursor_random">通讯录随机抽取</string>
+    <string name="sport_pedo_value">99999</string>
+    <string name="pedometer">Pedometer</string>
+    <string name="sport_goal">20000</string>
+    <string name="unit_steps">Steps</string>
+    <string name="sport_tips">You had completed 50%,come on</string>
+    <string name="sport_burned_value">3000</string>
+    <string name="sport_burned">Burned</string>
+    <string name="sport_burned_unit">kCal</string>
+    <string name="sport_time">Time</string>
+    <string name="sport_time_value">3000</string>
+    <string name="sprot_time_unit">hours</string>
+    <string name="sport_distance">Distance</string>
+    <string name="sport_distance_value">3000</string>
+    <string name="sport_distance_unit">km</string>
+    <string name="拉下刷新">pull_to_refresh</string>
+    <string name="pull_to_refresh">pull_to_refresh</string>
+    <string name="updated_at">updated_at</string>
 
 </resources>

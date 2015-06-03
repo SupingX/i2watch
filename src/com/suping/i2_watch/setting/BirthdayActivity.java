@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 import android.widget.NumberPicker.Formatter;
 import android.widget.TextView;
 

@@ -1,6 +1,7 @@
 package com.suping.i2_watch.view;
 
 import java.io.IOException;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.AttributeSet;
@@ -23,16 +24,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("deprecation")
 	public CameraPreview(Context context,Camera camera) {
 		super(context);
-		mCamera = camera;
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
-		// 把这个监听添加进去，这样可以监听到创建和销毁的事件了
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		if (camera!=null) {
+			mCamera = camera;
+			// Install a SurfaceHolder.Callback so we get notified when the
+			// underlying surface is created and destroyed.
+			// 把这个监听添加进去，这样可以监听到创建和销毁的事件了
+			mHolder = getHolder();
+			mHolder.addCallback(this);
+			// deprecated setting, but required on Android versions prior to 3.0
+			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		}
 	}
 
 	@Override

@@ -20,87 +20,77 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class MenuActivity extends Activity implements OnClickListener {
-	private ImageView img_back;
-	private TextView tv_title,tv_signset_value,tv_bright_value;
-	private Button btn_increase,btn_decrease;
-	private CheckBox cb_reminder,cb_reminder_nf;
-	private RelativeLayout rl_reminder,rl_sleep,rl_clock,rl_camera,rl_signset;
-	private long exitTime = 0;
+	// 转发code
+	/** SignSet requestCode **/
 	private static final int REQ_SIGNSET = 0x200200;
+	/** camera requestCode **/
+	private static final int REQ_CAMERA = 0x20023300;
+
+	// 存贮地址
+	/** 活动开关 **/
+	public static final String SHARE_ACTIVITY = "share_activity";
+	/** 防丢开关 **/
+	public static final String SHARE_NON = "share_non";
+	/** 来电提醒开关 **/
+	public static final String SHARE_INCOMING = "share_incoming";
+	/** SignSet **/
+	public static final String SHARE_SIGN_SET = "share_signset";
+	/** 亮度 **/
+	public static final String SHARE_BRIGHT = "share_bright";
+
+	// Wedge
+	private ImageView imgBack;
+	private TextView tvTitle, tvSignset, tvBright;
+	private Button btnIncrease, btnDecrease;
+	private CheckBox cbActivityReminder, cbReminderOnOff, cbIncoming;
+	private RelativeLayout rlActivityReminder, rlSleep, rlClock, rlCamera,
+			rlSignset, rlIncoming, rlCallfaker;
+
+	// 连续按退出间隔时间
+	private long exitTime = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
 		initViews();
-		
 		setClick();
 	}
-
-	private void initViews() {
-		img_back = (ImageView) findViewById(R.id.img_back);
-		tv_title = (TextView) findViewById(R.id.tv_title);
-		tv_signset_value = (TextView) findViewById(R.id.tv_signset_value);
-		tv_bright_value = (TextView) findViewById(R.id.tv_bright_value);
-		btn_increase = (Button) findViewById(R.id.btn_increase);
-		btn_decrease = (Button) findViewById(R.id.btn_decrease);
-		rl_reminder = (RelativeLayout) findViewById(R.id.rl_reminder);
-		rl_sleep = (RelativeLayout) findViewById(R.id.rl_sleep);
-		rl_clock = (RelativeLayout) findViewById(R.id.rl_clock);
-		rl_camera = (RelativeLayout) findViewById(R.id.rl_camera);
-		rl_signset = (RelativeLayout) findViewById(R.id.rl_signset);
-		cb_reminder = (CheckBox) findViewById(R.id.cb_reminder);
-		cb_reminder_nf = (CheckBox) findViewById(R.id.cb_reminder_nf);
-		
-		tv_title.setText("Menu");
-		String signature = (String) SharedPreferenceUtil
-				.get(getApplicationContext(), "signature", "signature is not set");
-		tv_signset_value.setText(signature);
-		
-		String bright = (String) SharedPreferenceUtil
-				.get(getApplicationContext(), "bright", "5");
-		tv_bright_value.setText(bright);
-		
-		boolean reminder =  (boolean) SharedPreferenceUtil
-				.get(getApplicationContext(), "reminder", false);
-		cb_reminder.setChecked(reminder);
-		
-		boolean reminder_nf =  (boolean) SharedPreferenceUtil
-				.get(getApplicationContext(), "reminder_nf", false);
-		cb_reminder_nf.setChecked(reminder_nf);
-		
+	
+	@Override
+	protected void onResume() {
+		init();
+		super.onResume();
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 
-	private void setClick() {
-		img_back.setOnClickListener(this);
-		tv_title.setOnClickListener(this);
-		rl_reminder.setOnClickListener(this);
-		rl_sleep.setOnClickListener(this);
-		rl_clock.setOnClickListener(this);
-		rl_camera.setOnClickListener(this);
-		rl_signset.setOnClickListener(this);
-		btn_increase.setOnClickListener(this);
-		btn_decrease.setOnClickListener(this);
-		cb_reminder.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked){
-					SharedPreferenceUtil.put(getApplicationContext(), "reminder", true);
-				}else{
-					SharedPreferenceUtil.put(getApplicationContext(), "reminder", false);
-				}
+		switch (requestCode) {
+		// from SignatureSetActivity
+		case REQ_SIGNSET:
+			if (resultCode == RESULT_OK) {
+				String value = data.getExtras().getString("ed");
+				tvSignset.setText(value);
+				SharedPreferenceUtil.put(getApplicationContext(),
+						SHARE_SIGN_SET, value);
+			} else if (resultCode == RESULT_CANCELED) {
+			} else {
 			}
-		});
-		cb_reminder_nf.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked){
-					SharedPreferenceUtil.put(getApplicationContext(), "reminder_nf", true);
-				}else{
-					SharedPreferenceUtil.put(getApplicationContext(), "reminder_nf", false);
-				}
+			break;
+		// from CameraActivity
+		case REQ_CAMERA:
+			if (resultCode == RESULT_OK) {
+				//
+			} else if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(getApplicationContext(), "相机权限被禁止使用！",
+						Toast.LENGTH_SHORT).show();
 			}
-		});
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -112,9 +102,9 @@ public class MenuActivity extends Activity implements OnClickListener {
 			this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
 					R.anim.activity_from_right_to_left_exit);
-
 			break;
 
+		// 活动
 		case R.id.rl_reminder:
 			Intent reminderIntent = new Intent(MenuActivity.this,
 					ReminderActivity.class);
@@ -123,6 +113,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
 					R.anim.activity_from_right_to_left_exit);
 			break;
+
+		// 睡眠
 		case R.id.rl_sleep:
 			Intent sleepIntent = new Intent(MenuActivity.this,
 					SleepMonitorActivity.class);
@@ -131,6 +123,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
 					R.anim.activity_from_right_to_left_exit);
 			break;
+
+		// 闹钟
 		case R.id.rl_clock:
 			Intent clockIntent = new Intent(MenuActivity.this,
 					ClockActivity.class);
@@ -139,46 +133,72 @@ public class MenuActivity extends Activity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
 					R.anim.activity_from_right_to_left_exit);
 			break;
+
+		// 相机
 		case R.id.rl_camera:
-			Toast.makeText(MenuActivity.this, "camera", 0).show();
-			Intent intent = new Intent(MenuActivity.this,CameraActivity.class);
+			Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
 			startActivity(intent);
-			
-			
 			break;
+
+		//
 		case R.id.rl_signset:
-			Intent signsetIntent = new Intent(MenuActivity.this,SignatureSetActivity.class);
-			String value = tv_signset_value.getText().toString().trim();
+			Intent signsetIntent = new Intent(MenuActivity.this,
+					SignatureSetActivity.class);
+			String value = tvSignset.getText().toString().trim();
 			Bundle b = new Bundle();
 			b.putString("value", value);
 			signsetIntent.putExtra("bundle", b);
 			startActivityForResult(signsetIntent, REQ_SIGNSET);
+
 			break;
-			
+
+		// 来电提醒
+		case R.id.rl_incoming:
+			Intent incomingIntent = new Intent(MenuActivity.this,
+					IncomingActivity.class);
+			startActivity(incomingIntent);
+			this.finish();
+			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
+					R.anim.activity_from_right_to_left_exit);
+			break;
+
+		// 虚拟来电
+		case R.id.rl_callfaker:
+			Intent callfakerIntent = new Intent(MenuActivity.this,
+					CallfakerActivity.class);
+			startActivity(callfakerIntent);
+			this.finish();
+			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
+					R.anim.activity_from_right_to_left_exit);
+			break;
+
+		// 增加
 		case R.id.btn_decrease:
-			int bright1 = Integer.valueOf(tv_bright_value.getText().toString().trim());
-			if(bright1==1){
-				tv_bright_value.setText(String.valueOf(10));
-			}else{
-				tv_bright_value.setText(String.valueOf(bright1-1));
+			int bright1 = Integer.valueOf(tvBright.getText().toString().trim());
+			if (bright1 == 1) {
+				tvBright.setText(String.valueOf(10));
+			} else {
+				tvBright.setText(String.valueOf(bright1 - 1));
 			}
-			SharedPreferenceUtil.put(getApplicationContext(), "bright", tv_bright_value.getText().toString().trim());
+			SharedPreferenceUtil.put(getApplicationContext(), SHARE_BRIGHT,
+					tvBright.getText().toString().trim());
 			break;
-			
+
+		// 减少
 		case R.id.btn_increase:
-			int bright2 = Integer.valueOf(tv_bright_value.getText().toString().trim());
-			if(bright2==10){
-				tv_bright_value.setText(String.valueOf(1));
-			}else{
-				tv_bright_value.setText(String.valueOf(bright2+1));
+			int bright2 = Integer.valueOf(tvBright.getText().toString().trim());
+			if (bright2 == 10) {
+				tvBright.setText(String.valueOf(1));
+			} else {
+				tvBright.setText(String.valueOf(bright2 + 1));
 			}
-			SharedPreferenceUtil.put(getApplicationContext(), "bright", tv_bright_value.getText().toString().trim());
+			SharedPreferenceUtil.put(getApplicationContext(), SHARE_BRIGHT,
+					tvBright.getText().toString().trim());
 			break;
 		default:
 			break;
 		}
 	}
-
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -197,23 +217,115 @@ public class MenuActivity extends Activity implements OnClickListener {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		switch (requestCode) {
-		//from SignatureSetActivity
-		case REQ_SIGNSET:
-			if (resultCode == RESULT_OK) {
-				String value = data.getExtras().getString("ed");
-				tv_signset_value.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), "signature", value);
-			} else if (resultCode == RESULT_CANCELED) {
-			} else {
-			}
-			break;
-		default:
-			break;
-		}
+	private void initViews() {
+		imgBack = (ImageView) findViewById(R.id.img_back);
+		tvTitle = (TextView) findViewById(R.id.tv_title);
+		tvSignset = (TextView) findViewById(R.id.tv_signset_value);
+		tvBright = (TextView) findViewById(R.id.tv_bright_value);
+		btnIncrease = (Button) findViewById(R.id.btn_increase);
+		btnDecrease = (Button) findViewById(R.id.btn_decrease);
+		rlActivityReminder = (RelativeLayout) findViewById(R.id.rl_reminder);
+		rlSleep = (RelativeLayout) findViewById(R.id.rl_sleep);
+		rlClock = (RelativeLayout) findViewById(R.id.rl_clock);
+		rlCamera = (RelativeLayout) findViewById(R.id.rl_camera);
+		rlSignset = (RelativeLayout) findViewById(R.id.rl_signset);
+		rlIncoming = (RelativeLayout) findViewById(R.id.rl_incoming);
+		rlCallfaker = (RelativeLayout) findViewById(R.id.rl_callfaker);
+		cbActivityReminder = (CheckBox) findViewById(R.id.cb_reminder);
+		cbReminderOnOff = (CheckBox) findViewById(R.id.cb_reminder_nf);
+		cbIncoming = (CheckBox) findViewById(R.id.cb_incoming);
+
 	}
+	
+	/**
+	 * 初始化值
+	 */
+	private void init() {
+		// 标题
+		tvTitle.setText("Menu");
+
+		// signature
+		String signature = (String) SharedPreferenceUtil
+				.get(getApplicationContext(), SHARE_SIGN_SET,
+						"signature is not set");
+		tvSignset.setText(signature);
+
+		// 亮度
+		String bright = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_BRIGHT, "5");
+		tvBright.setText(bright);
+
+		boolean reminder = (boolean) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_ACTIVITY, false);
+		cbActivityReminder.setChecked(reminder);
+		boolean reminder_nf = (boolean) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_NON, false);
+		cbReminderOnOff.setChecked(reminder_nf);
+		boolean reminder_incoming = (boolean) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_INCOMING, false);
+//		Log.e("menu", "incoming : " + String.valueOf(reminder_incoming));
+		cbIncoming.setChecked(reminder_incoming);
+	}
+
+	private void setClick() {
+		imgBack.setOnClickListener(this);
+		tvTitle.setOnClickListener(this);
+		rlActivityReminder.setOnClickListener(this);
+		rlSleep.setOnClickListener(this);
+		rlClock.setOnClickListener(this);
+		rlCamera.setOnClickListener(this);
+		rlSignset.setOnClickListener(this);
+		btnIncrease.setOnClickListener(this);
+		btnDecrease.setOnClickListener(this);
+		rlIncoming.setOnClickListener(this);
+		rlCallfaker.setOnClickListener(this);
+
+		// 活动开关
+		cbActivityReminder
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						if (isChecked) {
+							SharedPreferenceUtil.put(getApplicationContext(),
+									SHARE_ACTIVITY, true);
+						} else {
+							SharedPreferenceUtil.put(getApplicationContext(),
+									SHARE_ACTIVITY, false);
+						}
+					}
+				});
+
+		// 防丢提醒开关
+		cbReminderOnOff
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						if (isChecked) {
+							SharedPreferenceUtil.put(getApplicationContext(),
+									SHARE_NON, true);
+						} else {
+							SharedPreferenceUtil.put(getApplicationContext(),
+									SHARE_NON, false);
+						}
+					}
+				});
+
+		// 来电提醒开关
+		cbIncoming.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					SharedPreferenceUtil.put(getApplicationContext(),
+							SHARE_INCOMING, true);
+				} else {
+					SharedPreferenceUtil.put(getApplicationContext(),
+							SHARE_INCOMING, false);
+				}
+			}
+		});
+	}
+
 }

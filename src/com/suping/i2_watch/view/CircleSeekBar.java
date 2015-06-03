@@ -107,8 +107,12 @@ public class CircleSeekBar extends View {
 	private RectF mColorCenterHaloRectangle = new RectF();
 	private int end_wheel;
 
-	private static final int[] COLORS = new int[] { 0xFFFF0000, 0xFFFF00FF,
-			0xFF0000FF, 0xFF00FFFF, 0xFF00FF00, 0xFFFFFF00, 0xFFFF0000 };
+	private static final int[] COLORS = new int[] { 0xFF22AC38, 0xFF009944,
+		0xFF009B6B, 0xFF009E96, 0xFF00A0C1, 0xFF00A0E9, 0xFF0086D1,
+		0xFF0068B7, 0xFF00479D, 0xFF1D2088, 0xFF601986, 0xFF920783,
+		0xFFBE0081, 0xFFE4007F, 0xFFE5006A, 0xFFE5004F, 0xFFE60033,
+		0xFFE60012, 0xFFEB6100, 0xFFF39800, 0xFFFCC800, 0xFFFFF100,
+		0xFFCFDB00, 0xFF8FC31F, 0xFF22AC38 };
 
 	public CircleSeekBar(Context context) {
 		super(context);

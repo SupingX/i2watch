@@ -6,14 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.Camera.Face;
 import android.hardware.Camera.PictureCallback;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -26,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.view.CameraPreview;
@@ -86,11 +85,16 @@ public class CameraActivity extends Activity implements OnClickListener {
 		initViews();
 		setClick();
 		// Create an instance of Camera
-		mCamera = getCameraInstance(0);
-		mPreview = new CameraPreview(this, mCamera);
-		// Create our Preview view and set it as the content of our activity.
-		preview = (FrameLayout) findViewById(R.id.frame);
-		preview.addView(mPreview);
+		try {
+			mCamera = getCameraInstance(0);
+			mPreview = new CameraPreview(this, mCamera);
+			// Create our Preview view and set it as the content of our activity.
+			preview = (FrameLayout) findViewById(R.id.frame);
+			preview.addView(mPreview);
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 	}
 
 	private void initViews() {
@@ -113,26 +117,8 @@ public class CameraActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.img_camera:
 			// get an image from the camera
-			mCamera.takePicture(null, null, mPicture);
-			releaseMediaRecorder();
-			releaseCamera();
-			mCamera = Camera.open(0);
-			mPreview = new CameraPreview(this, mCamera);
-			preview.removeAllViews();
-			preview.addView(mPreview);
-			currentNum = 0;
-			break;
-		case R.id.img_position:
-			if(currentNum==0){
-				// get an image from the camera
-				releaseMediaRecorder();
-				releaseCamera();
-				mCamera = Camera.open(1);
-				mPreview = new CameraPreview(this, mCamera);
-				preview.removeAllViews();
-				preview.addView(mPreview);
-				currentNum = 1;
-			}else{
+			try {
+				mCamera.takePicture(null, null, mPicture);
 				releaseMediaRecorder();
 				releaseCamera();
 				mCamera = Camera.open(0);
@@ -140,6 +126,39 @@ public class CameraActivity extends Activity implements OnClickListener {
 				preview.removeAllViews();
 				preview.addView(mPreview);
 				currentNum = 0;
+			} catch (Exception e) {
+				Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			}
+			break;
+		case R.id.img_position:
+			if(currentNum==0){
+				// get an image from the camera
+				try {
+					releaseMediaRecorder();
+					releaseCamera();
+					mCamera = Camera.open(1);
+					mPreview = new CameraPreview(this, mCamera);
+					preview.removeAllViews();
+					preview.addView(mPreview);
+					currentNum = 1;
+				} catch (Exception e) {
+					Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					releaseMediaRecorder();
+					releaseCamera();
+					mCamera = Camera.open(0);
+					mPreview = new CameraPreview(this, mCamera);
+					preview.removeAllViews();
+					preview.addView(mPreview);
+					currentNum = 0;
+				} catch (Exception e) {
+					Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+					e.printStackTrace();
+				}
 			}
 			break;
 		default:
@@ -262,8 +281,13 @@ public class CameraActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		releaseMediaRecorder();
-		releaseCamera();
+		try {
+			releaseMediaRecorder();
+			releaseCamera();
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 	}
 	private MediaRecorder mMediaRecorder;
 
@@ -283,19 +307,6 @@ public class CameraActivity extends Activity implements OnClickListener {
 			mCamera.release(); // release the camera for other applications
 			mCamera = null;
 		}
-	}
-	
-	
-	//人脸识别 监听 添加到camera
-	class MyFaceDetectionListener implements Camera.FaceDetectionListener {
-	    @Override
-	    public void onFaceDetection(Face[] faces, Camera camera) {
-	        if (faces.length > 0){
-	            Log.d("FaceDetection", "face detected: "+ faces.length +
-	                    " Face 1 Location X: " + faces[0].rect.centerX() +
-	                    "Y: " + faces[0].rect.centerY() );
-	        }
-	    }
 	}
 	
 }

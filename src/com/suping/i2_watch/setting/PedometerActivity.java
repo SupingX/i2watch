@@ -139,7 +139,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 		String kael = df.format(((goal/1000)*18.842));
 		String km = df.format((goal/1000)*0.416);
 		textViewStep.setText(goal+"");
-		textViewKm.setText(kael);
+		textViewKcal.setText(kael);
 		textViewKm.setText(km);
 	}
 	

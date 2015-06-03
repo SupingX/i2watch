@@ -87,8 +87,8 @@ public class ColorsCircle extends View {
 				R.styleable.ColorsCircle_stroke, 10f);
 		float small_stroke = mTypedArray.getDimension(
 				R.styleable.ColorsCircle_small_stroke, 4f);
-		mViewWidth = mTypedArray.getDimensionPixelOffset(R.styleable.ColorsCircle_width, 250);
-		mViewHeight = mTypedArray.getDimensionPixelOffset(R.styleable.ColorsCircle_height, 250);
+//		mViewWidth = mTypedArray.getDimensionPixelOffset(R.styleable.ColorsCircle_width, 250);
+//		mViewHeight = mTypedArray.getDimensionPixelOffset(R.styleable.ColorsCircle_height, 250);
 		int max = mTypedArray.getInt(R.styleable.ColorsCircle_max, 100);
 		int progress = mTypedArray.getInt(R.styleable.ColorsCircle_progress, 0);
 
@@ -107,8 +107,8 @@ public class ColorsCircle extends View {
 
 		mTypedArray.recycle();
 
-		bar = getContext().getResources().getDrawable(
-				R.drawable.ic_scrubber_control_normal_holo);
+//		bar = getContext().getResources().getDrawable(
+//				R.drawable.ic_scrubber_control_normal_holo);
 
 		mProgressPaint = new Paint();
 		mBackgroundPaint = new Paint();
@@ -179,43 +179,43 @@ public class ColorsCircle extends View {
 //		 canvas.drawArc(this.mArcRectF, 0.0f-90f, 90f, false, mProgressPaint);
 		canvas.drawArc(this.mArcRectF, -90f, toAngle(mProgress), false,
 				mProgressPaint);
-		Log.d("OB", "toAngle"+toAngle(0));
+//		Log.d("OB", "toAngle"+toAngle(0));
 
 		// bar
-		double x = mCenterX + mRadius
-				* Math.sin(Math.toRadians(mProgress * 360 / mProgressMax));
-		double y = mCenterY - mRadius
-				* Math.cos(Math.toRadians(mProgress * 360 / mProgressMax));
-		int barLeft = (int) (float) (x - bar.getIntrinsicWidth() / 2);
-		int barTop = (int) (float) (y - bar.getIntrinsicHeight() / 2);
-		int barRight = (int) (barLeft + bar.getIntrinsicWidth());
-		int barBottom = (int) (barTop + bar.getIntrinsicHeight());
-		bar.setBounds((int) barLeft, (int) barTop, barRight, barBottom);
-		bar.draw(canvas);
+//		double x = mCenterX + mRadius
+//				* Math.sin(Math.toRadians(mProgress * 360 / mProgressMax));
+//		double y = mCenterY - mRadius
+//				* Math.cos(Math.toRadians(mProgress * 360 / mProgressMax));
+//		int barLeft = (int) (float) (x - bar.getIntrinsicWidth() / 2);
+//		int barTop = (int) (float) (y - bar.getIntrinsicHeight() / 2);
+//		int barRight = (int) (barLeft + bar.getIntrinsicWidth());
+//		int barBottom = (int) (barTop + bar.getIntrinsicHeight());
+//		bar.setBounds((int) barLeft, (int) barTop, barRight, barBottom);
+//		bar.draw(canvas);
 		
 		super.onDraw(canvas);
 	}
 
-	 @Override
-	 public boolean onTouchEvent(MotionEvent event) {
-		 	float eventX = event.getX();  
-	        float eventY = event.getY();  
-	 switch (event.getAction()) {
-	 case MotionEvent.ACTION_DOWN:
-		 seekTo(eventX,eventY);
-	 break;
-	 case MotionEvent.ACTION_UP:
-		 seekTo(eventX,eventY);
-	 break;
-	 case MotionEvent.ACTION_MOVE:
-		 seekTo(eventX,eventY);
-	 break;
-	
-	 default:
-	 break;
-	 }
-	 return true;
-	 }
+//	 @Override
+//	 public boolean onTouchEvent(MotionEvent event) {
+//		 	float eventX = event.getX();  
+//	        float eventY = event.getY();  
+//	 switch (event.getAction()) {
+//	 case MotionEvent.ACTION_DOWN:
+//		 seekTo(eventX,eventY);
+//	 break;
+//	 case MotionEvent.ACTION_UP:
+//		 seekTo(eventX,eventY);
+//	 break;
+//	 case MotionEvent.ACTION_MOVE:
+//		 seekTo(eventX,eventY);
+//	 break;
+//	
+//	 default:
+//	 break;
+//	 }
+//	 return true;
+//	 }
    private void seekTo(float eventX, float eventY) {  
 	   //角度
 	   double radian = Math.atan2(eventY - mCenterY, eventX - mCenterX);  
@@ -234,24 +234,22 @@ public class ColorsCircle extends View {
        }
        invalidate(); 
    }
-	 /**
-	     * 判断点是否在环上？
-	     * @param eventX
-	     * @param eventY
-	     * @return
-	     */
-	 private boolean isPointOnThumb(float eventX, float eventY) {  
-	        boolean result = false;  
-	        double distance = Math.sqrt(Math.pow(eventX - mCenterX, 2)  
-	                + Math.pow(eventY - mCenterY, 2));  
-	        if (distance < mSize && distance > (mSize / 2 - bar.getIntrinsicWidth())){  
-	            result = true;  
-	        }  
-	        return result;  
-	    }
+//	 /**
+//	     * 判断点是否在环上？
+//	     * @param eventX
+//	     * @param eventY
+//	     * @return
+//	     */
+//	 private boolean isPointOnThumb(float eventX, float eventY) {  
+//	        boolean result = false;  
+//	        double distance = Math.sqrt(Math.pow(eventX - mCenterX, 2)  
+//	                + Math.pow(eventY - mCenterY, 2));  
+//	        if (distance < mSize && distance > (mSize / 2 - bar.getIntrinsicWidth())){  
+//	            result = true;  
+//	        }  
+//	        return result;  
+//	    }
 	/**
-	 * 设置seekbar位置？
-	 * 
 	 * 将数字转为 弧度 
 	 * 当前的度数为
 	 * mProgress * 360 / mProgressMax

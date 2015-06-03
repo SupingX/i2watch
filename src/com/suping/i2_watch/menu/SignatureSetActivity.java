@@ -2,12 +2,7 @@ package com.suping.i2_watch.menu;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -15,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SignatureSetActivity extends Activity implements OnClickListener{
 	private EditText ed_sign;

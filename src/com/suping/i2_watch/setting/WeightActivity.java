@@ -1,19 +1,14 @@
 package com.suping.i2_watch.setting;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.NumberPicker.Formatter;
 
 public class WeightActivity extends Activity {
 

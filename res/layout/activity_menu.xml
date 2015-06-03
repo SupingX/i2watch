@@ -433,6 +433,93 @@
                 android:layout_marginLeft="20dp" />
 
             <RelativeLayout
+                android:id="@+id/rl_incoming"
+                style="@style/itemlist"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true" >
+
+                <ImageView
+                    android:id="@+id/img_incoming"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_shutdown" />
+
+                <TextView
+                    android:id="@+id/tv_incoming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_incoming"
+                    android:text="Incoming reminder" />
+            
+
+                <ImageView
+                    android:id="@+id/img_right_00"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
+                    <CheckBox
+                    android:id="@+id/cb_incoming"
+                    android:layout_width="50dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/img_right_00"
+                    android:button="@drawable/selector_switch_checkbox"
+                    android:checked="false"
+                    android:clickable="true" />
+
+            </RelativeLayout>
+              <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+			<RelativeLayout
+                android:id="@+id/rl_callfaker"
+                style="@style/itemlist"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true" >
+
+                <ImageView
+                    android:id="@+id/img_callfaker"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_shutdown" />
+
+                <TextView
+                    android:id="@+id/tv_callfaker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_callfaker"
+                    android:text="Callfaker" />
+
+                <ImageView
+                    android:id="@+id/img_right_0000"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
+            </RelativeLayout>
+              <View
+                style="@style/line"
+                android:layout_marginLeft="20dp" />
+            
+            <RelativeLayout
                 android:id="@+id/rl_shutdown"
                 style="@style/itemlist"
                 android:layout_width="match_parent"
@@ -470,6 +557,9 @@
             <View
                 style="@style/line"
                 android:layout_marginLeft="20dp" />
+            
+
+          
         </LinearLayout>
     </ScrollView>
 

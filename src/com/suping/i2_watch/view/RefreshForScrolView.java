@@ -1,11 +1,16 @@
 package com.suping.i2_watch.view;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +25,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class RefreshForScrolView extends LinearLayout implements OnTouchListener {
+	private static final String SHARE_UPDATE_TIME = "share_update_time";
 	/*** 下拉状态 ***/
 	public static final int STATUS_PULL_TO_REFRESH = 0;
 	/*** 释放立即刷新状态 ***/
@@ -39,6 +45,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	private TextView tv_state;
 	private TextView tv_time;
 	private ProgressBar mBar;
+	private Context mContext;
 	private ImageView img_up;
 //	private ViewPager mScrollView;
 	private View mScrollView;
@@ -62,9 +69,11 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		header = LayoutInflater.from(context).inflate(R.layout.header, null,
 				true);
 		mBar = (ProgressBar) header.findViewById(R.id.bar);
+		mBar.setVisibility(View.GONE);
 		tv_state = (TextView) header.findViewById(R.id.tv_state);
 		tv_time = (TextView) header.findViewById(R.id.tv_time);
 		img_up = (ImageView) header.findViewById(R.id.img_up);
+		mContext = context;
 		touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 		refreshUpdatedAtValue();
 		setOrientation(VERTICAL);
@@ -149,7 +158,9 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				break;
 			case MotionEvent.ACTION_UP:
 			default:
+				Log.e("下拉刷新", "松开 currentStatus : " + currentStatus);
 				if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
+					Log.e("下拉刷新", "status_release_to_refresh");
 					// 松手时如果是释放立即刷新状态，就去调用正在刷新的任务
 					new RefreshingTask().execute();
 				} else if (currentStatus == STATUS_PULL_TO_REFRESH) {
@@ -194,6 +205,12 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		currentStatus = STATUS_REFRESH_FINISHED;
 		// preferences.edit().putLong(UPDATED_AT + mId,
 		// System.currentTimeMillis()).commit();
+		
+		//yyyy-MM-dd hh:mm:ss -->为12小时制 
+		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		Log.e("刷新时间", "time : " + time);
+		SharedPreferenceUtil.put(mContext, SHARE_UPDATE_TIME + mId,time);
+		
 		new HideHeaderTask().execute();
 	}
 
@@ -209,16 +226,15 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				rotateArrow();
 			} else if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
 				tv_state.setText(("松开刷新数据"));
-				img_up.setVisibility(View.VISIBLE);
-				mBar.setVisibility(View.GONE);
 				rotateArrow();
 			} else if (currentStatus == STATUS_REFRESHING) {
-				tv_state.setText("正在刷新");
 				mBar.setVisibility(View.VISIBLE);
 				img_up.clearAnimation();
 				img_up.setVisibility(View.GONE);
+				tv_state.setText("正在刷新");
+			
 			}
-			// refreshUpdatedAtValue();
+			 refreshUpdatedAtValue();
 		}
 	}
 
@@ -247,7 +263,16 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	/**
 	 * 刷新下拉头中上次更新时间的文字描述。
 	 */
-	private void refreshUpdatedAtValue() {
+	
+	private void refreshUpdatedAtValue(){
+		String time = (String) SharedPreferenceUtil.get(mContext, SHARE_UPDATE_TIME +mId, "");
+		if(time.equals("")){
+			tv_time.setText("未曾更新");
+		} else {
+			tv_time.setText("上次更新于 : " + time);
+		}
+	}
+//	private void refreshUpdatedAtValue() {
 		// lastUpdateTime = preferences.getLong(UPDATED_AT + mId, -1);
 		// long currentTime = System.currentTimeMillis();
 		// long timePassed = currentTime - lastUpdateTime;
@@ -286,7 +311,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		// String.format(getResources().getString(R.string.updated_at), value);
 		// }
 		// updateAt.setText(updateAtValue);
-	}
+//	}
 
 	/**
 	 * 正在刷新的任务，在此任务中会去回调注册进来的下拉刷新监听器。
@@ -305,8 +330,10 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				}
 				publishProgress(topMargin);
 				sleep(10);
-			}
+			}	
+			Log.e("刷新task", currentStatus+" 前");
 			currentStatus = STATUS_REFRESHING;
+			Log.e("刷新task", currentStatus+" 后");
 			publishProgress(0);
 			if (mListener != null) {
 				mListener.onRefresh();
@@ -318,6 +345,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		protected void onProgressUpdate(Integer... topMargin) {
 			headerLayoutParams.topMargin = topMargin[0];
 			header.setLayoutParams(headerLayoutParams);
+			updateHeaderView();
 		}
 
 	}
@@ -382,5 +410,6 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		 */
 		void onRefresh();
 	}
+
 
 }

@@ -1,0 +1,130 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}" >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="12dp"
+        android:text="来电联系人"
+        android:textSize="22sp" />
+     <View
+            style="@style/line_1dp"
+            android:layout_height="2dp"
+            android:layout_width="match_parent"/>
+
+    <ListView
+        android:id="@+id/listV"
+        android:choiceMode="singleChoice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:dividerHeight="1dp"
+        android:fadingEdge="none"
+        android:scrollingCache="false"
+        >
+    </ListView>
+  <View
+            style="@style/line_1dp"
+            android:layout_height="2dp"
+            android:layout_width="match_parent"/>
+    <LinearLayout
+                  android:visibility="gone"
+        android:id="@+id/custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="50dip"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="姓名 :"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dip"
+                android:maxEms = "6"
+                android:hint="请输入姓名"
+                android:background="@drawable/selector_edittext_background"
+                android:inputType="text"
+                android:paddingLeft="4dip"
+                android:singleLine="true" />
+        </LinearLayout>
+
+               <LinearLayout
+         
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="50dip"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="电话 :"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/ed_phone"
+                android:layout_width="match_parent"
+                android:layout_height="40dip"
+                android:background="@drawable/selector_edittext_background"
+                android:inputType="phone"
+                    android:hint="请输入号码"
+                android:paddingLeft="4dip"
+                android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+	 
+    <RelativeLayout
+        android:id="@+id/ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+     >
+
+        <TextView
+            android:id="@+id/tv_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:text="Confirm"
+            android:textColor="@drawable/selector_text_confirm" />
+
+        <TextView
+            android:id="@+id/tv_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:text="Cancel"
+            android:textColor="@drawable/selector_text_cancel" />
+    </RelativeLayout>
+
+</LinearLayout>
