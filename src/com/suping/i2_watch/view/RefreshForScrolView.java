@@ -8,9 +8,9 @@ import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,9 +19,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class RefreshForScrolView extends LinearLayout implements OnTouchListener {
@@ -47,7 +45,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	private ProgressBar mBar;
 	private Context mContext;
 	private ImageView img_up;
-//	private ViewPager mScrollView;
+	// private ViewPager mScrollView;
 	private View mScrollView;
 
 	private int headerHeight;
@@ -57,23 +55,23 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	private int touchSlop;
 
 	private PullToRefreshListener mListener;
-	private int mId;
+	private int mId = 0;
 
 	/*** 是否已加载过一次layout，这里onLayout中的初始化只需加载一次 ***/
 	private boolean loadOnce;
 	private boolean ableToPull;
 	
-	     
+	private boolean isMove;
+
 	public RefreshForScrolView(Context context, AttributeSet attrs) {
-		   super(context, attrs);
-		header = LayoutInflater.from(context).inflate(R.layout.header, null,
-				true);
+		super(context, attrs);
+		header = LayoutInflater.from(context).inflate(R.layout.header, null, true);
 		mBar = (ProgressBar) header.findViewById(R.id.bar);
-		mBar.setVisibility(View.GONE);
+		// mBar.setVisibility(View.GONE);
 		tv_state = (TextView) header.findViewById(R.id.tv_state);
 		tv_time = (TextView) header.findViewById(R.id.tv_time);
 		img_up = (ImageView) header.findViewById(R.id.img_up);
-		mContext = context;
+		this.mContext = context;
 		touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 		refreshUpdatedAtValue();
 		setOrientation(VERTICAL);
@@ -90,10 +88,9 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 			headerHeight = -header.getHeight();
 			headerLayoutParams = (MarginLayoutParams) header.getLayoutParams();
 			headerLayoutParams.topMargin = headerHeight;
-//			mScrollView = (ViewPager) getChildAt(1);
+			// mScrollView = (ViewPager) getChildAt(1);
 			mScrollView = getChildAt(1);
 			mScrollView.setOnTouchListener(this);
-			
 			
 			loadOnce = true;
 		}
@@ -106,27 +103,32 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	 * @param event
 	 */
 	private void setIsAbleToPull(MotionEvent event) {
-		if(mScrollView!=null){
-			if(mScrollView.getTop()==0){
+		if (mScrollView != null) {
+			if (mScrollView.getTop() == 0) {
 				if (!ableToPull) {
-					yDown = event.getRawY();//相对屏幕的Y坐标
+					yDown = event.getRawY();// 相对屏幕的Y坐标
 				}
 				ableToPull = true;
 			}
-//			else {
-//				if (headerLayoutParams.topMargin != headerHeight) {
-//					headerLayoutParams.topMargin = headerHeight;
-//					header.setLayoutParams(headerLayoutParams);
-//				}
-//				ableToPull = false;
-//			}
+			// else {
+			// if (headerLayoutParams.topMargin != headerHeight) {
+			// headerLayoutParams.topMargin = headerHeight;
+			// header.setLayoutParams(headerLayoutParams);
+			// }
+			// ableToPull = false;
+			// }
 		} else {
 			ableToPull = false;
 		}
 	}
-
+	
+	
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		// public boolean onTouchEvent(MotionEvent event) {
+		isMove = false;
+		Log.d("x", "onTouch");
 		setIsAbleToPull(event);
 		if (ableToPull) {
 			switch (event.getAction()) {
@@ -134,11 +136,11 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				yDown = event.getRawY();
 				break;
 			case MotionEvent.ACTION_MOVE:
+				isMove = true;
 				float yMove = event.getRawY();
 				int distance = (int) (yMove - yDown);
 				// 如果手指是下滑状态，并且下拉头是完全隐藏的，就屏蔽下拉事件
-				if (distance <= 0
-						&& headerLayoutParams.topMargin <= headerHeight) {
+				if (distance <= 0 && headerLayoutParams.topMargin <= headerHeight) {
 					return false;
 				}
 				if (distance < touchSlop) {
@@ -151,16 +153,15 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 						currentStatus = STATUS_PULL_TO_REFRESH;
 					}
 					// 通过偏移下拉头的topMargin值，来实现下拉效果
-					headerLayoutParams.topMargin = (distance / 2)
-							+ headerHeight;
+					headerLayoutParams.topMargin = (distance / 2) + headerHeight;
 					header.setLayoutParams(headerLayoutParams);
 				}
 				break;
 			case MotionEvent.ACTION_UP:
 			default:
-				Log.e("下拉刷新", "松开 currentStatus : " + currentStatus);
+				// Log.e("下拉刷新", "松开 currentStatus : " + currentStatus);
 				if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
-					Log.e("下拉刷新", "status_release_to_refresh");
+					// Log.e("下拉刷新", "status_release_to_refresh");
 					// 松手时如果是释放立即刷新状态，就去调用正在刷新的任务
 					new RefreshingTask().execute();
 				} else if (currentStatus == STATUS_PULL_TO_REFRESH) {
@@ -170,8 +171,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				break;
 			}
 			// 时刻记得更新下拉头中的信息
-			if (currentStatus == STATUS_PULL_TO_REFRESH
-					|| currentStatus == STATUS_RELEASE_TO_REFRESH) {
+			if (currentStatus == STATUS_PULL_TO_REFRESH || currentStatus == STATUS_RELEASE_TO_REFRESH) {
 				updateHeaderView();
 				// 当前正处于下拉或释放状态，要让ListView失去焦点，否则被点击的那一项会一直处于选中状态
 				mScrollView.setPressed(false);
@@ -205,12 +205,11 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		currentStatus = STATUS_REFRESH_FINISHED;
 		// preferences.edit().putLong(UPDATED_AT + mId,
 		// System.currentTimeMillis()).commit();
-		
-		//yyyy-MM-dd hh:mm:ss -->为12小时制 
+
+		// yyyy-MM-dd hh:mm:ss -->为12小时制
 		String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		Log.e("刷新时间", "time : " + time);
-		SharedPreferenceUtil.put(mContext, SHARE_UPDATE_TIME + mId,time);
-		
+		// Log.e("刷新时间", "time : " + time);
+		SharedPreferenceUtil.put(mContext, SHARE_UPDATE_TIME + mId, time);
 		new HideHeaderTask().execute();
 	}
 
@@ -232,9 +231,9 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				img_up.clearAnimation();
 				img_up.setVisibility(View.GONE);
 				tv_state.setText("正在刷新");
-			
+
 			}
-			 refreshUpdatedAtValue();
+			refreshUpdatedAtValue();
 		}
 	}
 
@@ -253,8 +252,7 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 			fromDegrees = 0f;
 			toDegrees = 180f;
 		}
-		RotateAnimation animation = new RotateAnimation(fromDegrees, toDegrees,
-				pivotX, pivotY);
+		RotateAnimation animation = new RotateAnimation(fromDegrees, toDegrees, pivotX, pivotY);
 		animation.setDuration(100);
 		animation.setFillAfter(true);
 		img_up.startAnimation(animation);
@@ -263,55 +261,60 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 	/**
 	 * 刷新下拉头中上次更新时间的文字描述。
 	 */
-	
-	private void refreshUpdatedAtValue(){
-		String time = (String) SharedPreferenceUtil.get(mContext, SHARE_UPDATE_TIME +mId, "");
-		if(time.equals("")){
-			tv_time.setText("未曾更新");
-		} else {
-			tv_time.setText("上次更新于 : " + time);
+
+	private void refreshUpdatedAtValue() {
+		if (mContext != null) {
+			// String time = String.valueOf(SharedPreferenceUtil.get(mContext,
+			// SHARE_UPDATE_TIME + mId, ""));
+			// if(time.equals("")){
+			// tv_time.setText("未曾更新");
+			// } else {
+			// tv_time.setText("上次更新于 : " + time);
+			// }
 		}
+
 	}
-//	private void refreshUpdatedAtValue() {
-		// lastUpdateTime = preferences.getLong(UPDATED_AT + mId, -1);
-		// long currentTime = System.currentTimeMillis();
-		// long timePassed = currentTime - lastUpdateTime;
-		// long timeIntoFormat;
-		// String updateAtValue;
-		// if (lastUpdateTime == -1) {
-		// updateAtValue = getResources().getString(R.string.not_updated_yet);
-		// } else if (timePassed < 0) {
-		// updateAtValue = getResources().getString(R.string.time_error);
-		// } else if (timePassed < ONE_MINUTE) {
-		// updateAtValue = getResources().getString(R.string.updated_just_now);
-		// } else if (timePassed < ONE_HOUR) {
-		// timeIntoFormat = timePassed / ONE_MINUTE;
-		// String value = timeIntoFormat + "分钟";
-		// updateAtValue =
-		// String.format(getResources().getString(R.string.updated_at), value);
-		// } else if (timePassed < ONE_DAY) {
-		// timeIntoFormat = timePassed / ONE_HOUR;
-		// String value = timeIntoFormat + "小时";
-		// updateAtValue =
-		// String.format(getResources().getString(R.string.updated_at), value);
-		// } else if (timePassed < ONE_MONTH) {
-		// timeIntoFormat = timePassed / ONE_DAY;
-		// String value = timeIntoFormat + "天";
-		// updateAtValue =
-		// String.format(getResources().getString(R.string.updated_at), value);
-		// } else if (timePassed < ONE_YEAR) {
-		// timeIntoFormat = timePassed / ONE_MONTH;
-		// String value = timeIntoFormat + "个月";
-		// updateAtValue =
-		// String.format(getResources().getString(R.string.updated_at), value);
-		// } else {
-		// timeIntoFormat = timePassed / ONE_YEAR;
-		// String value = timeIntoFormat + "年";
-		// updateAtValue =
-		// String.format(getResources().getString(R.string.updated_at), value);
-		// }
-		// updateAt.setText(updateAtValue);
-//	}
+
+	// private void refreshUpdatedAtValue() {
+	// lastUpdateTime = preferences.getLong(UPDATED_AT + mId, -1);
+	// long currentTime = System.currentTimeMillis();
+	// long timePassed = currentTime - lastUpdateTime;
+	// long timeIntoFormat;
+	// String updateAtValue;
+	// if (lastUpdateTime == -1) {
+	// updateAtValue = getResources().getString(R.string.not_updated_yet);
+	// } else if (timePassed < 0) {
+	// updateAtValue = getResources().getString(R.string.time_error);
+	// } else if (timePassed < ONE_MINUTE) {
+	// updateAtValue = getResources().getString(R.string.updated_just_now);
+	// } else if (timePassed < ONE_HOUR) {
+	// timeIntoFormat = timePassed / ONE_MINUTE;
+	// String value = timeIntoFormat + "分钟";
+	// updateAtValue =
+	// String.format(getResources().getString(R.string.updated_at), value);
+	// } else if (timePassed < ONE_DAY) {
+	// timeIntoFormat = timePassed / ONE_HOUR;
+	// String value = timeIntoFormat + "小时";
+	// updateAtValue =
+	// String.format(getResources().getString(R.string.updated_at), value);
+	// } else if (timePassed < ONE_MONTH) {
+	// timeIntoFormat = timePassed / ONE_DAY;
+	// String value = timeIntoFormat + "天";
+	// updateAtValue =
+	// String.format(getResources().getString(R.string.updated_at), value);
+	// } else if (timePassed < ONE_YEAR) {
+	// timeIntoFormat = timePassed / ONE_MONTH;
+	// String value = timeIntoFormat + "个月";
+	// updateAtValue =
+	// String.format(getResources().getString(R.string.updated_at), value);
+	// } else {
+	// timeIntoFormat = timePassed / ONE_YEAR;
+	// String value = timeIntoFormat + "年";
+	// updateAtValue =
+	// String.format(getResources().getString(R.string.updated_at), value);
+	// }
+	// updateAt.setText(updateAtValue);
+	// }
 
 	/**
 	 * 正在刷新的任务，在此任务中会去回调注册进来的下拉刷新监听器。
@@ -330,10 +333,10 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 				}
 				publishProgress(topMargin);
 				sleep(10);
-			}	
-			Log.e("刷新task", currentStatus+" 前");
+			}
+			// Log.e("刷新task", currentStatus+" 前");
 			currentStatus = STATUS_REFRESHING;
-			Log.e("刷新task", currentStatus+" 后");
+			// Log.e("刷新task", currentStatus+" 后");
 			publishProgress(0);
 			if (mListener != null) {
 				mListener.onRefresh();
@@ -410,6 +413,19 @@ public class RefreshForScrolView extends LinearLayout implements OnTouchListener
 		 */
 		void onRefresh();
 	}
+
+
+
+//	@Override
+//	public boolean onInterceptTouchEvent(MotionEvent ev) {
+//		isMove = false;
+//		isMove = onTouch(mScrollView, ev);
+//		
+//		
+//		// TODO Auto-generated method stub
+//		Log.d("Refresh", "下拉拦截点击" + isMove );
+//		return isMove;
+//	}
 
 
 }

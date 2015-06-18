@@ -49,11 +49,13 @@ package com.xtremeprog.sdk.ble;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -111,6 +113,10 @@ public class BleService extends Service {
 	 * @see BleService#bleCharacteristicChanged
 	 */
 	public static final String BLE_CHARACTERISTIC_CHANGED = "com.xtremeprog.sdk.ble.characteristic_changed";
+	/**
+	 * @see BleService#bleReadRssi
+	 */
+	public static final String BLE_READ_RSSI = "com.xtremeprog.sdk.ble.read_rssi";
 
 	/** Intent extras */
 	public static final String EXTRA_DEVICE = "DEVICE";
@@ -130,13 +136,12 @@ public class BleService extends Service {
 	public static final int DEVICE_SOURCE_BONDED = 1;
 	public static final int DEVICE_SOURCE_CONNECTED = 2;
 
-	public static final UUID DESC_CCC = UUID
-			.fromString("00002902-0000-1000-8000-00805f9b34fb");
+	public static final UUID DESC_CCC = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
 	public enum BLESDK {
 		NOT_SUPPORTED, ANDROID, SAMSUNG, BROADCOM
 	}
-
+	
 	private final IBinder mBinder = new LocalBinder();
 	private BLESDK mBleSDK;
 	private IBle mBle;
@@ -150,6 +155,18 @@ public class BleService extends Service {
 	private Thread mRequestTimeout;
 	private String mNotificationAddress;
 
+	
+	/**
+	 * 新加的属性  write
+	 */
+	private BleGattCharacteristic mCharacteristicWrite;
+	/**
+	 * 新加的属性 notifaction
+	 */
+	private BleGattCharacteristic mCharacteristicNotification;
+	
+	
+	
 	private Runnable mTimeoutRunnable = new Runnable() {
 		@Override
 		public void run() {
@@ -162,13 +179,10 @@ public class BleService extends Service {
 					mElapsed++;
 
 					if (mElapsed > REQUEST_TIMEOUT && mCurrentRequest != null) {
-						Log.d(TAG, "-processrequest type "
-								+ mCurrentRequest.type + " address "
+						Log.d(TAG, "-processrequest type " + mCurrentRequest.type + " address "
 								+ mCurrentRequest.address + " [timeout]");
-						bleRequestFailed(mCurrentRequest.address,
-								mCurrentRequest.type, FailReason.TIMEOUT);
-						bleStatusAbnormal("-processrequest type "
-								+ mCurrentRequest.type + " address "
+						bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type, FailReason.TIMEOUT);
+						bleStatusAbnormal("-processrequest type " + mCurrentRequest.type + " address "
 								+ mCurrentRequest.address + " [timeout]");
 						if (mBle != null) {
 							mBle.disconnect(mCurrentRequest.address);
@@ -191,6 +205,14 @@ public class BleService extends Service {
 		}
 	};
 
+	
+
+	public class LocalBinder extends Binder {
+		public BleService getService() {
+			return BleService.this;
+		}
+	}
+
 	public static IntentFilter getIntentFilter() {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(BLE_NOT_SUPPORTED);
@@ -205,18 +227,13 @@ public class BleService extends Service {
 		intentFilter.addAction(BLE_CHARACTERISTIC_NOTIFICATION);
 		intentFilter.addAction(BLE_CHARACTERISTIC_WRITE);
 		intentFilter.addAction(BLE_CHARACTERISTIC_CHANGED);
+		intentFilter.addAction(BLE_READ_RSSI);
 		return intentFilter;
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
-	}
-
-	public class LocalBinder extends Binder {
-		public BleService getService() {
-			return BleService.this;
-		}
 	}
 
 	@Override
@@ -236,6 +253,10 @@ public class BleService extends Service {
 		}
 	}
 
+	public IBle getBle() {
+		return mBle;
+	}
+
 	protected void bleNotSupported() {
 		Intent intent = new Intent(BleService.BLE_NOT_SUPPORTED);
 		sendBroadcast(intent);
@@ -247,8 +268,7 @@ public class BleService extends Service {
 	}
 
 	private BLESDK getBleSDK() {
-		if (getPackageManager().hasSystemFeature(
-				PackageManager.FEATURE_BLUETOOTH_LE)) {
+		if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
 			// android 4.3
 			return BLESDK.ANDROID;
 		}
@@ -271,8 +291,79 @@ public class BleService extends Service {
 		return BLESDK.NOT_SUPPORTED;
 	}
 
-	public IBle getBle() {
-		return mBle;
+	private void clearTimeoutThread() {
+		if (mRequestTimeout.isAlive()) {
+			try {
+				mCheckTimeout = false;
+				mRequestTimeout.join();
+				mRequestTimeout = null;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void processNextRequest() {
+		if (mCurrentRequest != null) {
+			return;
+		}
+	
+		synchronized (mRequestQueue) {
+			if (mRequestQueue.isEmpty()) {
+				return;
+			}
+			mCurrentRequest = mRequestQueue.remove();
+		}
+		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address " + mCurrentRequest.address + " remark "
+				+ mCurrentRequest.remark);
+		boolean ret = false;
+		switch (mCurrentRequest.type) {
+		case CONNECT_GATT:
+			ret = ((IBleRequestHandler) mBle).connect(mCurrentRequest.address);
+			break;
+		case DISCOVER_SERVICE:
+			ret = mBle.discoverServices(mCurrentRequest.address);
+			break;
+		case CHARACTERISTIC_NOTIFICATION:
+		case CHARACTERISTIC_INDICATION:
+		case CHARACTERISTIC_STOP_NOTIFICATION:
+			ret = ((IBleRequestHandler) mBle).characteristicNotification(mCurrentRequest.address,
+					mCurrentRequest.characteristic);
+			break;
+		case READ_CHARACTERISTIC:
+			ret = ((IBleRequestHandler) mBle).readCharacteristic(mCurrentRequest.address,
+					mCurrentRequest.characteristic);
+			break;
+		case WRITE_CHARACTERISTIC:
+			ret = ((IBleRequestHandler) mBle).writeCharacteristic(mCurrentRequest.address,
+					mCurrentRequest.characteristic);
+			break;
+		case READ_DESCRIPTOR:
+			break;
+		default:
+			break;
+		}
+	
+		if (ret) {
+			startTimeoutThread();
+		} else {
+			Log.d(TAG, "-processrequest type " + mCurrentRequest.type + " address " + mCurrentRequest.address
+					+ " [fail start]");
+			bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type, FailReason.START_FAILED);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					mCurrentRequest = null;
+					processNextRequest();
+				}
+			}, "th-ble").start();
+		}
+	}
+
+	private void startTimeoutThread() {
+		mCheckTimeout = true;
+		mRequestTimeout = new Thread(mTimeoutRunnable);
+		mRequestTimeout.start();
 	}
 
 	/**
@@ -285,10 +376,8 @@ public class BleService extends Service {
 	 * {@link BleService#EXTRA_SOURCE} source int, not used now <br>
 	 */
 	@SuppressWarnings("deprecation")
-	protected void bleDeviceFound(BluetoothDevice device, int rssi,
-			byte[] scanRecord, int source) {
-		Log.d("blelib", "[" + new Date().toLocaleString() + "] device found "
-				+ device.getAddress());
+	protected void bleDeviceFound(BluetoothDevice device, int rssi, byte[] scanRecord, int source) {
+		Log.d("blelib", "[" + new Date().toLocaleString() + "] device found " + device.getAddress());
 		Intent intent = new Intent(BleService.BLE_DEVICE_FOUND);
 		intent.putExtra(BleService.EXTRA_DEVICE, device);
 		intent.putExtra(BleService.EXTRA_RSSI, rssi);
@@ -335,21 +424,34 @@ public class BleService extends Service {
 	 * @param address
 	 */
 	protected void bleServiceDiscovered(String address) {
+//		//添加的。遍历出characteristic
+//		List<BleGattService> services = mBle.getServices(address);
+//		for (BleGattService service : services) {
+//			//当service发现时，检测是否是匹配的Service以及Characteristic属性是否存在
+//			String serviceUuid = service.getUuid().toString();
+//			if (serviceUuid.equals("122231231213123123131")) {
+//				mCharacteristicWrite = service.getCharacteristic(UUID
+//						.fromString("11112212222222222222221"));
+//				mCharacteristicNotification = service.getCharacteristic(UUID
+//						.fromString("231233333333333333333321"));
+//			} else {
+//				 Log.d(TAG, "Services is not discovered...！");
+//			}
+//		}
+		
+		
 		Intent intent = new Intent(BLE_SERVICE_DISCOVERED);
 		intent.putExtra(EXTRA_ADDR, address);
 		sendBroadcast(intent);
 		requestProcessed(address, RequestType.DISCOVER_SERVICE, true);
 	}
 
-	protected void requestProcessed(String address, RequestType requestType,
-			boolean success) {
+	protected void requestProcessed(String address, RequestType requestType, boolean success) {
 		if (mCurrentRequest != null && mCurrentRequest.type == requestType) {
 			clearTimeoutThread();
-			Log.d(TAG, "-processrequest type " + requestType + " address "
-					+ address + " [success: " + success + "]");
+			Log.d(TAG, "-processrequest type " + requestType + " address " + address + " [success: " + success + "]");
 			if (!success) {
-				bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
-						FailReason.RESULT_FAILED);
+				bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type, FailReason.RESULT_FAILED);
 			}
 			new Thread(new Runnable() {
 				@Override
@@ -358,18 +460,6 @@ public class BleService extends Service {
 					processNextRequest();
 				}
 			}, "th-ble").start();
-		}
-	}
-
-	private void clearTimeoutThread() {
-		if (mRequestTimeout.isAlive()) {
-			try {
-				mCheckTimeout = false;
-				mRequestTimeout.join();
-				mRequestTimeout = null;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -387,8 +477,7 @@ public class BleService extends Service {
 	 * @param status
 	 * @param value
 	 */
-	protected void bleCharacteristicRead(String address, String uuid,
-			int status, byte[] value) {
+	protected void bleCharacteristicRead(String address, String uuid, int status, byte[] value) {
 		Intent intent = new Intent(BLE_CHARACTERISTIC_READ);
 		intent.putExtra(EXTRA_ADDR, address);
 		intent.putExtra(EXTRA_UUID, uuid);
@@ -397,76 +486,12 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 		requestProcessed(address, RequestType.READ_CHARACTERISTIC, true);
 	}
-
+	
 	protected void addBleRequest(BleRequest request) {
 		synchronized (mRequestQueue) {
 			mRequestQueue.add(request);
 			processNextRequest();
 		}
-	}
-
-	private void processNextRequest() {
-		if (mCurrentRequest != null) {
-			return;
-		}
-
-		synchronized (mRequestQueue) {
-			if (mRequestQueue.isEmpty()) {
-				return;
-			}
-			mCurrentRequest = mRequestQueue.remove();
-		}
-		Log.d(TAG, "+processrequest type " + mCurrentRequest.type + " address "
-				+ mCurrentRequest.address + " remark " + mCurrentRequest.remark);
-		boolean ret = false;
-		switch (mCurrentRequest.type) {
-		case CONNECT_GATT:
-			ret = ((IBleRequestHandler) mBle).connect(mCurrentRequest.address);
-			break;
-		case DISCOVER_SERVICE:
-			ret = mBle.discoverServices(mCurrentRequest.address);
-			break;
-		case CHARACTERISTIC_NOTIFICATION:
-		case CHARACTERISTIC_INDICATION:
-		case CHARACTERISTIC_STOP_NOTIFICATION:
-			ret = ((IBleRequestHandler) mBle).characteristicNotification(
-					mCurrentRequest.address, mCurrentRequest.characteristic);
-			break;
-		case READ_CHARACTERISTIC:
-			ret = ((IBleRequestHandler) mBle).readCharacteristic(
-					mCurrentRequest.address, mCurrentRequest.characteristic);
-			break;
-		case WRITE_CHARACTERISTIC:
-			ret = ((IBleRequestHandler) mBle).writeCharacteristic(
-					mCurrentRequest.address, mCurrentRequest.characteristic);
-			break;
-		case READ_DESCRIPTOR:
-			break;
-		default:
-			break;
-		}
-
-		if (ret) {
-			startTimeoutThread();
-		} else {
-			Log.d(TAG, "-processrequest type " + mCurrentRequest.type
-					+ " address " + mCurrentRequest.address + " [fail start]");
-			bleRequestFailed(mCurrentRequest.address, mCurrentRequest.type,
-					FailReason.START_FAILED);
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					mCurrentRequest = null;
-					processNextRequest();
-				}
-			}, "th-ble").start();
-		}
-	}
-
-	private void startTimeoutThread() {
-		mCheckTimeout = true;
-		mRequestTimeout = new Thread(mTimeoutRunnable);
-		mRequestTimeout.start();
 	}
 
 	protected BleRequest getCurrentRequest() {
@@ -489,8 +514,7 @@ public class BleService extends Service {
 	 * @param uuid
 	 * @param status
 	 */
-	protected void bleCharacteristicNotification(String address, String uuid,
-			boolean isEnabled, int status) {
+	protected void bleCharacteristicNotification(String address, String uuid, boolean isEnabled, int status) {
 		Intent intent = new Intent(BLE_CHARACTERISTIC_NOTIFICATION);
 		intent.putExtra(EXTRA_ADDR, address);
 		intent.putExtra(EXTRA_UUID, uuid);
@@ -498,11 +522,9 @@ public class BleService extends Service {
 		intent.putExtra(EXTRA_STATUS, status);
 		sendBroadcast(intent);
 		if (isEnabled) {
-			requestProcessed(address, RequestType.CHARACTERISTIC_NOTIFICATION,
-					true);
+			requestProcessed(address, RequestType.CHARACTERISTIC_NOTIFICATION, true);
 		} else {
-			requestProcessed(address,
-					RequestType.CHARACTERISTIC_STOP_NOTIFICATION, true);
+			requestProcessed(address, RequestType.CHARACTERISTIC_STOP_NOTIFICATION, true);
 		}
 		setNotificationAddress(address);
 	}
@@ -519,8 +541,7 @@ public class BleService extends Service {
 	 * @param uuid
 	 * @param status
 	 */
-	protected void bleCharacteristicIndication(String address, String uuid,
-			int status) {
+	protected void bleCharacteristicIndication(String address, String uuid, int status) {
 		Intent intent = new Intent(BLE_CHARACTERISTIC_INDICATION);
 		intent.putExtra(EXTRA_ADDR, address);
 		intent.putExtra(EXTRA_UUID, uuid);
@@ -542,14 +563,16 @@ public class BleService extends Service {
 	 * @param uuid
 	 * @param status
 	 */
-	protected void bleCharacteristicWrite(String address, String uuid,
-			int status) {
-		Intent intent = new Intent(BLE_CHARACTERISTIC_WRITE);
-		intent.putExtra(EXTRA_ADDR, address);
-		intent.putExtra(EXTRA_UUID, uuid);
-		intent.putExtra(EXTRA_STATUS, status);
-		sendBroadcast(intent);
-		requestProcessed(address, RequestType.WRITE_CHARACTERISTIC, true);
+	protected void bleCharacteristicWrite(String address, String uuid, int status) {
+			//新加的 ：写入属性后
+			mBle.requestWriteCharacteristic(address, mCharacteristicWrite, "");
+			
+			Intent intent = new Intent(BLE_CHARACTERISTIC_WRITE);
+			intent.putExtra(EXTRA_ADDR, address);
+			intent.putExtra(EXTRA_UUID, uuid);
+			intent.putExtra(EXTRA_STATUS, status);
+			sendBroadcast(intent);
+			requestProcessed(address, RequestType.WRITE_CHARACTERISTIC, true);
 	}
 
 	/**
@@ -564,15 +587,24 @@ public class BleService extends Service {
 	 * @param uuid
 	 * @param value
 	 */
-	protected void bleCharacteristicChanged(String address, String uuid,
-			byte[] value) {
+	protected void bleCharacteristicChanged(String address, String uuid, byte[] value) {
 		Intent intent = new Intent(BLE_CHARACTERISTIC_CHANGED);
 		intent.putExtra(EXTRA_ADDR, address);
 		intent.putExtra(EXTRA_UUID, uuid);
 		intent.putExtra(EXTRA_VALUE, value);
 		sendBroadcast(intent);
 	}
-
+	
+	/**
+	 * 	自己添加的
+	 */
+	protected void bleReadRemoteRssi(String address, int rssi) {
+		Intent intent = new Intent(BLE_READ_RSSI);
+		intent.putExtra(EXTRA_ADDR, address);
+		intent.putExtra(EXTRA_RSSI, rssi);
+		sendBroadcast(intent);
+	}
+	
 	/**
 	 * @param reason
 	 */
@@ -591,8 +623,7 @@ public class BleService extends Service {
 	 * {@link BleRequest.RequestType} <br>
 	 * {@link BleService#EXTRA_REASON} fail reason {@link BleRequest.FailReason} <br>
 	 */
-	protected void bleRequestFailed(String address, RequestType type,
-			FailReason reason) {
+	protected void bleRequestFailed(String address, RequestType type, FailReason reason) {
 		Intent intent = new Intent(BLE_REQUEST_FAILED);
 		intent.putExtra(EXTRA_ADDR, address);
 		intent.putExtra(EXTRA_REQUEST, type);

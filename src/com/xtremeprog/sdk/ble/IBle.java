@@ -109,7 +109,8 @@ public interface IBle {
 	 * @return {@link BleGattService}
 	 */
 	public BleGattService getService(String address, UUID uuid);
-
+	
+	
 	/**
 	 * Request to connect a BLE device by address. Will receive
 	 * {@link BleService#BLE_GATT_CONNECTED} broadcast if device connected.

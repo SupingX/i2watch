@@ -46,6 +46,7 @@
 
 package com.xtremeprog.sdk.ble;
 
+
 public interface IBleRequestHandler {
 
 	public boolean connect(String address);

@@ -1,5 +1,4 @@
-<com.suping.i2_watch.view.RefreshForScrolView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.suping.i2_watch.view.RefreshForScrolView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res/com.suping.i2_watch"
     android:id="@+id/refresh_sport"
@@ -16,12 +15,13 @@
             android:layout_height="wrap_content" >
 
             <RelativeLayout
-                android:id="@+id/circle"
+                android:id="@+id/rl_sport_circle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp" >
+
                 <RelativeLayout
                     android:id="@+id/ll_circle_text"
                     android:layout_width="250dp"
@@ -30,7 +30,7 @@
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tv_complete"
+                        android:id="@+id/tv_sport_complete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -42,7 +42,7 @@
                         android:id="@+id/tv_pedo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@id/tv_complete"
+                        android:layout_above="@id/tv_sport_complete"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="20dp"
                         android:text="@string/pedometer"
@@ -52,7 +52,7 @@
                     <View
                         android:id="@+id/line"
                         style="@style/line_1dp"
-                        android:layout_below="@+id/tv_complete"
+                        android:layout_below="@+id/tv_sport_complete"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp" />
@@ -64,14 +64,15 @@
                         android:layout_centerHorizontal="true" >
 
                         <ImageView
-                            android:contentDescription="@string/app_name"
                             android:id="@+id/img_goal"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="@string/app_name"
                             android:src="@drawable/ic_target" />
 
                         <TextView
-                            android:id="@+id/tv_goal"
+                            android:id="@+id/tv_sport_goal"
+                              android:clickable="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -88,26 +89,27 @@
                 </RelativeLayout>
 
                 <com.suping.i2_watch.view.ColorsCircle
-                    android:id="@+id/color_circle"
+                    android:id="@+id/color_circle_sport"
                     android:layout_width="250dp"
                     android:layout_height="250dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_centerInParent="true"
                     app:background_color="#dddddddd"
+                    app:height="300dp"
                     app:max="20000"
-                    app:progress="10000"
+                    app:progress="20000"
                     app:radius="100dp"
                     app:small_background_color="#dddddddd"
                     app:small_radius="90dp"
                     app:small_stroke="3dp"
-                    app:stroke="6dp" />
+                    app:stroke="6dp"
+                    app:width="300dp" />
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/tv_tips"
+                android:id="@+id/tv_sport_tips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/circle"
+                android:layout_below="@id/rl_sport_circle"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
@@ -118,7 +120,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_tips"
+                android:layout_below="@id/tv_sport_tips"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -133,11 +135,11 @@
                     android:gravity="center" >
 
                     <ImageView
-                        android:contentDescription="@string/app_name"
                         android:id="@+id/img_fire"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
+                        android:contentDescription="@string/app_name"
                         android:src="@drawable/ic_fire" />
 
                     <TextView
@@ -181,11 +183,11 @@
                     android:gravity="center" >
 
                     <ImageView
-                        android:contentDescription="@string/app_name"
                         android:id="@+id/img_time"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
+                        android:contentDescription="@string/app_name"
                         android:src="@drawable/ic_time" />
 
                     <TextView
@@ -228,11 +230,11 @@
                     android:gravity="center" >
 
                     <ImageView
-                        android:contentDescription="@string/app_name"
                         android:id="@+id/img_distance"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
+                        android:contentDescription="@string/app_name"
                         android:src="@drawable/ic_distance" />
 
                     <TextView
@@ -271,4 +273,5 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
 </com.suping.i2_watch.view.RefreshForScrolView>

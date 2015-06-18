@@ -1,13 +1,13 @@
 package com.suping.i2_watch.view;
 
 import java.io.IOException;
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.suping.i2_watch.R;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder mHolder;

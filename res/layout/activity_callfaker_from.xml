@@ -1,15 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context="${packageName}.${activityClass}" >
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:padding="12dp"
         android:text="来电联系人"
         android:textSize="22sp" />
@@ -27,13 +28,25 @@
         android:fadingEdge="none"
         android:scrollingCache="false"
         >
-    </ListView>
-  <View
+    </ListView> 
+
+    
+    <LinearLayout 
+            android:id="@+id/ok"
+            android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical"
+        >
+          <View
+              android:layout_gravity="center"
             style="@style/line_1dp"
             android:layout_height="2dp"
-            android:layout_width="match_parent"/>
-    <LinearLayout
-                  android:visibility="gone"
+            android:layout_width="match_parent"
+            />
+        <LinearLayout
         android:id="@+id/custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,39 +105,38 @@
                 android:singleLine="true" />
         </LinearLayout>
     </LinearLayout>
-	 
-    <RelativeLayout
-        android:id="@+id/ok"
-        android:layout_width="wrap_content"
+    <LinearLayout
+    
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:weightSum="2"
      >
 
+ 
+
         <TextView
-            android:id="@+id/tv_positive"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_negative"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+               android:layout_weight="1"
+            android:text="Cancel"
+                   android:gravity="center"
+            android:textColor="@drawable/selector_text_cancel" />
+               <TextView
+            android:id="@+id/tv_positive"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
             android:text="Confirm"
+            android:layout_weight="1"
+            android:gravity="center"
             android:textColor="@drawable/selector_text_confirm" />
-
-        <TextView
-            android:id="@+id/tv_negative"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="40dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            android:text="Cancel"
-            android:textColor="@drawable/selector_text_cancel" />
-    </RelativeLayout>
-
+        </LinearLayout>
+	</LinearLayout>
 </LinearLayout>

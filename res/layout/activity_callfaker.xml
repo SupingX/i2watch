@@ -47,8 +47,12 @@
         <ImageView
             android:contentDescription="@string/app_name"
             android:id="@+id/img_right_1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+             android:paddingTop="12dp"
+             android:paddingBottom="12dp"
+             android:paddingRight="8dp"
+             android:paddingLeft="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/icon_right_arrow" />

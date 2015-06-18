@@ -49,13 +49,10 @@ package com.xtremeprog.sdk.ble;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothGattCharacteristic;
-
 import com.xtremeprog.sdk.ble.BleService.BLESDK;
 
 @SuppressLint("NewApi")

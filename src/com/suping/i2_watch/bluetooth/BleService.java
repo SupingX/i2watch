@@ -1,7 +1,6 @@
 package com.suping.i2_watch.bluetooth;
 
 import java.util.*;
-
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.*;
@@ -59,9 +58,9 @@ public class BleService extends Service {
 	private Handler mHandler;
 	private boolean isConnected = false;
 
-//	private BluetoothGattCharacteristic mWriteChar;
-//	private BluetoothGattCharacteristic mNotiChar;
-//	
+	// private BluetoothGattCharacteristic mWriteChar;
+	// private BluetoothGattCharacteristic mNotiChar;
+	//
 
 	private final LeScanCallback mLeScanCallback = new LeScanCallback() {
 
@@ -73,10 +72,8 @@ public class BleService extends Service {
 	};
 
 	private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-
 		@Override
-		public void onConnectionStateChange(BluetoothGatt gatt, int status,
-				int newState) {
+		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			// TODO Auto-generated method stub
 			super.onConnectionStateChange(gatt, status, newState);
 			if (newState == BluetoothGatt.STATE_CONNECTED) {
@@ -102,31 +99,26 @@ public class BleService extends Service {
 		}
 
 		@Override
-		public void onCharacteristicRead(BluetoothGatt gatt,
-				BluetoothGattCharacteristic characteristic, int status) {
+		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			// TODO Auto-generated method stub
 			super.onCharacteristicRead(gatt, characteristic, status);
-			bleCharacteristicRead(gatt.getDevice(), characteristic.getUuid()
-					.toString(), status, characteristic.getValue());
+			bleCharacteristicRead(gatt.getDevice(), characteristic.getUuid().toString(), status,
+					characteristic.getValue());
 			;
 		}
 
 		@Override
-		public void onCharacteristicWrite(BluetoothGatt gatt,
-				BluetoothGattCharacteristic characteristic, int status) {
+		public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			// TODO Auto-generated method stub
 			super.onCharacteristicWrite(gatt, characteristic, status);
-			bleCharacteristicWrite(gatt.getDevice(), characteristic.getUuid()
-					.toString(), status);
+			bleCharacteristicWrite(gatt.getDevice(), characteristic.getUuid().toString(), status);
 		}
 
 		@Override
-		public void onCharacteristicChanged(BluetoothGatt gatt,
-				BluetoothGattCharacteristic characteristic) {
+		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 			// TODO Auto-generated method stub
 			super.onCharacteristicChanged(gatt, characteristic);
-			bleCharacteristicChange(gatt.getDevice(), characteristic.getUuid()
-					.toString(), characteristic.getValue());
+			bleCharacteristicChange(gatt.getDevice(), characteristic.getUuid().toString(), characteristic.getValue());
 			;
 		}
 
@@ -219,38 +211,35 @@ public class BleService extends Service {
 
 	public void connectBleDevice(BluetoothDevice device) {
 		if (mBluetoothGatt != null
-//				&& mBluetoothDevice.getAddress().equals(device.getAddress())) {
-			&& mBluetoothGatt.getDevice().getAddress().equals(device.getAddress())) {
-//			if (isConnected) {
-				if(mBluetoothGatt.connect()){
+		// && mBluetoothDevice.getAddress().equals(device.getAddress())) {
+				&& mBluetoothGatt.getDevice().getAddress().equals(device.getAddress())) {
+			// if (isConnected) {
+			if (mBluetoothGatt.connect()) {
 				return;
 			}
 		}
 		mBluetoothDevice = device;
-		mBluetoothGatt = device.connectGatt(getApplicationContext(), true,
-				mGattCallback);
+		mBluetoothGatt = device.connectGatt(getApplicationContext(), true, mGattCallback);
 	}
 
 	public void connectBleDevice(String address) {
-		if (mBluetoothGatt != null
-				&& mBluetoothDevice.getAddress().equals(address)) {
+		if (mBluetoothGatt != null && mBluetoothDevice.getAddress().equals(address)) {
 			if (mBluetoothGatt.connect()) {
 				return;
 			}
 		}
 		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 		mBluetoothDevice = device;
-		mBluetoothGatt = device.connectGatt(getApplicationContext(), true,
-				mGattCallback);
+		mBluetoothGatt = device.connectGatt(getApplicationContext(), true, mGattCallback);
 	}
 
 	public void disconnectBleDevice() {
 		if (mBluetoothGatt != null) {
-//			if (mBluetoothGatt.connect()) {
-				mBluetoothGatt.disconnect();
-//			}
-//			mBluetoothGatt.close();
-//			mBluetoothGatt = null;
+			// if (mBluetoothGatt.connect()) {
+			mBluetoothGatt.disconnect();
+			// }
+			// mBluetoothGatt.close();
+			// mBluetoothGatt = null;
 		}
 		bleGattDisconnected(mBluetoothDevice);
 	}
@@ -259,23 +248,18 @@ public class BleService extends Service {
 		if (mBluetoothGatt != null) {
 			if (mBluetoothGatt.connect()) {
 				if (!mBluetoothGatt.writeCharacteristic(characteristic)) {
-					Log.d(TAG, "write characteristic value : "
-							+ characteristic.getValue().toString()
-							+ " failure.");
+					Log.d(TAG, "write characteristic value : " + characteristic.getValue().toString() + " failure.");
 				}
 			}
 		}
 	}
 
-	public void updateNotificaiton(BluetoothGattCharacteristic characteristic,
-			boolean enable) {
+	public void updateNotificaiton(BluetoothGattCharacteristic characteristic, boolean enable) {
 		mBluetoothGatt.setCharacteristicNotification(characteristic, enable);
 		if (enable) {
-			BluetoothGattDescriptor descriptor = characteristic
-					.getDescriptor(UUID
-							.fromString("00002902-0000-1000-8000-00805f9b34fb"));
-			descriptor
-					.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+			BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID
+					.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+			descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 			mBluetoothGatt.writeDescriptor(descriptor);
 		}
 	}
@@ -287,14 +271,12 @@ public class BleService extends Service {
 		if (!mBluetoothAdapter.isEnabled()) {
 			bleStatusAbnormal();
 		} else {
-			if (getPackageManager().hasSystemFeature(
-					PackageManager.FEATURE_BLUETOOTH_LE)) {
+			if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
 				if (mBluetoothAdapter != null) {
 					isEnabled = true;
 				}
 			} else {
-				Toast.makeText(getApplicationContext(), "ble not support",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "ble not support", Toast.LENGTH_SHORT).show();
 				bleNotSupported();
 			}
 		}
@@ -319,8 +301,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleDeviceFound(BluetoothDevice device, int rssi,
-			byte[] scanRecord) {
+	protected void bleDeviceFound(BluetoothDevice device, int rssi, byte[] scanRecord) {
 		Log.d(TAG, "device found " + device.getAddress());
 		Intent intent = new Intent(BleService.BLE_DEVICE_FOUND);
 		intent.putExtra(BleService.EXTRA_DEVICE, device);
@@ -352,8 +333,8 @@ public class BleService extends Service {
 	protected void bleGattDisconnected(BluetoothDevice device) {
 		Log.d(TAG, "ble gatt disconnted.");
 		Intent intent = new Intent(BLE_GATT_DISCONNECTED);
-//		intent.putExtra(EXTRA_DEVICE, device);
-//		intent.putExtra(EXTRA_ADDR, device.getAddress());
+		// intent.putExtra(EXTRA_DEVICE, device);
+		// intent.putExtra(EXTRA_ADDR, device.getAddress());
 		sendBroadcast(intent);
 	}
 
@@ -365,8 +346,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleCharacteristicRead(BluetoothDevice device, String uuid,
-			int status, byte[] value) {
+	protected void bleCharacteristicRead(BluetoothDevice device, String uuid, int status, byte[] value) {
 		Log.d(TAG, "ble characteristic : " + uuid + "; value : " + value);
 		Intent intent = new Intent(BLE_CHARACTERISTIC_READ);
 		intent.putExtra(EXTRA_DEVICE, device);
@@ -377,10 +357,8 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleCharacteristicNotification(BluetoothDevice device,
-			String uuid, boolean isEnabled, int status) {
-		Log.d(TAG, "ble characteristic : " + uuid + " notification status : "
-				+ status);
+	protected void bleCharacteristicNotification(BluetoothDevice device, String uuid, boolean isEnabled, int status) {
+		Log.d(TAG, "ble characteristic : " + uuid + " notification status : " + status);
 		Intent intent = new Intent(BLE_CHARACTERISTIC_NOTIFICATION);
 		intent.putExtra(EXTRA_DEVICE, device);
 		intent.putExtra(EXTRA_ADDR, device.getAddress());
@@ -390,8 +368,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleCharacteristicWrite(BluetoothDevice device, String uuid,
-			int status) {
+	protected void bleCharacteristicWrite(BluetoothDevice device, String uuid, int status) {
 		Log.d(TAG, "ble characteristic : " + uuid + " status : " + status);
 		Intent intent = new Intent(BLE_CHARACTERISTIC_WRITE);
 		intent.putExtra(EXTRA_DEVICE, device);
@@ -401,8 +378,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleCharacteristicChange(BluetoothDevice device, String uuid,
-			byte[] value) {
+	protected void bleCharacteristicChange(BluetoothDevice device, String uuid, byte[] value) {
 		Log.d(TAG, "ble characteristic : " + uuid + " value : " + value);
 		Intent intent = new Intent(BLE_CHARACTERISTIC_CHANGED);
 		intent.putExtra(EXTRA_DEVICE, device);
@@ -412,8 +388,7 @@ public class BleService extends Service {
 		sendBroadcast(intent);
 	}
 
-	protected void bleReadRemoteRssi(BluetoothDevice device, int rssi,
-			int status) {
+	protected void bleReadRemoteRssi(BluetoothDevice device, int rssi, int status) {
 		Log.d(TAG, "ble read remote rssi : " + rssi);
 		Intent intent = new Intent(BLE_RSSI_READ);
 		intent.putExtra(EXTRA_DEVICE, device);
@@ -421,6 +396,7 @@ public class BleService extends Service {
 		intent.putExtra(EXTRA_STATUS, status);
 		sendBroadcast(intent);
 	}
+
 	public boolean isConnected() {
 		return isConnected;
 	}

@@ -12,19 +12,19 @@
         android:layout_height="60dip"
         android:gravity="center_vertical"
         android:orientation="vertical" >
-    	 <ProgressBar
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/xsearch_msg_pull_down" />
+
+        <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="30dip"
             android:layout_height="30dip"
             android:visibility="gone" />
-        <ImageView
-            android:id="@+id/img_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/xsearch_msg_pull_arrow_down" />
-
-   
     </LinearLayout>
 
     <LinearLayout
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal|bottom"
             android:text="@string/pull_to_refresh"
-            android:textColor="#000000" />
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/updated_at"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal|bottom"
             android:text="@string/updated_at"
-            android:textColor="#000000" />
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

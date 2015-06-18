@@ -1,6 +1,8 @@
 package com.suping.i2_watch.menu;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class MenuActivity extends Activity implements OnClickListener {
@@ -38,13 +41,13 @@ public class MenuActivity extends Activity implements OnClickListener {
 	/** 亮度 **/
 	public static final String SHARE_BRIGHT = "share_bright";
 
-	// Wedge
+	// WedgetS
 	private ImageView imgBack;
 	private TextView tvTitle, tvSignset, tvBright;
 	private Button btnIncrease, btnDecrease;
 	private CheckBox cbActivityReminder, cbReminderOnOff, cbIncoming;
 	private RelativeLayout rlActivityReminder, rlSleep, rlClock, rlCamera,
-			rlSignset, rlIncoming, rlCallfaker;
+			rlSignset, rlIncoming, rlCallfaker,rlSearch,rlShutDown,rlRecord;
 
 	// 连续按退出间隔时间
 	private long exitTime = 0;
@@ -107,7 +110,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 		// 活动
 		case R.id.rl_reminder:
 			Intent reminderIntent = new Intent(MenuActivity.this,
-					ReminderActivity.class);
+					SportReminderActivity.class);
 			startActivity(reminderIntent);
 			this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
@@ -139,7 +142,26 @@ public class MenuActivity extends Activity implements OnClickListener {
 			Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
 			startActivity(intent);
 			break;
-
+			
+		// 查找设备
+		case R.id.rl_search:
+			Intent intentSearch = new Intent(MenuActivity.this, SearchActivity.class);
+			startActivity(intentSearch);
+			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
+					R.anim.activity_from_right_to_left_exit);
+			break;
+			
+		//记录
+		case R.id.rl_record:
+			Intent intentRecord = new Intent(MenuActivity.this, RecordActivity.class);
+			Bundle b1 = new Bundle();
+			b1.putInt("flag", 0);
+			intentRecord.putExtras(b1);
+			startActivity(intentRecord);
+			overridePendingTransition(R.anim.activity_from_right_to_left_enter,
+					R.anim.activity_from_right_to_left_exit);
+			break;
+			
 		//
 		case R.id.rl_signset:
 			Intent signsetIntent = new Intent(MenuActivity.this,
@@ -195,6 +217,24 @@ public class MenuActivity extends Activity implements OnClickListener {
 			SharedPreferenceUtil.put(getApplicationContext(), SHARE_BRIGHT,
 					tvBright.getText().toString().trim());
 			break;
+			
+		case R.id.rl_shutdown:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("确定退出？")
+			.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					XtremApplication.finishActivity();
+				}
+			}).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			}).create().show();
+			break;
+			
 		default:
 			break;
 		}
@@ -231,6 +271,9 @@ public class MenuActivity extends Activity implements OnClickListener {
 		rlSignset = (RelativeLayout) findViewById(R.id.rl_signset);
 		rlIncoming = (RelativeLayout) findViewById(R.id.rl_incoming);
 		rlCallfaker = (RelativeLayout) findViewById(R.id.rl_callfaker);
+		rlSearch = (RelativeLayout) findViewById(R.id.rl_search);
+		rlShutDown = (RelativeLayout) findViewById(R.id.rl_shutdown);
+		rlRecord = (RelativeLayout) findViewById(R.id.rl_record);
 		cbActivityReminder = (CheckBox) findViewById(R.id.cb_reminder);
 		cbReminderOnOff = (CheckBox) findViewById(R.id.cb_reminder_nf);
 		cbIncoming = (CheckBox) findViewById(R.id.cb_incoming);
@@ -278,7 +321,10 @@ public class MenuActivity extends Activity implements OnClickListener {
 		btnIncrease.setOnClickListener(this);
 		btnDecrease.setOnClickListener(this);
 		rlIncoming.setOnClickListener(this);
+		rlShutDown.setOnClickListener(this);
 		rlCallfaker.setOnClickListener(this);
+		rlSearch.setOnClickListener(this);
+		rlRecord.setOnClickListener(this);
 
 		// 活动开关
 		cbActivityReminder

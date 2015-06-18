@@ -1,5 +1,6 @@
 package com.suping.i2_watch.menu;
 
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 import android.content.Intent;
 
 public class SleepMonitorTargetActivity extends AbstractSetTimeActivity{
@@ -10,5 +11,21 @@ public class SleepMonitorTargetActivity extends AbstractSetTimeActivity{
 		intent.putExtras(b);
 		setResult(RESULT_ENDTIME, intent);
 		finish();
+	}
+
+	@Override
+	public void initValue() {
+		String hour = (String) SharedPreferenceUtil.get(SleepMonitorTargetActivity.this, SleepMonitorActivity.SHARE_MONITOR_TARGET_HOUR,
+				"07");
+		npHour.setValue(Integer.valueOf(hour));
+
+		String min = (String) SharedPreferenceUtil.get(SleepMonitorTargetActivity.this, SleepMonitorActivity.SHARE_MONITOR_TARGET_MIN,
+				"00");
+		if (min.equals(values[0])) {
+			npMin.setValue(0);
+		} else if (min.equals(values[1])) {
+			npMin.setValue(1);
+		}
+		
 	}
 }

@@ -15,11 +15,6 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SleepMonitorActivity extends Activity implements OnClickListener{
-	private ImageView img_back;
-	private TextView tv_title;
-	
-	private TextView tv_target_value,tv_start_value,tv_end_value;
-	private RelativeLayout rl_start,rl_end,rl_target;
 	
 	private final static int REQ_TARGET = 4;
 	private final static int REQ_STARTTIME = 5;
@@ -28,43 +23,91 @@ public class SleepMonitorActivity extends Activity implements OnClickListener{
 	private final static int RESULT_STARTTIME = 55;
 	private final static int RESULT_ENDTIME = 66;
 	
+	public final static String SHARE_MONITOR_TARGET_HOUR = "share_motitor_target_hour";
+	public final static String SHARE_MONITOR_TARGET_MIN = "share_motitor_target_min";
+	public final static String SHARE_MONITOR_START_HOUR = "share_motitor_start_hour";
+	public final static String SHARE_MONITOR_START_MIN = "share_motitor_start_min";
+	public final static String SHARE_MONITOR_END_HOUR = "share_motitor_end_hour";
+	public final static String SHARE_MONITOR_END_MIN = "share_motitor_end_min";
+	
+	private ImageView imgBack;
+	private TextView tvTitle;
+	private TextView tvTargetValue,tvStartValue,tvEndValue;
+	private RelativeLayout rlStart,rlEnd,rlTarget;
+	
+	private long exitTime = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sleep_monitor);
 		initViews();
 		setClick();
-		tv_title.setText("Sleep monitor");
+		tvTitle.setText("Sleep monitor");
 	}
 	
-	private void initViews() {
-		img_back = (ImageView) findViewById(R.id.img_back);
-		tv_title = (TextView) findViewById(R.id.tv_title);
-		tv_target_value = (TextView) findViewById(R.id.tv_target_value);
-		tv_start_value = (TextView) findViewById(R.id.tv_start_value);
-		tv_end_value = (TextView) findViewById(R.id.tv_end_value);
-		rl_start = (RelativeLayout) findViewById(R.id.rl_start);
-		rl_end = (RelativeLayout) findViewById(R.id.rl_end);
-		rl_target = (RelativeLayout) findViewById(R.id.rl_target);
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		
-		String sleep_start = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_start", "7:00");
-		tv_start_value.setText(sleep_start);
-		String sleep_end = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_end", "7:00");
-		tv_end_value.setText(sleep_end);
-		String sleep_target = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_target", "7:00");
-		tv_target_value.setText(sleep_target);
-		
-	}
+		switch (requestCode) {
+		//from SleepMonitorTargetActivity
+		case REQ_TARGET:
+			switch (resultCode) {
+			case RESULT_TARGET:
+				Bundle b = data.getExtras();
+				String min = b.getString("min");
+				String sec = b.getString("sec");
+				String value = min+":"+sec;
+				tvTargetValue.setText(value);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_TARGET_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_TARGET_MIN, sec);
+				
+				break;
+			default:
+				break;
+			}
+			break;
+			//from SleepMonitorStartActivity
+		case REQ_STARTTIME:
+			switch (resultCode) {
+			case RESULT_STARTTIME:
+				Bundle b = data.getExtras();
+				String min = b.getString("min");
+				String sec = b.getString("sec");
+				String value = min+":"+sec;
+				tvStartValue.setText(value);
+//				SharedPreferenceUtil.put(getApplicationContext(), "sleep_start", value);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_START_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_START_MIN, sec);
+				break;
+			default:
+				break;
+			}
+			break;
+			//from SleepMonitorEndActivity
+		case REQ_ENDTIME:
+			switch (resultCode) {
+			case RESULT_ENDTIME:
+				Bundle b = data.getExtras();
+				String min = b.getString("min");
+				String sec = b.getString("sec");
+				String value = min+":"+sec;
+				tvEndValue.setText(value);
+//				SharedPreferenceUtil.put(getApplicationContext(), "sleep_end", value);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_END_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), SHARE_MONITOR_END_MIN, sec);
+				break;
+			default:
+				break;
+			}
+			break;
 	
-	private void setClick() {
-		img_back.setOnClickListener(this);
-		tv_title.setOnClickListener(this);
-		rl_start.setOnClickListener(this);
-		rl_target.setOnClickListener(this);
-		rl_end.setOnClickListener(this);
-		
+		default:
+			break;
+		}
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -90,60 +133,6 @@ public class SleepMonitorActivity extends Activity implements OnClickListener{
 			break;
 		}
 	}
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		switch (requestCode) {
-		case REQ_TARGET:
-			switch (resultCode) {
-			case RESULT_TARGET:
-				Bundle b = data.getExtras();
-				String min = b.getString("min");
-				String sec = b.getString("sec");
-				String value = min+":"+sec;
-				tv_target_value.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), "sleep_target", value);
-				break;
-			default:
-				break;
-			}
-			break;
-		case REQ_STARTTIME:
-			switch (resultCode) {
-			case RESULT_STARTTIME:
-				Bundle b = data.getExtras();
-				String min = b.getString("min");
-				String sec = b.getString("sec");
-				String value = min+":"+sec;
-				tv_start_value.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), "sleep_start", value);
-				break;
-			default:
-				break;
-			}
-			break;
-		case REQ_ENDTIME:
-			switch (resultCode) {
-			case RESULT_ENDTIME:
-				Bundle b = data.getExtras();
-				String min = b.getString("min");
-				String sec = b.getString("sec");
-				String value = min+":"+sec;
-				tv_end_value.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), "sleep_end", value);
-				break;
-			default:
-				break;
-			}
-			break;
-
-		default:
-			break;
-		}
-	}
-	
-	private long exitTime = 0;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -158,5 +147,57 @@ public class SleepMonitorActivity extends Activity implements OnClickListener{
 	        return true;   
 	    }
 	    return super.onKeyDown(keyCode, event);
+	}
+
+	private void initViews() {
+		imgBack = (ImageView) findViewById(R.id.img_back);
+		tvTitle = (TextView) findViewById(R.id.tv_title);
+		tvTargetValue = (TextView) findViewById(R.id.tv_target_value);
+		tvStartValue = (TextView) findViewById(R.id.tv_start_value);
+		tvEndValue = (TextView) findViewById(R.id.tv_end_value);
+		rlStart = (RelativeLayout) findViewById(R.id.rl_start);
+		rlEnd = (RelativeLayout) findViewById(R.id.rl_end);
+		rlTarget = (RelativeLayout) findViewById(R.id.rl_target);
+		
+//		String sleep_start = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_start", "7:00");
+//		tvStartValue.setText(sleep_start);
+//		String sleep_end = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_end", "7:00");
+//		tvEndValue.setText(sleep_end);
+//		String sleep_target = (String) SharedPreferenceUtil.get(getApplicationContext(), "sleep_target", "7:00");
+//		tvTargetValue.setText(sleep_target);
+		initSetting();
+	}
+	
+	/**
+	 * 初始化设置
+	 */
+	private void initSetting(){
+		//target
+		String targetHour = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_TARGET_HOUR, "07");
+		String targetMin = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_TARGET_MIN, "00");
+		tvTargetValue.setText(targetHour + ":" + targetMin);
+		//start
+		String startHour = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_START_HOUR, "07");
+		String startMin = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_START_MIN, "00");
+		tvStartValue.setText(startHour + ":" +startMin);
+		//end
+		String endHour = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_END_HOUR, "07");
+		String endMin = (String) SharedPreferenceUtil.get(
+				getApplicationContext(), SHARE_MONITOR_END_MIN, "00");
+		tvEndValue.setText(endHour + ":" + endMin);
+		
+	}
+	
+	private void setClick() {
+		imgBack.setOnClickListener(this);
+		tvTitle.setOnClickListener(this);
+		rlStart.setOnClickListener(this);
+		rlTarget.setOnClickListener(this);
+		rlEnd.setOnClickListener(this);
 	}
 }

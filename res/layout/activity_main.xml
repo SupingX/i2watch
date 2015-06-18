@@ -17,4 +17,29 @@
         android:layout_below="@id/main_top"
         android:longClickable="true" />
 
+    <RadioGroup
+          android:id="@+id/rg_dot"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_top"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        >
+        
+        <RadioButton
+            android:id="@+id/rb_dot_sport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:button="@drawable/ic_dot_selected" />
+
+        <RadioButton
+            android:layout_marginLeft="2dp"
+            android:id="@+id/rb_dot_sleep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/ic_dot_unselected" />
+    </RadioGroup>
+
 </RelativeLayout>

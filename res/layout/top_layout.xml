@@ -4,13 +4,15 @@
     android:layout_height="@dimen/dimen_top_height"
     android:background="@color/color_top_bg"
     tools:context="${packageName}.${activityClass}" 
-    android:paddingLeft="5dp">
+    >
 
     <ImageView
+        android:padding="12dp"
         android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dimen_top_height"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
+        android:background="@drawable/selector_return_left"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:contentDescription="@string/app_name"
@@ -23,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/color_top_text"
-        android:textSize="@dimen/dime_top_text" />
+        android:textSize="@dimen/dime_top_text" 
+        />
 
 </RelativeLayout>

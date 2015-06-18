@@ -35,35 +35,39 @@
 
         </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+   <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
+        android:weightSum="2"
         android:layout_marginTop="20dp" >
-
-        <TextView
-            android:id="@+id/tv_positive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="45dp"
-            android:padding="8dp"
-            android:text="Confirm"
-            android:textColor="@drawable/selector_text_confirm" />
-
-        <TextView
+		<TextView
             android:id="@+id/tv_negative"
-            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="45dp"
+            android:clickable="true"
+           	android:focusable="true"
             android:padding="8dp"
             android:text="Cancel"
             android:textColor="@drawable/selector_text_cancel" />
-    </RelativeLayout>
+		
+        <TextView
+            android:id="@+id/tv_positive"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+               android:gravity="center"
+            android:text="Confirm"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@drawable/selector_text_confirm" />
+
+        
+	</LinearLayout>
 
 </RelativeLayout>

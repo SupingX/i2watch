@@ -29,7 +29,7 @@ public abstract class AbstractSet2Activity extends Activity {
 		np_min = (NumberPicker) findViewById(R.id.np_min);
 		np_min.setMaxValue(23);
 		np_min.setMinValue(0);
-		np_min.setValue(0);
+//		np_min.setValue(0);
 		//防止点击弹出软键盘
 		np_min.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); 
 		
@@ -37,15 +37,21 @@ public abstract class AbstractSet2Activity extends Activity {
 		np_sec = (NumberPicker) findViewById(R.id.np_sec);
 		np_sec.setMaxValue(59);
 		np_sec.setMinValue(0);
-		np_sec.setValue(0);
+//		np_sec.setValue(0);
 		//防止点击弹出软键盘
 		np_sec.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); 
 		
 		tv_cancel = (TextView) findViewById(R.id.tv_negative);
 		tv_confirm = (TextView) findViewById(R.id.tv_positive);
+		
+		initValue();
 	}
 
 	abstract public void confirm();
+	/**
+	 * 加载初始值
+	 */
+	abstract public void initValue();
 	
 
 	private void setClick() {

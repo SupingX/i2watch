@@ -80,7 +80,7 @@ public class RefreshableScrollView extends LinearLayout implements
 	private ScrollView scrollView;
 
 	/** 刷新时显示的进度条 */
-//	private ProgressBar progressBar;
+	private ProgressBar progressBar;
 
 	/** 指示下拉和释放的箭头 */
 	private ImageView iv_arrow;
@@ -92,7 +92,7 @@ public class RefreshableScrollView extends LinearLayout implements
 	private TextView tv_updateAt;
 
 	/** 下拉头的布局参数 */
-	private  LinearLayout.MarginLayoutParams headerLayoutParams;
+	private MarginLayoutParams headerLayoutParams;
 
 	// /** 上次更新时间的毫秒值 */
 	// private long lastUpdateTime;
@@ -149,8 +149,8 @@ public class RefreshableScrollView extends LinearLayout implements
 		dataFormat = new SimpleDateFormat("MM/dd HH:mm");
 		headerView = LayoutInflater.from(context).inflate(
 				R.layout.layout_viewpager_pull_to_refresh_header, null, true);
-//		progressBar = (ProgressBar) headerView.findViewById(R.id.progress_bar);
-		iv_arrow = (ImageView) headerView.findViewById(R.id.img_arrow);
+		progressBar = (ProgressBar) headerView.findViewById(R.id.progress_bar);
+		iv_arrow = (ImageView) headerView.findViewById(R.id.arrow);
 		tv_description = (TextView) headerView.findViewById(R.id.description);
 		tv_updateAt = (TextView) headerView.findViewById(R.id.updated_at);
 		touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -288,18 +288,19 @@ public class RefreshableScrollView extends LinearLayout implements
 	private void updateHeaderView() {
 		if (lastStatus != currentStatus) {
 			if (currentStatus == STATUS_PULL_TO_REFRESH) {
-				tv_description.setText("下拉刷新");
+				tv_description.setText(getResources().getString(
+						R.string.pull_to_refresh));
 				iv_arrow.setVisibility(View.VISIBLE);
-//				progressBar.setVisibility(View.GONE);
+				progressBar.setVisibility(View.GONE);
 				rotateArrow();
 			} else if (currentStatus == STATUS_RELEASE_TO_REFRESH) {
-				tv_description.setText("松开刷新");
+				tv_description.setText("释放刷新");
 				iv_arrow.setVisibility(View.VISIBLE);
-//				progressBar.setVisibility(View.GONE);
+				progressBar.setVisibility(View.GONE);
 				rotateArrow();
 			} else if (currentStatus == STATUS_REFRESHING) {
-				tv_description.setText("刷新中...");
-//				progressBar.setVisibility(View.VISIBLE);
+				tv_description.setText("正在刷新");
+				progressBar.setVisibility(View.VISIBLE);
 				iv_arrow.clearAnimation();
 				iv_arrow.setVisibility(View.GONE);
 			}
@@ -338,12 +339,10 @@ public class RefreshableScrollView extends LinearLayout implements
 
 		String updateAtValue;
 		if (lastUpdateTime.equals("")) {
-//			updateAtValue = getResources().getString(R.string.not_updated_yet);
-			updateAtValue = "未曾刷新过";
+			updateAtValue = "无更新";
 		} else {
-//			updateAtValue = getResources().getString(R.string.updated_at,
-//					lastUpdateTime);
-			updateAtValue = "上次刷新 " + lastUpdateTime;
+			updateAtValue = getResources().getString(R.string.updated_at,
+					lastUpdateTime);
 		}
 		tv_updateAt.setText(updateAtValue);
 	}

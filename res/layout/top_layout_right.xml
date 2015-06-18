@@ -4,18 +4,19 @@
     android:layout_height="@dimen/dimen_top_height"
     android:background="@color/color_top_bg"
     tools:context="${packageName}.${activityClass}"
-    android:paddingRight="5dp"
      >
 
     <ImageView
         android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_width="@dimen/dimen_top_height"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:contentDescription="@string/app_name"
         android:focusable="true"
+        android:background="@drawable/selector_return_left"
         android:src="@drawable/selector_icon_back_right" />
 
     <TextView

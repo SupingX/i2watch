@@ -1,14 +1,12 @@
-
-
-<com.suping.i2_watch.view.RefreshForScrolView
+<com.suping.i2_watch.view.RefreshForScrolView 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res/com.suping.i2_watch"
+    android:id="@+id/refresh_sleep"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/refresh_sleep"
     tools:context="${packageName}.${activityClass}" >
-    
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -18,12 +16,28 @@
             android:layout_height="wrap_content" >
 
             <RelativeLayout
-                android:id="@+id/circle"
+                android:id="@+id/rl_sleep_circle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp" >
+
+                <com.suping.i2_watch.view.ColorsCircle
+                    android:id="@+id/color_circle_sleep"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_centerInParent="true"
+                    app:background_color="#dddddddd"
+                    app:height="300dp"
+                    app:max="20000"
+                    app:progress="20000"
+                    app:radius="100dp"
+                    app:small_background_color="#dddddddd"
+                    app:small_radius="90dp"
+                    app:small_stroke="3dp"
+                    app:stroke="6dp"
+                    app:width="300dp" />
 
                 <RelativeLayout
                     android:id="@+id/ll_circle_text"
@@ -33,7 +47,7 @@
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tv_complete"
+                        android:id="@+id/tv_sleep_complete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -42,12 +56,13 @@
                         android:textSize="30sp" />
 
                     <TextView
-                        android:id="@+id/tv_pedo"
+                        android:id="@+id/tv_sleep_pedo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@id/tv_complete"
+                        android:layout_above="@id/tv_sleep_complete"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="20dp"
+                        android:clickable="true"
                         android:text="Sleep"
                         android:textColor="@color/color_sleep_sport_title"
                         android:textSize="18sp" />
@@ -55,7 +70,7 @@
                     <View
                         android:id="@+id/line"
                         style="@style/line_1dp"
-                        android:layout_below="@+id/tv_complete"
+                        android:layout_below="@+id/tv_sleep_complete"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp" />
@@ -88,28 +103,12 @@
                             android:textColor="#ff959595" />
                     </LinearLayout>
                 </RelativeLayout>
-
-
-                <com.suping.i2_watch.view.ColorsCircle
-                    android:id="@+id/color_circle"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_centerInParent="true"
-                    app:background_color="#dddddddd"
-                    app:max="20000"
-                    app:progress="20000"
-                    app:radius="100dp"
-                    app:small_background_color="#dddddddd"
-                    app:small_radius="90dp"
-                    app:small_stroke="3dp"
-                    app:stroke="6dp" />
-            </RelativeLayout>
-
+</RelativeLayout>
             <TextView
-                android:id="@+id/tv_tips"
+                android:id="@+id/tv_sleep_tips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/circle"
+                android:layout_below="@id/rl_sleep_circle"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
@@ -120,7 +119,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_tips"
+                android:layout_below="@id/tv_sleep_tips"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -129,20 +128,20 @@
                 android:orientation="vertical" >
 
                 <LinearLayout
-                    android:id="@+id/ll_burned"
+                    android:id="@+id/ll_deep"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
 
                     <ImageView
-                        android:id="@+id/img_fire"
+                        android:id="@+id/img_deep"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
                         android:src="@drawable/ic_deep" />
 
                     <TextView
-                        android:id="@+id/tv_burned"
+                        android:id="@+id/tv_deep"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -151,7 +150,7 @@
                         android:text="Deep sleep" />
 
                     <TextView
-                        android:id="@+id/tv_burned_value"
+                        android:id="@+id/tv_deep_value"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -160,7 +159,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/tv_burned_unit"
+                        android:id="@+id/tv_deep_unit"
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -176,20 +175,20 @@
                     android:layout_marginTop="8dp" />
 
                 <LinearLayout
-                    android:id="@+id/ll_time"
+                    android:id="@+id/ll_light"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
 
                     <ImageView
-                        android:id="@+id/img_time"
+                        android:id="@+id/img_light"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
                         android:src="@drawable/ic_light" />
 
                     <TextView
-                        android:id="@+id/tv_time"
+                        android:id="@+id/tv_light"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -199,7 +198,7 @@
                         android:text="Light sleep" />
 
                     <TextView
-                        android:id="@+id/tv_time_value"
+                        android:id="@+id/tv_light_value"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -208,7 +207,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/tv_time_unit"
+                        android:id="@+id/tv_light_unit"
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -224,20 +223,20 @@
                     android:layout_marginTop="8dp" />
 
                 <LinearLayout
-                    android:id="@+id/ll_distance"
+                    android:id="@+id/ll_awake"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
 
                     <ImageView
-                        android:id="@+id/img_distance"
+                        android:id="@+id/img_awake"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_weight="1"
                         android:src="@drawable/ic_awake" />
 
                     <TextView
-                        android:id="@+id/tv_distance"
+                        android:id="@+id/tv_awake"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -246,7 +245,7 @@
                         android:text="Awake" />
 
                     <TextView
-                        android:id="@+id/tv_distance_value"
+                        android:id="@+id/tv_awake_value"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -255,7 +254,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/tv_distance_unit"
+                        android:id="@+id/tv_awake_unit"
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

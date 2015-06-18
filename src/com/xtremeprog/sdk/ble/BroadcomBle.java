@@ -54,6 +54,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
+import android.util.Log;
 
 import com.broadcom.bt.gatt.BluetoothGatt;
 import com.broadcom.bt.gatt.BluetoothGattAdapter;
@@ -76,15 +77,12 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 		}
 
 		@Override
-		public void onScanResult(BluetoothDevice device, int rssi,
-				byte[] scanRecord) {
-			mService.bleDeviceFound(device, rssi, scanRecord,
-					BleService.DEVICE_SOURCE_SCAN);
+		public void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord) {
+			mService.bleDeviceFound(device, rssi, scanRecord, BleService.DEVICE_SOURCE_SCAN);
 		}
 
 		@Override
-		public void onConnectionStateChange(BluetoothDevice device, int status,
-				int newState) {
+		public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
 			if (mBluetoothGatt == null) {
 				return;
 			}
@@ -105,26 +103,30 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 		}
 
 		@Override
-		public void onCharacteristicRead(
-				BluetoothGattCharacteristic characteristic, int status) {
+		public void onCharacteristicRead(BluetoothGattCharacteristic characteristic, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
-				mService.bleCharacteristicRead(mAddress, characteristic
-						.getUuid().toString(), status, characteristic
-						.getValue());
+				mService.bleCharacteristicRead(mAddress, characteristic.getUuid().toString(), status,
+						characteristic.getValue());
 			}
 		}
 
 		@Override
-		public void onCharacteristicChanged(
-				BluetoothGattCharacteristic characteristic) {
+		public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic) {
 			String address = mService.getNotificationAddress();
-			mService.bleCharacteristicChanged(address, characteristic.getUuid()
-					.toString(), characteristic.getValue());
+			mService.bleCharacteristicChanged(address, characteristic.getUuid().toString(), characteristic.getValue());
+		}
+
+		/**
+		 * 自己添加的 读取信号强弱
+		 */
+		@Override
+		public void onReadRemoteRssi(BluetoothDevice device, int rssi, int status) {
+			super.onReadRemoteRssi(device, rssi, status);
+			mService.bleReadRemoteRssi(device.getAddress(), rssi);
 		}
 
 		@Override
-		public void onDescriptorRead(BluetoothGattDescriptor descriptor,
-				int status) {
+		public void onDescriptorRead(BluetoothGattDescriptor descriptor, int status) {
 			BleRequest request = mService.getCurrentRequest();
 			String address = request.address;
 			byte[] value = descriptor.getValue();
@@ -139,16 +141,14 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 
 			if (Arrays.equals(value, val_set)) {
 				if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION) {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), true,
-							status);
+					mService.bleCharacteristicNotification(address,
+							descriptor.getCharacteristic().getUuid().toString(), true, status);
 				} else if (request.type == RequestType.CHARACTERISTIC_INDICATION) {
-					mService.bleCharacteristicIndication(address, descriptor
-							.getCharacteristic().getUuid().toString(), status);
-				} else {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), false,
+					mService.bleCharacteristicIndication(address, descriptor.getCharacteristic().getUuid().toString(),
 							status);
+				} else {
+					mService.bleCharacteristicNotification(address,
+							descriptor.getCharacteristic().getUuid().toString(), false, status);
 				}
 				return;
 			}
@@ -161,8 +161,7 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 		};
 
 		@Override
-		public void onDescriptorWrite(BluetoothGattDescriptor descriptor,
-				int status) {
+		public void onDescriptorWrite(BluetoothGattDescriptor descriptor, int status) {
 			BleRequest request = mService.getCurrentRequest();
 			String address = request.address;
 			if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION
@@ -174,16 +173,14 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 				}
 
 				if (request.type == RequestType.CHARACTERISTIC_NOTIFICATION) {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), true,
-							status);
+					mService.bleCharacteristicNotification(address,
+							descriptor.getCharacteristic().getUuid().toString(), true, status);
 				} else if (request.type == RequestType.CHARACTERISTIC_INDICATION) {
-					mService.bleCharacteristicIndication(address, descriptor
-							.getCharacteristic().getUuid().toString(), status);
-				} else {
-					mService.bleCharacteristicNotification(address, descriptor
-							.getCharacteristic().getUuid().toString(), false,
+					mService.bleCharacteristicIndication(address, descriptor.getCharacteristic().getUuid().toString(),
 							status);
+				} else {
+					mService.bleCharacteristicNotification(address,
+							descriptor.getCharacteristic().getUuid().toString(), false, status);
 				}
 				return;
 			}
@@ -199,7 +196,7 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 
 		@Override
 		public void onServiceDisconnected(int profile) {
-			for ( BluetoothDevice d : mBluetoothGatt.getConnectedDevices() ) {
+			for (BluetoothDevice d : mBluetoothGatt.getConnectedDevices()) {
 				mBluetoothGatt.cancelConnection(d);
 			}
 			mBluetoothGatt = null;
@@ -213,12 +210,12 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 			mService.bleNoBtAdapter();
 			return;
 		}
-		BluetoothGattAdapter.getProfileProxy(mService, mProfileServiceListener,
-				BluetoothGattAdapter.GATT);
+		BluetoothGattAdapter.getProfileProxy(mService, mProfileServiceListener, BluetoothGattAdapter.GATT);
 	}
 
 	@Override
 	public void startScan() {
+		Log.e("broadcomBle", "开始搜索...");
 		if (mScanning) {
 			return;
 		}
@@ -266,8 +263,7 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	public ArrayList<BleGattService> getServices(String address) {
 		ArrayList<BleGattService> list = new ArrayList<BleGattService>();
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
-		List<BluetoothGattService> services = mBluetoothGatt
-				.getServices(device);
+		List<BluetoothGattService> services = mBluetoothGatt.getServices(device);
 		for (BluetoothGattService s : services) {
 			list.add(new BleGattService(s));
 		}
@@ -275,10 +271,8 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public boolean requestReadCharacteristic(String address,
-			BleGattCharacteristic characteristic) {
-		mService.addBleRequest(new BleRequest(RequestType.READ_CHARACTERISTIC,
-				address, characteristic));
+	public boolean requestReadCharacteristic(String address, BleGattCharacteristic characteristic) {
+		mService.addBleRequest(new BleRequest(RequestType.READ_CHARACTERISTIC, address, characteristic));
 		return true;
 	}
 
@@ -288,19 +282,16 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public boolean readCharacteristic(String address,
-			BleGattCharacteristic characteristic) {
+	public boolean readCharacteristic(String address, BleGattCharacteristic characteristic) {
 		if (characteristic.getGattCharacteristicB() != null) {
-			return mBluetoothGatt.readCharacteristic(characteristic
-					.getGattCharacteristicB());
+			return mBluetoothGatt.readCharacteristic(characteristic.getGattCharacteristicB());
 		}
 		return false;
 	}
 
 	@Override
 	public BleGattService getService(String address, UUID uuid) {
-		BluetoothGattService service = mBluetoothGatt.getService(
-				mBtAdapter.getRemoteDevice(address), uuid);
+		BluetoothGattService service = mBluetoothGatt.getService(mBtAdapter.getRemoteDevice(address), uuid);
 		if (service == null) {
 			return null;
 		} else {
@@ -309,17 +300,13 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public boolean requestCharacteristicNotification(String address,
-			BleGattCharacteristic characteristic) {
-		mService.addBleRequest(new BleRequest(
-				RequestType.CHARACTERISTIC_NOTIFICATION, address,
-				characteristic));
+	public boolean requestCharacteristicNotification(String address, BleGattCharacteristic characteristic) {
+		mService.addBleRequest(new BleRequest(RequestType.CHARACTERISTIC_NOTIFICATION, address, characteristic));
 		return true;
 	}
 
 	@Override
-	public boolean characteristicNotification(String address,
-			BleGattCharacteristic characteristic) {
+	public boolean characteristicNotification(String address, BleGattCharacteristic characteristic) {
 		BleRequest request = mService.getCurrentRequest();
 		BluetoothGattCharacteristic b = characteristic.getGattCharacteristicB();
 
@@ -331,8 +318,7 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 			return false;
 		}
 
-		BluetoothGattDescriptor descriptor = b
-				.getDescriptor(BleService.DESC_CCC);
+		BluetoothGattDescriptor descriptor = b.getDescriptor(BleService.DESC_CCC);
 		if (descriptor == null) {
 			return false;
 		}
@@ -341,18 +327,14 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public boolean requestWriteCharacteristic(String address,
-			BleGattCharacteristic characteristic, String remark) {
-		mService.addBleRequest(new BleRequest(RequestType.WRITE_CHARACTERISTIC,
-				address, characteristic));
+	public boolean requestWriteCharacteristic(String address, BleGattCharacteristic characteristic, String remark) {
+		mService.addBleRequest(new BleRequest(RequestType.WRITE_CHARACTERISTIC, address, characteristic));
 		return true;
 	}
 
 	@Override
-	public boolean writeCharacteristic(String address,
-			BleGattCharacteristic characteristic) {
-		return mBluetoothGatt.writeCharacteristic(characteristic
-				.getGattCharacteristicB());
+	public boolean writeCharacteristic(String address, BleGattCharacteristic characteristic) {
+		return mBluetoothGatt.writeCharacteristic(characteristic.getGattCharacteristicB());
 	}
 
 	@Override
@@ -373,19 +355,14 @@ public class BroadcomBle implements IBle, IBleRequestHandler {
 	}
 
 	@Override
-	public boolean requestIndication(String address,
-			BleGattCharacteristic characteristic) {
-		mService.addBleRequest(new BleRequest(
-				RequestType.CHARACTERISTIC_INDICATION, address, characteristic));
+	public boolean requestIndication(String address, BleGattCharacteristic characteristic) {
+		mService.addBleRequest(new BleRequest(RequestType.CHARACTERISTIC_INDICATION, address, characteristic));
 		return true;
 	}
 
 	@Override
-	public boolean requestStopNotification(String address,
-			BleGattCharacteristic characteristic) {
-		mService.addBleRequest(new BleRequest(
-				RequestType.CHARACTERISTIC_STOP_NOTIFICATION, address,
-				characteristic));
+	public boolean requestStopNotification(String address, BleGattCharacteristic characteristic) {
+		mService.addBleRequest(new BleRequest(RequestType.CHARACTERISTIC_STOP_NOTIFICATION, address, characteristic));
 		return true;
 	}
 }

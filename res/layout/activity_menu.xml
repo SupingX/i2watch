@@ -28,6 +28,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_reminder"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -43,12 +44,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_reminder"
-                    android:text="Activity reminder" />
+                    android:text="@string/activity_reminder" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -78,6 +81,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_monitor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -93,12 +97,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_monitor"
-                    android:text="Sleep monitor" />
+                    android:text="@string/sleep_monitor" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                     android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -117,6 +123,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_clock"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -132,12 +139,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_clock"
-                    android:text="Clock" />
+                    android:text="@string/clock" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                     android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -156,6 +165,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_reminder_nf"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -171,12 +181,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_reminder_nf"
-                    android:text="Disconnect reminder" />
+                    android:text="@string/disconnect_reminder" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow"
@@ -207,6 +219,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_camera"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -222,12 +235,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_camera"
-                    android:text="Remote camera" />
+                    android:text="@string/remote_camera" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                     android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -246,6 +261,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_search"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -261,12 +277,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_search"
-                    android:text="Seacrch I2 Watch" />
+                    android:text="@string/seacrch_i2_watch" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_6"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -285,6 +303,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_record"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -300,12 +319,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_record"
-                    android:text="Record" />
+                    android:text="@string/record" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_7"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -324,6 +345,7 @@
                 android:focusable="false" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_bright"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -339,7 +361,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_bright"
-                    android:text="Brightness" />
+                    android:text="@string/brightness" />
 
                 <TextView
                     android:id="@+id/tv_bright_value"
@@ -349,7 +371,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/tv_bright"
-                    android:text="5"
+                    android:text="@string/five"
                     android:textColor="@color/grey"
                     android:textSize="22sp" />
                 <Button
@@ -359,7 +381,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:text="+" 
+                    android:text="@string/add" 
                     android:textSize="22sp"
                     android:textColor="@color/color_top_text_pressed"
                     android:background="@drawable/selector_btn_increase_bg"
@@ -375,7 +397,7 @@
                      android:textSize="22sp"
                     android:textColor="@color/color_top_text_pressed"
                     android:background="@drawable/selector_btn_decrease_bg"
-                    android:text="-" />
+                    android:text="@string/jian" />
             </RelativeLayout>
 
             <View
@@ -391,6 +413,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_signset"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -406,7 +429,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_signset"
-                    android:text="Signatures" />
+                    android:text="@string/signatures" />
 
                 <TextView
                     android:id="@+id/tv_signset_value"
@@ -415,14 +438,19 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="25dp"
+                     android:maxLength="16"
+                     android:singleLine="true"
+                     
                     android:layout_toRightOf="@id/tv_signset"
-                    android:text="Signature is not set"
+                    android:text="@string/signature_is_not_set"
                     android:textColor="@color/grey" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_9"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -441,6 +469,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_incoming"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -456,13 +485,15 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_incoming"
-                    android:text="Incoming reminder" />
+                    android:text="@string/incoming_reminder" />
             
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_00"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                      android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -490,6 +521,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_callfaker"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -505,12 +537,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_callfaker"
-                    android:text="Callfaker" />
+                    android:text="@string/callfaker" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_0000"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -528,6 +562,7 @@
                 android:focusable="true" >
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_shutdown"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -543,12 +578,14 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_shutdown"
-                    android:text="Shutdown I2 Watch" />
+                    android:text="@string/shutdown_i2_watch" />
 
                 <ImageView
+                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_0"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                      android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />

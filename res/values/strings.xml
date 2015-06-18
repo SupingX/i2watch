@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">I2 Watch</string>
+    <string name="app_version">I2 Watch 1.0</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_connect">ConnectActivity</string>
@@ -52,5 +53,25 @@
     <string name="拉下刷新">pull_to_refresh</string>
     <string name="pull_to_refresh">pull_to_refresh</string>
     <string name="updated_at">updated_at</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="activity_reminder">Activity reminder</string>
+    <string name="sleep_monitor">Sleep monitor</string>
+    <string name="clock">Clock</string>
+    <string name="disconnect_reminder">Disconnect reminder</string>
+    <string name="remote_camera">Remote camera</string>
+    <string name="seacrch_i2_watch">Seacrch I2 Watch</string>
+    <string name="record">Record</string>
+    <string name="brightness">Brightness</string>
+    <string name="five">5</string>
+    <string name="add">+</string>
+    <string name="jian">-</string>
+    <string name="signatures">Signatures</string>
+    <string name="signature_is_not_set">Signature is not set</string>
+    <string name="incoming_reminder">Incoming reminder</string>
+    <string name="callfaker">Callfaker</string>
+    <string name="shutdown_i2_watch">Shutdown I2 Watch</string>
+    <string name="xialashuaxin">下拉可以刷新</string>
+    <string name="title_activity_spalish">SpalishActivity</string>
+    <string name="title_activity_record">RecordActivity</string>
 
 </resources>

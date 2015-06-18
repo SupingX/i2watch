@@ -43,9 +43,11 @@
                     android:textColor="@color/grey" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
-                   android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -83,8 +85,9 @@
 
                 <ImageView
                     android:id="@+id/img_right_3"
-                  android:layout_width="20dp"
-                    android:layout_height="20dp"
+                  android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -122,8 +125,9 @@
 
                 <ImageView
                     android:id="@+id/img_right_5"
-                   android:layout_width="20dp"
-                    android:layout_height="20dp"
+                     android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />

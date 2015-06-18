@@ -111,7 +111,18 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 				disconnect(address);
 			}
 		}
-
+		
+		/**
+		 * 自己添加的 
+		 * 读取信号强弱
+		 */
+		@Override
+		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+			// TODO Auto-generated method stub
+			super.onReadRemoteRssi(gatt, rssi, status);
+			mService.bleReadRemoteRssi(gatt.getDevice().getAddress(), rssi);
+		}
+		
 		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			String address = gatt.getDevice().getAddress();
@@ -214,11 +225,13 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public void startScan() {
+		Log.e("androidBle", "开始搜索...");
 		mBtAdapter.startLeScan(mLeScanCallback);
 	}
 
 	@Override
 	public void stopScan() {
+		Log.e("androidBle", "结束搜索...");
 		mBtAdapter.stopLeScan(mLeScanCallback);
 	}
 
@@ -229,9 +242,11 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		}
 		return false;
 	}
-
+	
+	//from <<interface>>IBleRequestHandler 
 	@Override
 	public boolean connect(String address) {
+		Log.e("AndroidBle", "disconnect()");
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		BluetoothGatt gatt = device.connectGatt(mService, false, mGattCallback);
 		if (gatt == null) {
@@ -285,7 +300,9 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 				gatt.getDevice().getAddress(), characteristic));
 		return true;
 	}
-
+	
+	//from <<interface>>IBleRequestHandler 
+	@Override
 	public boolean readCharacteristic(String address,
 			BleGattCharacteristic characteristic) {
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
@@ -298,6 +315,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public boolean discoverServices(String address) {
+		Log.e("AndroidBle", "discoverServices()");
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null) {
 			return false;
@@ -312,6 +330,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public BleGattService getService(String address, UUID uuid) {
+		Log.e("AndroidBle", "getService()");
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null) {
 			return null;
@@ -328,6 +347,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	@Override
 	public boolean requestCharacteristicNotification(String address,
 			BleGattCharacteristic characteristic) {
+		Log.e("AndroidBle", "requestCharacteristicNotification()");
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null || characteristic == null) {
 			return false;
@@ -338,10 +358,13 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 						.getAddress(), characteristic));
 		return true;
 	}
-
+	
+	
+	//from <<interface>>IBleRequestHandler 
 	@Override
 	public boolean characteristicNotification(String address,
 			BleGattCharacteristic characteristic) {
+		Log.e("AndroidBle", "characteristicNotification()");
 		BleRequest request = mService.getCurrentRequest();
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null || characteristic == null) {
@@ -381,6 +404,7 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 	@Override
 	public boolean requestWriteCharacteristic(String address,
 			BleGattCharacteristic characteristic, String remark) {
+		Log.e("AndroidBle", "requestWriteCharacteristic()");
 		BluetoothGatt gatt = mBluetoothGatts.get(address);
 		if (gatt == null || characteristic == null) {
 			return false;
@@ -390,7 +414,8 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 				gatt.getDevice().getAddress(), characteristic, remark));
 		return true;
 	}
-
+	
+	//from <<interface>>IBleRequestHandler 
 	@Override
 	public boolean writeCharacteristic(String address,
 			BleGattCharacteristic characteristic) {
@@ -398,7 +423,6 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 		if (gatt == null) {
 			return false;
 		}
-
 		Log.d("blelib", new String(Hex.encodeHex(characteristic.getGattCharacteristicA().getValue())));
 		return gatt
 				.writeCharacteristic(characteristic.getGattCharacteristicA());
@@ -450,4 +474,5 @@ public class AndroidBle implements IBle, IBleRequestHandler {
 						.getAddress(), characteristic));
 		return true;
 	}
+
 }

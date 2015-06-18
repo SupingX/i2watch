@@ -47,12 +47,8 @@
 package com.xtremeprog.sdk.ble;
 
 import java.util.UUID;
-
-import android.annotation.SuppressLint;
-
 import com.xtremeprog.sdk.ble.BleService.BLESDK;
 
-@SuppressLint("NewApi")
 public class BleGattCharacteristic {
 
 	public static final int PROPERTY_READ = 2;

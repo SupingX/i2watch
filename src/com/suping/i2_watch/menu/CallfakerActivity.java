@@ -5,12 +5,15 @@ import com.suping.i2_watch.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CallfakerActivity extends Activity implements OnClickListener {
 	
@@ -76,13 +79,37 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.rl_call:
 			Log.e("callfaker", "!!!!!");
-			Intent intent = new Intent(CallfakerActivity.this,
-					CallfakerFromActivity.class);
-			startActivityForResult(intent, 1);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(CallfakerActivity.this,
+							CallfakerFromActivity.class);
+					startActivityForResult(intent, 1);
+				}
+			});
 			break;
 
 		default:
 			break;
 		}
+	}
+	// 连续按退出间隔时间
+	private long exitTime = 0;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				&& event.getAction() == KeyEvent.ACTION_DOWN) {
+			if ((System.currentTimeMillis() - exitTime) > 2000) {
+				Toast.makeText(getApplicationContext(), "再按一次退出程序",
+						Toast.LENGTH_SHORT).show();
+				exitTime = System.currentTimeMillis();
+			} else {
+				finish();
+				System.exit(0);
+			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

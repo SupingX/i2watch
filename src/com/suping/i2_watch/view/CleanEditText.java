@@ -12,16 +12,18 @@ import android.widget.EditText;
 
 import com.suping.i2_watch.R;
 
-public class CleanEditText extends EditText implements OnFocusChangeListener,TextWatcher {
+public class CleanEditText extends EditText implements OnFocusChangeListener, TextWatcher {
 
 	private Drawable mClearDrawable;
 
 	public CleanEditText(Context context) {
 		super(context);
 	}
-	public CleanEditText(Context context,boolean isShhow) {
+
+	public CleanEditText(Context context, boolean isShhow) {
 		super(context);
 	}
+
 	public CleanEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
@@ -33,27 +35,24 @@ public class CleanEditText extends EditText implements OnFocusChangeListener,Tex
 	}
 
 	private void init() {
-		//获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
-		mClearDrawable = getCompoundDrawables()[2]; 
-        if (mClearDrawable == null) { 
-        	mClearDrawable = getResources() 
-                    .getDrawable(R.drawable.ic_close); 
-        } 
-        
-        mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth()/2, mClearDrawable.getIntrinsicHeight()/2); 
-        setClearIconVisible(false); 
-        setOnFocusChangeListener(this); 
-        addTextChangedListener(this); 
+		// 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
+		mClearDrawable = getCompoundDrawables()[2];
+		if (mClearDrawable == null) {
+			mClearDrawable = getResources().getDrawable(R.drawable.ic_close);
+		}
+
+		mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth() / 2, mClearDrawable.getIntrinsicHeight() / 2);
+		setClearIconVisible(false);
+		setOnFocusChangeListener(this);
+		addTextChangedListener(this);
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		 if (getCompoundDrawables()[2] != null) { 
+		if (getCompoundDrawables()[2] != null) {
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_UP:
-				boolean touchable = event.getX() > (getWidth()
-						- getPaddingRight() - mClearDrawable
-							.getIntrinsicWidth())
+				boolean touchable = event.getX() > (getWidth() - getPaddingRight() - mClearDrawable.getIntrinsicWidth())
 						&& (event.getX() < ((getWidth() - getPaddingRight())));
 				if (touchable) {
 					this.setText("");
@@ -69,38 +68,36 @@ public class CleanEditText extends EditText implements OnFocusChangeListener,Tex
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
-		  if (hasFocus) { 
-	            setClearIconVisible(getText().length() > 0); 
-	        } else { 
-	            setClearIconVisible(false); 
-	        }
+		if (hasFocus) {
+			setClearIconVisible(getText().length() > 0);
+		} else {
+			setClearIconVisible(false);
+		}
 	}
-	
+
 	@Override
-	public void onTextChanged(CharSequence text, int start,
-			int lengthBefore, int lengthAfter) {
+	public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
 		super.onTextChanged(text, start, lengthBefore, lengthAfter);
 		setClearIconVisible(text.length() > 0);
 	}
+
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-		
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
 	}
 
 	@Override
 	public void afterTextChanged(Editable s) {
 	}
-	
-	public void setClearIconVisible(boolean visible) { 
-			if (this.isEnabled()) {
-				if(this.isFocused()){//防止有内容就显示X号 只有有焦点时才显示X号
-					Drawable right = visible ? mClearDrawable : null;
-					setCompoundDrawables(getCompoundDrawables()[0],
-							getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
-				}
+
+	public void setClearIconVisible(boolean visible) {
+		if (this.isEnabled()) {
+			if (this.isFocused()) {// 防止有内容就显示X号 只有有焦点时才显示X号
+				Drawable right = visible ? mClearDrawable : null;
+				setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], right,
+						getCompoundDrawables()[3]);
 			}
-	    }
-	
-	
+		}
+	}
+
 }

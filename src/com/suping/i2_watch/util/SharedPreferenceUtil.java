@@ -79,7 +79,6 @@ public class SharedPreferenceUtil {
 
 	/**
 	 * 可编辑
-	 * 
 	 * @param context
 	 * @return
 	 */

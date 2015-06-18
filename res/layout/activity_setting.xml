@@ -26,7 +26,6 @@
                 android:focusable="true"
                 android:paddingBottom="8dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="8dp" >
 
                 <ImageView
@@ -49,8 +48,9 @@
 
                 <ImageView
                     android:id="@+id/img_right_1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                     android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -69,7 +69,6 @@
                 android:focusable="true"
                 android:paddingBottom="8dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="8dp" >
 
                 <ImageView
@@ -92,8 +91,9 @@
 
                 <ImageView
                     android:id="@+id/img_right_2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
@@ -112,7 +112,6 @@
                 android:focusable="true"
                 android:paddingBottom="8dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="8dp" >
 
                 <ImageView
@@ -135,8 +134,9 @@
 
                 <ImageView
                     android:id="@+id/img_right_3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />

@@ -1,17 +1,21 @@
 package com.suping.i2_watch.setting;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
 public class WeightActivity extends Activity {
-
+	private static final int minWeight = 32;
+	private static final int maxWeight = 255;
+	
 	private NumberPicker numberPickerValue;
 	private NumberPicker numberPickerUnit;
 	private String[] units;
@@ -19,9 +23,6 @@ public class WeightActivity extends Activity {
 	private TextView textViewCancel;
 	private TextView textViewConfirm;
 	private Bundle b;
-	
-	private static final int minWeight = 32;
-	private static final int maxWeight = 255;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +31,6 @@ public class WeightActivity extends Activity {
 		setContentView(R.layout.activity_weight);
 		initViews();
 		setClick();
-		Bundle b = getIntent().getExtras();
-		String unit = b.getString("unit");
-		int value = b.getInt("value");
-		numberPickerUnit.setValue(value);
-		if(unit.equals("kg")){
-			numberPickerUnit.setValue(0);
-		
-		}else if(unit.equals("lb")){
-			numberPickerUnit.setValue(1);
-		}
-		
 	}
 
 	private void initViews() {
@@ -59,7 +49,7 @@ public class WeightActivity extends Activity {
 		numberPickerUnit.setDisplayedValues(units);
 		numberPickerUnit.setMaxValue(units.length - 1);
 		numberPickerUnit.setMinValue(0);
-		numberPickerUnit.setValue(0);
+//		numberPickerUnit.setValue(0);
 		numberPickerUnit.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);	//防止点击弹出软键盘
 		numberPickerUnit.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 			@Override
@@ -77,12 +67,24 @@ public class WeightActivity extends Activity {
 				}
 			}
 		});
-		
+		initValue();
 
 	}
 
+	private void initValue(){
+		String unit = (String) SharedPreferenceUtil.get(WeightActivity.this, InformationActivity.SHARE_WEIGHT_UNIT, "kg");
+		int value = 0;
+		if(unit.equals(InformationActivity.KG)){
+			numberPickerUnit.setValue(0);
+			value = (int) SharedPreferenceUtil.get(WeightActivity.this, InformationActivity.SHARE_WEIGHT_VALUE_KG, 170);
+		} else if (unit.equals(InformationActivity.LB)){
+			value = (int) SharedPreferenceUtil.get(WeightActivity.this, InformationActivity.SHARE_WEIGHT_VALUE_LB, 25);
+			numberPickerUnit.setValue(1);
+		}
+		numberPickerValue.setValue(value);
+		Log.e("[体重", "unit : " + unit + ",value : " + value + "]");
+	}
 	
-
 	private void setClick() {
 		textViewCancel.setOnClickListener(new OnClickListener() {
 			@Override
@@ -122,6 +124,7 @@ public class WeightActivity extends Activity {
 			}
 		});
 	}
+	
 	//1磅 = 0.4535924 千克
 	/**
 	 * 千克-->磅

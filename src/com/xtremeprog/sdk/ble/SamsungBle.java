@@ -147,6 +147,7 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 		@Override
 		public void onCharacteristicWrite(
 				BluetoothGattCharacteristic characteristic, int status) {
+			Log.e("SamsungBle", "onCharacteristicWrite()");
 			BleRequest request = mService.getCurrentRequest();
 			String address = request.address;
 			if (status != BluetoothGatt.GATT_SUCCESS) {
@@ -157,7 +158,7 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 			mService.bleCharacteristicWrite(address, characteristic.getUuid()
 					.toString(), status);
 		};
-
+		
 		@Override
 		public void onDescriptorRead(BluetoothGattDescriptor descriptor,
 				int status) {
@@ -195,7 +196,18 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 
 			mBluetoothGatt.writeDescriptor(descriptor);
 		};
-
+		
+			/**
+			 * 自己添加的 
+			 * 读取信号强弱
+			 */
+			@Override
+			public void onReadRemoteRssi(BluetoothDevice device, int rssi, int status) {
+				// TODO Auto-generated method stub
+				super.onReadRemoteRssi(device, rssi, status);
+				mService.bleReadRemoteRssi(device.getAddress(), rssi);
+			}
+		
 		@Override
 		public void onDescriptorWrite(BluetoothGattDescriptor descriptor,
 				int status) {
@@ -253,6 +265,7 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public void startScan() {
+		Log.e("samsungBle", "开始搜索...");
 		if (mScanning) {
 			return;
 		}
@@ -268,6 +281,7 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public void stopScan() {
+		Log.e("SamsungBle", "stop()");
 		if (!mScanning || mBluetoothGatt == null) {
 			return;
 		}
@@ -286,12 +300,14 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 
 	@Override
 	public boolean connect(String address) {
+		Log.e("SamsungBle", "connect()");
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		return mBluetoothGatt.connect(device, false);
 	}
 
 	@Override
 	public void disconnect(String address) {
+		Log.e("SamsungBle", "disconnect()");
 		BluetoothDevice device = mBtAdapter.getRemoteDevice(address);
 		mBluetoothGatt.cancelConnection(device);
 	}
@@ -412,4 +428,5 @@ public class SamsungBle implements IBle, IBleRequestHandler {
 				characteristic));
 		return true;
 	}
+
 }

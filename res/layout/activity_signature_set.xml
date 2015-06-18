@@ -38,7 +38,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Can not be empty"
+               android:digits="1234567890abcdefghijklmnopqrstuvwxyz"
             android:selectAllOnFocus="true"
+            android:maxLength="16"
             android:singleLine="true"
             android:width="220dp" >
             <requestFocus />
