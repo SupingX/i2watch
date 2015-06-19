@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DrawAllocation">
+        <ignore path="src/com/suping/i2_watch/view/SearchView.java" />
+    </issue>
+</lint>

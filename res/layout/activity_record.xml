@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+
+    <RadioGroup
+        android:id="@+id/rg_top"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/color_top_bg"
+        android:orientation="horizontal"
+        android:weightSum="2" >
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="@dimen/dimen_top_height"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_return_left"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:focusable="true"
+            android:padding="12dp"
+            android:src="@drawable/selector_icon_back" />
+
+        <RadioButton
+            android:id="@+id/rb_record_sport"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:button="@null" 
+            android:text="Pedo"
+            android:textColor="@color/color_top_text_pressed"
+            android:textSize="@dimen/dime_top_text" >
+        </RadioButton>
+
+        <RadioButton
+            android:id="@+id/rb_record_sleep"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:text="Sleep"
+            android:button="@null" 
+            android:textColor="@color/white"
+            android:textSize="@dimen/dime_top_text" >
+        </RadioButton>
+</RadioGroup>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top" >
+   </android.support.v4.view.ViewPager>
+
+</RelativeLayout>

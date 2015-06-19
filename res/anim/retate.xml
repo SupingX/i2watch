@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+    <!-- 
+    
+    //旋转动画
+    duration        : 时间 毫秒
+    fromDegrees     : 开始角度
+    toDegres        : 结束角度
+    povotX          : 
+	          			50%          距离左边缘为50%距离
+	                    50%p  表示富容器的50%
+    povotY          : 
+	          			50%          距离上边缘为50%距离
+	                    50%p  表示富容器的50%
+    repeatCount     : 重复次数 默认为0，必须是int，可以为-1表示不停止
+    interpolator    : 表示变化率，但不是运行速度。一个插补属性，可以将动画效果设置为加速，减速，反复，反弹等 默认为开始和结束慢中间快， 
+    startOffset     : 在调用start函数之后等待开始运行的时间，单位为毫秒，若为10，表示10ms后开始运行 
+    repeatMode      : 重复的模式，默认为restart，即重头开始重新运行，可以为reverse即从结束开始向前重新运行。在android:repeatCount大于0或为infinite时生效 
+    detachWallpaper : 表示是否在壁纸上运行 
+    zAdjustment     : 表示被animated的内容在运行时在z轴上的位置，默认为normal。
+    normal          : 保持内容当前的z轴顺序 
+    top             : 运行时在最顶层显示 
+    bottom          : 运行时在最底层显示 
+    b. 运行速度
+
+	运行速度                                     : 为运行时间(android:duration)除以运行角度差(android:toDegrees-android:fromDegrees)，比如android:duration为1000，android:toDegrees为360，android:fromDegrees为0就表示1秒转1圈。 
+     -->
+    
+    <rotate
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:repeatCount="-1"
+        android:toDegrees="359" />
+
+</set>
