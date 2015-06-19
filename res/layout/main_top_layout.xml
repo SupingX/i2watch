@@ -33,13 +33,15 @@
 
     <TextView
         android:id="@+id/tv_title"
+        android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
+        android:background="@drawable/selector_return_left"
+        android:clickable="true"
+        android:focusable="true"
         android:text="@string/app_name"
         android:textColor="@drawable/selector_color_text"
-        android:textSize="@dimen/dime_top_text"
-        android:focusable="true"
-        android:clickable="true"
-         />
+        android:textSize="@dimen/dime_top_text" />
+
 </RelativeLayout>

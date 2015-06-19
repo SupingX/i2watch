@@ -1,6 +1,8 @@
 package com.suping.i2_watch;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -18,18 +20,18 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lee.pullrefresh.ui.PullToRefreshBase;
+import com.lee.pullrefresh.ui.PullToRefreshBase.OnRefreshListener;
+import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 import com.suping.i2_watch.menu.MenuActivity;
 import com.suping.i2_watch.menu.RecordActivity;
 import com.suping.i2_watch.setting.PedometerActivity;
@@ -37,8 +39,6 @@ import com.suping.i2_watch.setting.SettingActivity;
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.ColorsCircle;
-import com.suping.i2_watch.view.RefreshForScrolView;
-import com.suping.i2_watch.view.RefreshForScrolView.PullToRefreshListener;
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;
 /**
@@ -58,7 +58,7 @@ public class Main extends Activity implements OnClickListener {
 	private TextView tvSportGoal,tvSleepGoal;
 	/** 运动/睡眠 完成度  **/
 	private TextView tvSportComplete,tvSleepComplete;
-	/** 运动  kal time distancee **/
+	/** 运动参数  卡洛里（kal） 时间（time） （距离distancee **/
 	private TextView tvSportKal,tvSportTime,tvSportDistance;
 	/** 运动/睡眠信息  **/
 	private TextView tvSportTips,tvSleepTips;
@@ -66,32 +66,32 @@ public class Main extends Activity implements OnClickListener {
 	private TextView tvSleepDeep,tvSleepLight,tvAwak;
 	/** viewpager **/
 	private ViewPager mViewPager;
-	/** 页面 ： 包括睡眠和运动页面  **/
+	/** 页面 list： 包括睡眠和运动页面  **/
 	private List<View> mList;
-	/** 下拉刷新  **/
-	private RefreshForScrolView mSportRefresh;
-	private RefreshForScrolView mSleepRefresh;
-	
-	
-	/** 圆环 sport **/
+	/** 下拉刷新  运动 **/
+	private PullToRefreshScrollView sportPull;
+	/** 下拉刷新  睡眠**/
+	private PullToRefreshScrollView sleepPull;
+	/** 下拉刷新  运动界面 的ScrollView  **/
+	private ScrollView sportScrloo;
+	/** 下拉刷新  睡眠界面 的ScrollView  **/
+	private ScrollView sleepScrloo;
+	/** 圆环 运动（sport） **/
 	private ColorsCircle ccSport;
-	/** 圆环 sleep  **/
+	/** 圆环 睡眠（sleep）  **/
 	private ColorsCircle ccSleep;
-	/** 导航圆点radioGroup **/
+	/** 导航圆点 radioGroup **/
 	private RadioGroup rgDot;
-	/** 导航圆点 radioButton : sleep DOT sport DOT **/
+	/** 导航圆点 radioButton : sleep DOT & sport DOT **/
 	private RadioButton rbDotSleep,rbDotSport;
-	
-	private RelativeLayout rlSportCircle;
-	private RelativeLayout rlSleepCircle;
-	
+	/** 双击间隔 退出  **/
 	private long exitTime = 0;
-	
+	/** 蓝牙工具 **/
 	private BleManager mBleManager;
-	
 	private Handler mHandler = new Handler(){
 		
 	};
+	/** Runnable ：重新搜索 　**/
 	private Runnable reScan = new Runnable() {
 		@Override
 		public void run() {
@@ -102,12 +102,12 @@ public class Main extends Activity implements OnClickListener {
 			} else {
 				Toast.makeText(Main.this, "蓝牙已关闭，请重新连接", Toast.LENGTH_LONG).show();
 				mBleManager.clear();
-				updateBlueState();
+//				updateBlueState();
 				startActivity(new Intent(Main.this,ConnectEvolveActivity.class));
 			}
 		}
 	};
-	
+	/** BroadcastReceiver **/
 	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
 
 		@Override
@@ -120,7 +120,7 @@ public class Main extends Activity implements OnClickListener {
 						mBleManager.setConnectted(true);
 						//连接成功，则停止扫描
 						mBleManager.stopScan();
-						updateBlueState();
+//						updateBlueState();
 					}
 				});
 				
@@ -130,7 +130,7 @@ public class Main extends Activity implements OnClickListener {
 					@Override
 					public void run() {
 						mBleManager.setConnectted(false);
-						updateBlueState();
+//						updateBlueState();
 					}
 				});
 				mHandler.post(reScan);
@@ -155,6 +155,7 @@ public class Main extends Activity implements OnClickListener {
 		
 	};
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -172,7 +173,7 @@ public class Main extends Activity implements OnClickListener {
 		registerReceiver(mReceiver, mIntentFilter);
 		mBleManager = ((XtremApplication)getApplication()).getBleManager();
 		Log.e("Main.java", "mBleManager : " + mBleManager);
-		updateBlueState();
+//		updateBlueState();
 		super.onResume();
 	}
 	@Override
@@ -221,11 +222,7 @@ public class Main extends Activity implements OnClickListener {
 			startActivity(intentBluetooth);
 			break;
 		
-//		case R.id.tv_sport_goal:
 		case R.id.color_circle_sport:
-//		case R.id.rl_sport_circle:
-			
-			Log.d("Main", "我来处理");
 			Intent recordIntent1 = new Intent(Main.this, RecordActivity.class);
 			Bundle b1 = new Bundle();
 			b1.putInt("flag", 0);
@@ -233,10 +230,7 @@ public class Main extends Activity implements OnClickListener {
 			startActivity(recordIntent1);
 			break;
 			
-//		case R.id.tv_sleep_pedo:
 		case R.id.color_circle_sleep:
-			Log.d("Main", "我来处理");
-//		case R.id.rl_sleep_circle:
 			Intent recordIntent2 = new Intent(Main.this, RecordActivity.class);
 			Bundle b2 = new Bundle();
 			b2.putInt("flag", 1);
@@ -262,7 +256,7 @@ public class Main extends Activity implements OnClickListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
+	
 	private void initViews() {
 		
 		imgMenu = (ImageView) findViewById(R.id.img_menu);
@@ -273,54 +267,48 @@ public class Main extends Activity implements OnClickListener {
 		rbDotSleep = (RadioButton) findViewById(R.id.rb_dot_sleep);
 		
 	}
-
+	
+	/** 
+	 * 初始化viewpager 
+	 */
 	private void initViewPager() {
 		mViewPager = (ViewPager) findViewById(R.id.guidePages);
 		LayoutInflater inflater = getLayoutInflater();
 		//运动界面  初始化
 		View sportV = inflater.inflate(R.layout.layout_info_sport, null);
 		ccSport = (ColorsCircle) sportV.findViewById(R.id.color_circle_sport);
-		mSportRefresh = (RefreshForScrolView) sportV.findViewById(R.id.refresh_sport);
-		rlSportCircle = (RelativeLayout) sportV.findViewById(R.id.rl_sport_circle);
 		tvSportGoal = (TextView) sportV.findViewById(R.id.tv_sport_goal);
 		tvSportComplete = (TextView) sportV.findViewById(R.id.tv_sport_complete);
 		tvSportDistance = (TextView) sportV.findViewById(R.id.tv_distance_value);
 		tvSportKal = (TextView) sportV.findViewById(R.id.tv_burned_value);
 		tvSportTime = (TextView) sportV.findViewById(R.id.tv_time_value);
 		tvSportTips = (TextView) sportV.findViewById(R.id.tv_sport_tips);
+			// >运动下拉刷新
+		sportPull = new PullToRefreshScrollView(this);
+		sportScrloo = sportPull.getRefreshableView();
+		sportScrloo.addView(sportV);
+		
 		
 		//睡眠界面  初始化
 		View sleepV = inflater.inflate(R.layout.layout_info_sleep, null);
 		ccSleep = (ColorsCircle) sleepV.findViewById(R.id.color_circle_sleep);
-		mSleepRefresh = (RefreshForScrolView) sleepV.findViewById(R.id.refresh_sleep);
-		rlSleepCircle = (RelativeLayout) sleepV.findViewById(R.id.rl_sleep_circle);
 		tvSleepGoal = (TextView) sleepV.findViewById(R.id.tv_sleep_pedo);
 		tvSleepComplete = (TextView) sportV.findViewById(R.id.tv_sleep_complete);
 		tvSleepDeep = (TextView) sportV.findViewById(R.id.tv_deep_value);
 		tvSleepLight = (TextView) sportV.findViewById(R.id.tv_light_value);
 		tvAwak = (TextView) sportV.findViewById(R.id.tv_awake_value);
 		tvSleepTips = (TextView) sportV.findViewById(R.id.tv_sleep_tips);
-		
-		
-		//FOR TEST
-		tvSleepGoal.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				 v.getParent().requestDisallowInterceptTouchEvent(true);
-				 tvSleepGoal.setBackgroundColor(Color.RED);
-				return true;
-			}
-		});
-	
-		
-		
+			// >睡眠下拉刷新
+		sleepPull = new PullToRefreshScrollView(this);
+		sleepScrloo = sleepPull.getRefreshableView();
+		sleepScrloo.addView(sleepV);
 		
 		mList = new ArrayList<>();
-		mList.add(sportV);
-		mList.add(sleepV);
+		mList.add(sleepPull);
+		mList.add(sportPull);
+		
 		mViewPager.setAdapter(new ViewPagerAdapter(mList));
 		mViewPager.setCurrentItem(0);
-	
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int arg0) {
@@ -396,89 +384,87 @@ public class Main extends Activity implements OnClickListener {
 		tvSleepGoal.setOnClickListener(this);
 		ccSleep.setOnClickListener(this);
 		ccSport.setOnClickListener(this);
-//		rlSleepCircle.setOnClickListener(this);
-//		rlSportCircle.setOnClickListener(this);
 		
 		//sportV下拉刷新事件
-		mSportRefresh.setOnRefreshListener(new PullToRefreshListener() {
+		sportPull.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
 
 			@Override
-			public void onRefresh() {
-				mHandler.postDelayed((new Runnable() {
-					
-					@Override
-					public void run() {
-						ccSport.setmProgress(4200);
-						mSportRefresh.finishRefreshing();
-					}
-				}),2000);
-			
-			}
-		}, 2);
-		
-		//sleepV下拉刷新事件
-		mSleepRefresh.setOnRefreshListener(new PullToRefreshListener() {
-			@Override
-			public void onRefresh() {
+			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				mHandler.postDelayed(new Runnable() {
 					
 					@Override
 					public void run() {
-						ccSleep.setmProgress(12200);
-						mSleepRefresh.finishRefreshing();
-				
+						Toast.makeText(Main.this, "运动信息已刷新...", Toast.LENGTH_SHORT).show();
+						sportPull.onPullDownRefreshComplete();
+						setLastUpdateTime(sportPull);
 					}
-				},2000);
+				}, 2*1000);
+			
 			}
-		}, 1);
-		
-//	ccSport.setOnTouchListener(new OnTouchListener() {
-//		@Override
-//		public boolean onTouch(View v, MotionEvent event) {
-//			float xD = 0 ;
-//			float yD = 0;
-//			switch (event.getAction()) {
-//			case MotionEvent.ACTION_DOWN:
-//					xD= event.getX();
-//					yD = event.getY();
-//			break;
-//			case MotionEvent.ACTION_MOVE:
-//			return false;
-//			case MotionEvent.ACTION_UP:
-//				float xUp = event.getX();
-//				float yUp = event.getX();
-////				if(Math.abs(xD-xUp)<4&& Math.abs(yD-yUp)<4){
-//					if((xD==xUp)&& (yD==yUp)){
-//					Log.d("Main", "我来处理");
-//					Intent recordIntent1 = new Intent(Main.this, RecordActivity.class);
-//					Bundle b1 = new Bundle();
-//					b1.putInt("flag", 0);
-//					recordIntent1.putExtras(b1);
-//					startActivity(recordIntent1);
-//					return true;
-//					}else {
-//						return false;
-//					}
-//			default:
-//				break;
-//			}
-//		
-//			return false;
-//		}
-//	});	
+
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		//sleepV下拉刷新事件
+		sleepPull.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
+
+			@Override
+			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						Toast.makeText(Main.this, "睡眠信息已刷新...", Toast.LENGTH_SHORT).show();
+						sleepPull.onPullDownRefreshComplete();
+						setLastUpdateTime(sleepPull);
+					}
+				}, 2*1000);
+			
+			}
+
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 	}
 	
 	/**
-	 * 蓝牙状态  红色：未连接
+	 * 格式化日期
+	 * @param time
+	 * @return
 	 */
-	private void updateBlueState() {
-		if(mBleManager.isConnectted()){
-			tvTitle.setTextColor(Color.WHITE);
-		}else {
-			tvTitle.setTextColor(Color.RED);
-		}
-	}
+	  private String formatDateTime(long time) {
+	        if (0 == time) {
+	            return "";
+	        }
+	        SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+	        return mDateFormat.format(new Date(time));
+	    }
+	  
+	  /**
+	   * 设置最后更新日期
+	   */
+	 private void setLastUpdateTime(PullToRefreshScrollView view) {
+	        String text = formatDateTime(System.currentTimeMillis());
+	        view.setLastUpdatedLabel(text);
+	    }
+	
+	/**
+	 * 蓝牙状态  灰色：未连接
+	 */
+//	private void updateBlueState() {
+//		if(mBleManager.isConnectted()){
+//			tvTitle.setTextColor(Color.WHITE);
+//		}else {
+//			tvTitle.setTextColor(Color.GRAY);
+//		}
+//	}
 	
 	/**
 	 * viewpager adapter

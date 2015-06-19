@@ -16,10 +16,11 @@ import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
+import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.enerty.SportRemindProtocol;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;
-import com.xtremeprog.sdk.ble.IBle;
 
 public class SportReminderActivity extends Activity implements OnClickListener {
 	// requestcode & resultCode
@@ -29,30 +30,22 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	private final static int RESULT_INTERVAL = 11;
 	private final static int RESULT_STARTTIME = 22;
 	private final static int RESULT_ENDTIME = 33;
-
-	// 存贮数据
-	public final static String SHARE_INTERVAL = "share_interval";
-	public final static String SHARE_START_HOUR = "share_start_hour";
-	public final static String SHARE_START_MIN = "share_start_min";
-	public final static String SHARE_END_HOUR = "share_end_hour";
-	public final static String SHARE_END_MIN = "share_end_min";
-	public final static String SHARE_REPEAT = "share_reminder_repeatValue";
-
-	// wedgetS
+	/** ImageView 返回    **/
 	private ImageView imgBack;
+	/** TextView 周一~周日  间隔/开始/结束 时间   **/
 	private TextView tvTitle, tvMon, tvTue, tvWen, tvThu, tvSat, tvFri, tvSun, tvIntervalValue, tvStartValue,
 			tvEndValue;
+	/** RelativeLayout  间隔/开始/结束    **/
 	private RelativeLayout rlStart, rlEnd, rlInterval;
-	// 双击间隔时间
+	/** 双击间隔时间    **/ 
 	private long exitTime = 0;
-	// 重复
+	/** 重复次数    **/ 
 	private int repeatValue;
-
-	// broadcastReceiver
+	/** broadcastReceiver  **/ 
 	private SportReminderBroadcastReceiver mReceiver;
-	//当前连接的蓝牙
-	private String currentAddress;
-
+	/** 蓝牙  **/ 
+	private BleManager mBleBleManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,7 +53,10 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		initViews();
 		setClick();
 		mReceiver = new SportReminderBroadcastReceiver();
+		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
+		Log.i("SportReminderActivity", "--mbleBleManager : " + mBleBleManager);
 		tvTitle.setText("Activity reminder");
+		
 	}
 
 	@Override
@@ -86,12 +82,11 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 			case RESULT_INTERVAL:
 				Bundle b = data.getExtras();
 				String time = b.getString("time");
-				time = time == null ? "100" : time;
+				time = time == null ? I2WatchProtocolData.DEFAULT_INTERVAL : time;
 				tvIntervalValue.setText(time);
-				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INTERVAL, time);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, time);
 				//写入数据 设置interval（间隔）
-//				getIble().requestWriteCharacteristic(address, characteristic, remark)
-//				getSer
+//				mBleBleManager.writeCharactics(DataUtil.hexStringX2bytesToInt(time));
 				break;
 			default:
 				break;
@@ -106,8 +101,8 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 				String sec = b.getString("sec");
 				String value = min + ":" + sec;
 				tvStartValue.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), SHARE_START_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), SHARE_START_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, sec);
 				//写入数据 设置starttime（开始时间）
 				
 				break;
@@ -124,8 +119,8 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 				String sec = b.getString("sec");
 				String value = min + ":" + sec;
 				tvEndValue.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), SHARE_END_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), SHARE_END_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, sec);
 				//写入数据 设置endtime（结束时间）
 				break;
 			default:
@@ -145,6 +140,10 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		case R.id.img_back:
 			Intent retrunToMain = new Intent(SportReminderActivity.this, MenuActivity.class);
 			startActivity(retrunToMain);
+			
+			SportRemindProtocol sp = I2WatchProtocolData.protocolDataForActivityRemindSync(this);
+			Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
+//			mBleBleManager.writeCharactics(sp);
 			this.finish();
 			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;
@@ -235,15 +234,15 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	 */
 	private void initSetting() {
 		// interval
-		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_INTERVAL, "30");
+		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, "30");
 		tvIntervalValue.setText(reminder_interval);
 		// start
-		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_START_HOUR, "07");
-		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_START_MIN, "00");
+		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, "07");
+		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, "00");
 		tvStartValue.setText(reminder_start_hour + ":" + reminder_start_min);
 		// end
-		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_END_HOUR, "22");
-		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_END_MIN, "00");
+		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, "22");
+		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, "00");
 		tvEndValue.setText(reminder_end_hour + ":" + reminder_end_min);
 
 	}
@@ -252,7 +251,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	 * 初始化周期
 	 */
 	private void initWeekday() {
-		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), SHARE_REPEAT, 0b00000000);
+		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_REPEAT, 0b00000000);
 		Log.d("OB", "初始化repeatValue-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tvSun, WeekdayEnum.SUN.getDay());
 		updateTextview(tvMon, WeekdayEnum.MON.getDay());
@@ -288,7 +287,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		repeatValue ^= weekday;
 		Log.d("OB", tv.getId() + "-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tv, weekday);
-		SharedPreferenceUtil.put(getApplicationContext(), SHARE_REPEAT, repeatValue);
+		SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_REPEAT, repeatValue);
 		//写入下位机  repeatValue ：01001111
 		
 	}
@@ -321,7 +320,6 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 			String action = intent.getAction();
 			if (action.equals(BleService.BLE_GATT_CONNECTED)) {
 				
-				currentAddress = intent.getExtras().getString(BleService.EXTRA_ADDR);
 				
 			} else if (action.equals(BleService.BLE_GATT_DISCONNECTED)) {
 

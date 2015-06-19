@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.enerty.I2WatchProtocolData;
 import com.suping.i2_watch.view.CameraPreview;
 
 /**
@@ -42,6 +43,14 @@ import com.suping.i2_watch.view.CameraPreview;
  */
 
 public class CameraActivity extends Activity implements OnClickListener {
+	/** 照片 **/
+	public static final int MEDIA_TYPE_IMAGE = 1;
+
+	/** 视频 **/
+	public static final int MEDIA_TYPE_VIDEO = 2;
+
+	private MediaRecorder mMediaRecorder;
+
 	private ImageView img_back, img_position, img_camera;// 返回和切换前后置摄像头
 	// private SurfaceView surface;
 	// private ImageButton shutter;// 快门
@@ -51,16 +60,36 @@ public class CameraActivity extends Activity implements OnClickListener {
 	// private int cameraPosition = 1;// 0代表前置摄像头，1代表后置摄像头
 
 	private final String TAG = this.getClass().getSimpleName();
-	/** 照片 **/
-	public static final int MEDIA_TYPE_IMAGE = 1;
-	/** 视频 **/
-	public static final int MEDIA_TYPE_VIDEO = 2;
 	private Uri fileUri;
 	private Camera mCamera;
 	private CameraPreview mPreview;
 	private FrameLayout preview ;
 	/**当前摄像头**/
 	private int currentNum;
+	/**
+	 * 为了得到图，要使用Camera.takePicture()方法。 这个方法带了三个参数，用来接收来自Camera的数据。
+	 * 为了接收JPEG格式的数据，必须要实现Camera.PictureCallback接口，来接 收图像数据，并写入到一个文件。
+	 */
+	private PictureCallback mPicture = new PictureCallback() {
+	
+		@Override
+		public void onPictureTaken(byte[] data, Camera camera) {
+			File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+			Log.d(TAG, "pictureFile:"+pictureFile);
+			if (pictureFile == null) {
+				return;
+			}
+			try {
+				FileOutputStream fos = new FileOutputStream(pictureFile);
+				fos.write(data);
+				fos.close();
+			} catch (FileNotFoundException e) {
+				Log.d(TAG, "File not found: " + e.getMessage());
+			} catch (IOException e) {
+				Log.d(TAG, "Error accessing file: " + e.getMessage());
+			}
+		}
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,6 +113,8 @@ public class CameraActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_camera);
 		initViews();
 		setClick();
+		//开启相机发送数据
+		byte[] hexData = I2WatchProtocolData.hexDataForUpdatePhotographState(1);
 		// Create an instance of Camera
 		try {
 			mCamera = getCameraInstance(0);
@@ -91,6 +122,19 @@ public class CameraActivity extends Activity implements OnClickListener {
 			// Create our Preview view and set it as the content of our activity.
 			preview = (FrameLayout) findViewById(R.id.frame);
 			preview.addView(mPreview);
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
+	}
+
+	/**释放Camera**/
+	@Override
+	protected void onPause() {
+		super.onPause();
+		try {
+			releaseMediaRecorder();
+			releaseCamera();
 		} catch (Exception e) {
 			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
@@ -113,6 +157,9 @@ public class CameraActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
+			//退出发数据
+			byte[] hexData = I2WatchProtocolData.hexDataForUpdatePhotographState(0);
+			
 			finish();
 			break;
 		case R.id.img_camera:
@@ -167,29 +214,32 @@ public class CameraActivity extends Activity implements OnClickListener {
 	}
 
 	/**
-	 * 为了得到图，要使用Camera.takePicture()方法。 这个方法带了三个参数，用来接收来自Camera的数据。
-	 * 为了接收JPEG格式的数据，必须要实现Camera.PictureCallback接口，来接 收图像数据，并写入到一个文件。
-	 */
-	private PictureCallback mPicture = new PictureCallback() {
-
-		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {
-			File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-			Log.d(TAG, "pictureFile:"+pictureFile);
-			if (pictureFile == null) {
-				return;
-			}
+		 * 
+		 * A safe way to get an instance of the Camera object. 获取相机
+		 * 
+		 * **/
+		public  Camera getCameraInstance(int i) {
+			Camera c = null;
 			try {
-				FileOutputStream fos = new FileOutputStream(pictureFile);
-				fos.write(data);
-				fos.close();
-			} catch (FileNotFoundException e) {
-				Log.d(TAG, "File not found: " + e.getMessage());
-			} catch (IOException e) {
-				Log.d(TAG, "Error accessing file: " + e.getMessage());
+	//			int i = c.getNumberOfCameras();
+	//			Log.d(TAG, c.getNumberOfCameras()+"");
+				c = Camera.open(i); // attempt to get a Camera instance
+				currentNum = 0;
+				// Camera.open(int). //访问特定的摄像头
+				// int i = c.getNumberOfCameras();
+				// c.getCameraInfo(1, );
+	//			c.setFaceDetectionListener(new MyFaceDetectionListener());
+	//			Camera.Parameters params = c.getParameters();
+	//			List<String> focusModes = params.getSupportedFocusModes();
+	//			if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+	//			  // Autofocus mode is s'upported自动对焦？
+				
+	//			}
+			} catch (Exception e) {
+				// Camera is not available (in use or does not exist)
 			}
+			return c; // returns null if camera is unavailable
 		}
-	};
 
 	/**
 	 * 1.检查camera Check if this device has a camera 检查机器是否有照相功能
@@ -204,34 +254,6 @@ public class CameraActivity extends Activity implements OnClickListener {
 			// no camera on this device
 			return false;
 		}
-	}
-
-	/**
-	 * 
-	 * A safe way to get an instance of the Camera object. 获取相机
-	 * 
-	 * **/
-	public  Camera getCameraInstance(int i) {
-		Camera c = null;
-		try {
-//			int i = c.getNumberOfCameras();
-//			Log.d(TAG, c.getNumberOfCameras()+"");
-			c = Camera.open(i); // attempt to get a Camera instance
-			currentNum = 0;
-			// Camera.open(int). //访问特定的摄像头
-			// int i = c.getNumberOfCameras();
-			// c.getCameraInfo(1, );
-//			c.setFaceDetectionListener(new MyFaceDetectionListener());
-//			Camera.Parameters params = c.getParameters();
-//			List<String> focusModes = params.getSupportedFocusModes();
-//			if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-//			  // Autofocus mode is s'upported自动对焦？
-			
-//			}
-		} catch (Exception e) {
-			// Camera is not available (in use or does not exist)
-		}
-		return c; // returns null if camera is unavailable
 	}
 
 	/** Create a file Uri for saving an image or video */
@@ -277,20 +299,6 @@ public class CameraActivity extends Activity implements OnClickListener {
 		return mediaFile;
 	}
 	
-	/**释放Camera**/
-	@Override
-	protected void onPause() {
-		super.onPause();
-		try {
-			releaseMediaRecorder();
-			releaseCamera();
-		} catch (Exception e) {
-			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		}
-	}
-	private MediaRecorder mMediaRecorder;
-
 	/** 关闭摄像 **/
 	private void releaseMediaRecorder() {
 		if (mMediaRecorder != null) {

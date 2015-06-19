@@ -16,8 +16,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.CleanEditText;
+import com.xtremeprog.sdk.ble.BleManager;
 
 public class InformationActivity extends Activity implements OnClickListener {
 	public final static int REQ_HEIGHT = 12221121;
@@ -37,18 +39,29 @@ public class InformationActivity extends Activity implements OnClickListener {
 	public final static String SHARE_BIRTHDAY_YEAR = "share_birthday_year";
 	public final static String SHARE_BIRTHDAY_MONTH = "share_birthday_month";
 	public final static String SHARE_BIRTHDAY_DAY = "share_birthday_day";
-
+	/** 单位常量  可用enum代替？ **/
 	public final static String CM = "cm";
 	public final static String FT = "ft";
 	public final static String KG = "kg";
 	public final static String LB = "lb";
-
+	
+	public enum UNIT {
+		CM,FT,KG,LB;
+	}
+	
+	/** imageView ：返回/男/女  **/
 	private ImageView imgBack, imgMale, imgFemale;
+	/** textView ：标题/身高/身高单位/体重/体重单位/生日   **/
 	private TextView textViewTitle, textViewHeightValue, textViewHeightUnit, textViewWeightValue, textViewWeightUnit,
 			textViewBirthdayValue;
+	/** editView 姓名  **/
 	private CleanEditText editTextName;
+	/** RelativeLayout 身高/体重/生日    **/
 	private RelativeLayout relaviteHeight, relaviteWeight, relaviteBirthday;
+	/** 是否为男性    **/
 	private boolean isMale;
+	
+	/** 要存贮的值  **/
 	private int cm;
 	private int feet;
 	private int inch;
@@ -58,13 +71,18 @@ public class InformationActivity extends Activity implements OnClickListener {
 	private int year;
 	private int month;
 	private int day;
-
+	
+	/** 蓝牙 **/
+	private BleManager mBleManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_information);
 		initViews();
 		setClick();
+		mBleManager = ((XtremApplication)getApplication()).getBleManager();
+		Log.i("informationActivity", "--mBleManager : " + mBleManager);
 	}
 
 	@Override
