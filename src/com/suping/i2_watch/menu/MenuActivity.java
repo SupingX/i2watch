@@ -118,6 +118,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 
 		// 相机
 		case R.id.rl_camera:
+			
 			Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
 			startActivity(intent);
 			break;
