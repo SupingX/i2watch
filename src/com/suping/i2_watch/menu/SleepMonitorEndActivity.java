@@ -4,6 +4,7 @@ import com.suping.i2_watch.enerty.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
+import android.util.Log;
 
 public class SleepMonitorEndActivity extends AbstractSetTimeActivity {
 	public final static int RESULT_ENDTIME = 66;
@@ -28,6 +29,21 @@ public class SleepMonitorEndActivity extends AbstractSetTimeActivity {
 		} else if (min.equals(values[1])) {
 			npMin.setValue(1);
 		}
+	}
+	
+	@Override
+	public boolean checkTime() {
+		int hour = npHour.getValue();
+		int min = npMin.getValue();
+		
+		String hourStart = (String) SharedPreferenceUtil.get(SleepMonitorEndActivity.this,
+				I2WatchProtocolData.SHARE_MONITOR_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+		
+		if(hour <= Integer.parseInt(hourStart)){ //开始时间大于结束时间
+			Log.e("SportReminderEndTimeActivity", "开始时间大于结束时间，设置错误。");
+			return false;
+		}
+		return true;
 	}
 
 }

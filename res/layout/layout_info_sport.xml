@@ -206,7 +206,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="20dp"
-                        android:text="@string/sprot_time_unit" />
+                        android:text="@string/sport_time_unit" />
                 </LinearLayout>
 
                 <View

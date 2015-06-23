@@ -29,4 +29,9 @@ public class ClockSetActivity_2 extends AbstractSetTimeActivity {
 		}
 		
 	}
+	@Override
+	public boolean checkTime() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

@@ -31,7 +31,8 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 		setContentView(R.layout.activity_pedometer);
 		initViews();
 		setClick();
-		textViewTitle.setText("Pedomeer target");
+		
+		textViewTitle.setText(getResources().getString(R.string.pedometer_target));
 		seekbar.setProgress(goal);
 		check(goal);
 	}
@@ -100,7 +101,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 		textViewHeavy = (TextView) findViewById(R.id.tv_heavy_pedo);
 		
 		seekbar = (com.suping.i2_watch.view.CircleSeekBar) findViewById(R.id.pedo_circle);
-		goal = (int) SharedPreferenceUtil.get(getApplicationContext(), "goal", 5000);
+		goal = (int) SharedPreferenceUtil.get(getApplicationContext(),SHARE_GOAL, 5000);
 		seekbar.setProgress(goal);
 		check(goal);
 		seekbar.setOnSeekBarChangedListener(this);

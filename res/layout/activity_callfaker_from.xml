@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="12dp"
-        android:text="来电联系人"
+        android:text="@string/incoming_message"
         android:textSize="22sp" />
      <View
             style="@style/line_1dp"
@@ -64,7 +64,7 @@
                 android:layout_width="50dip"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="姓名 :"
+                android:text="@string/name"
                 android:textSize="16sp" />
 
             <EditText
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dip"
                 android:maxEms = "6"
-                android:hint="请输入姓名"
+                android:hint="@string/please_write_name"
                 android:background="@drawable/selector_edittext_background"
                 android:inputType="text"
                 android:paddingLeft="4dip"
@@ -91,7 +91,7 @@
                 android:layout_width="50dip"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="电话 :"
+                android:text="@string/phone"
                 android:textSize="16sp" />
 
             <EditText
@@ -100,7 +100,7 @@
                 android:layout_height="40dip"
                 android:background="@drawable/selector_edittext_background"
                 android:inputType="phone"
-                    android:hint="请输入号码"
+                    android:hint="@string/please_write_phone"
                 android:paddingLeft="4dip"
                 android:singleLine="true" />
         </LinearLayout>
@@ -123,7 +123,7 @@
             android:focusable="true"
             android:padding="8dp"
                android:layout_weight="1"
-            android:text="Cancel"
+            android:text="@string/cancel"
                    android:gravity="center"
             android:textColor="@drawable/selector_text_cancel" />
                <TextView
@@ -133,7 +133,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@drawable/selector_text_confirm" />

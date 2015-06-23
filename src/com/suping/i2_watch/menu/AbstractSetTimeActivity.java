@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 import android.widget.NumberPicker.Formatter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 /**
  * 抽象类
@@ -79,10 +81,16 @@ public abstract class AbstractSetTimeActivity extends Activity {
 		tvConfirm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int min = npHour.getValue();
-				int sec = npMin.getValue();
-				String minStr = min < 10 ? "0" + min : min + "";
-				String secStr = values[sec];
+				int hour = npHour.getValue();
+				int min = npMin.getValue();
+				
+				if(!checkTime()){
+					Toast.makeText(AbstractSetTimeActivity.this, "时间设置有误！", Toast.LENGTH_LONG).show();
+					return;
+				}
+				
+				String minStr = hour < 10 ? "0" + hour : hour + "";
+				String secStr = values[min];
 				// Toast.makeText(getApplicationContext(), min+"|||||"+sec,
 				// 0).show();
 				b = new Bundle();
@@ -114,5 +122,11 @@ public abstract class AbstractSetTimeActivity extends Activity {
 	 * 加载初始值
 	 */
 	abstract public void initValue();
+	/**
+	 * 检查时间设置是否正确
+	 */
+	abstract public boolean checkTime();
+	
+	
 	
 }

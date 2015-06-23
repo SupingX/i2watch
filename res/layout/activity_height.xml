@@ -75,7 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="45dp"
             android:padding="8dp"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:clickable="true"
             android:focusable="true"
             android:textColor="@drawable/selector_text_confirm" />
@@ -90,7 +90,7 @@
             android:clickable="true"
            	android:focusable="true"
             android:padding="8dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@drawable/selector_text_cancel" />
     </RelativeLayout>
 

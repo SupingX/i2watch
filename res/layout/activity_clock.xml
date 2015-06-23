@@ -48,7 +48,7 @@
                             android:id="@+id/tv_sun_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="周日"
+                            android:text="@string/sun"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -57,7 +57,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周一"
+                            android:text="@string/mon"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -66,7 +66,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周二"
+                            android:text="@string/tue"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -75,7 +75,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周三"
+                            android:text="@string/wen"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -84,7 +84,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周四"
+                            android:text="@string/thu"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -93,7 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周五"
+                            android:text="@string/fri"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -102,7 +102,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周六"
+                            android:text="@string/sat"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -149,7 +149,7 @@
                             android:id="@+id/tv_sun_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="周日"
+                            android:text="@string/sun"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -158,7 +158,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周一"
+                            android:text="@string/mon"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -167,7 +167,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周二"
+                            android:text="@string/tue"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -176,7 +176,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周三"
+                            android:text="@string/wen"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -185,7 +185,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周四"
+                            android:text="@string/thu"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -194,7 +194,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周五"
+                            android:text="@string/fri"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -203,7 +203,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周六"
+                            android:text="@string/sat"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -249,7 +249,7 @@
                             android:id="@+id/tv_sun_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="周日"
+                            android:text="@string/sun"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -258,7 +258,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周一"
+                            android:text="@string/mon"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -267,7 +267,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周二"
+                            android:text="@string/tue"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -276,7 +276,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周三"
+                            android:text="@string/wen"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -285,7 +285,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周四"
+                            android:text="@string/thu"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -294,7 +294,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周五"
+                            android:text="@string/fri"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
 
@@ -303,7 +303,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/weekday"
-                            android:text="周六"
+                            android:text="@string/sat"
                             android:textColor="@color/grey"
                             android:textSize="12sp" />
                     </LinearLayout>

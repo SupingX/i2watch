@@ -1,44 +1,49 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-      android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${packageName}.${activityClass}" 
-    >
+    tools:context="${packageName}.${activityClass}" >
 
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        android:layout_centerInParent="true"
-        >
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" >
+        
+        <com.suping.i2_watch.view.CameraSurfaceView 
+                  android:id="@+id/surface"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            />
     </FrameLayout>
 
     <ImageView
-        android:padding="10dp"
         android:id="@+id/img_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_left_back" />
+        android:contentDescription="@string/app_name"
+        android:padding="10dp"
+        android:src="@drawable/selector_left_back" />
 
-    <ImageView
-         android:padding="10dp"
+ <!--    <ImageView
         android:id="@+id/img_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-           android:layout_alignParentTop="true"
-         android:layout_alignParentRight="true"
-        android:src="@drawable/selector_camera_select" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/app_name"
+        android:padding="10dp"
+        android:src="@drawable/selector_camera_select" /> -->
 
     <ImageView
-         android:padding="10dp"
         android:id="@+id/img_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/selector_camera_positive" 
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        />
+        android:contentDescription="@string/app_name"
+        android:padding="10dp"
+        android:src="@drawable/selector_camera_positive" />
 
 </RelativeLayout>

@@ -27,7 +27,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_setting);
 		initViews();
 		setClick();
-		textViewTitle.setText("Set");
+		textViewTitle.setText(getResources().getString(R.string.setting));
 	}
 	
 	

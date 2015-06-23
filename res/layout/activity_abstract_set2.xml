@@ -51,7 +51,7 @@
             android:clickable="true"
            	android:focusable="true"
             android:padding="8dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@drawable/selector_text_cancel" />
 		
         <TextView
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
                android:gravity="center"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:clickable="true"
             android:focusable="true"
             android:textColor="@drawable/selector_text_confirm" />

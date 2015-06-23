@@ -4,6 +4,7 @@ import com.suping.i2_watch.enerty.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
+import android.util.Log;
 
 public class SleepMonitorStartActivity extends AbstractSetTimeActivity {
 
@@ -30,5 +31,19 @@ public class SleepMonitorStartActivity extends AbstractSetTimeActivity {
 			npMin.setValue(1);
 		}
 		
+	}
+	
+	@Override
+	public boolean checkTime() {
+		int hour = npHour.getValue();
+		
+		String hourEnd = (String) SharedPreferenceUtil.get(SleepMonitorStartActivity.this,
+				I2WatchProtocolData.SHARE_MONITOR_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
+		
+		if(hour >= Integer.parseInt(hourEnd)){ //开始时间大于结束时间
+			Log.e("SleepMonitorStartActivity", "开始时间大于结束时间，设置错误。");
+			return false;
+		}
+		return true;
 	}
 }

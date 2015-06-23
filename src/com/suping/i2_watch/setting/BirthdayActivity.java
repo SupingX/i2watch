@@ -51,6 +51,7 @@ public class BirthdayActivity extends Activity {
 		//年
 		Calendar calendar = Calendar.getInstance();
 		numberPickerYear.setMaxValue(calendar.get(Calendar.YEAR));
+		numberPickerYear.setMinValue(1900);
 		numberPickerYear.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //设置不弹出软键盘
 		numberPickerYear.setFormatter(new Formatter() {
 			@Override

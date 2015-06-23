@@ -27,6 +27,10 @@ public class ClockSetActivity_3 extends AbstractSetTimeActivity {
 		} else if (min.equals(values[1])) {
 			npMin.setValue(1);
 		}
-		
+	}
+	@Override
+	public boolean checkTime() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

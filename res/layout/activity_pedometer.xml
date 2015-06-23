@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:textSize="18sp"
-            android:text="Target" />
+            android:text="@string/target" />
 
         <LinearLayout
             android:paddingTop="20dp"
@@ -64,7 +64,6 @@
                 android:id="@+id/tv_step_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5000" 
                 android:textSize="22sp"
                 android:textColor="@color/color_top_bg"
                 />
@@ -74,7 +73,7 @@
                 android:id="@+id/tv_step_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Steps"
+                android:text="@string/unit_steps"
                 android:textColor="@color/grey"
                  />
         </LinearLayout>
@@ -99,14 +98,13 @@
                 android:id="@+id/tv_kg_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="步行约" 
+                android:text="@string/walk" 
                 android:textColor="@color/grey"
                 />
             <TextView
                 android:id="@+id/tv_kg_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2.08" 
                 android:textColor="@color/grey"
                 />
 
@@ -114,7 +112,7 @@
                 android:id="@+id/tv_kg_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="公里"
+                android:text="@string/km"
                 android:textColor="@color/grey"
                  />
         </LinearLayout>
@@ -132,14 +130,13 @@
                 android:id="@+id/tv_kal_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="消耗约" 
+                android:text="@string/expend" 
                 android:textColor="@color/grey"
                 />
             <TextView
                 android:id="@+id/tv_kal_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2.08" 
                 android:textColor="@color/grey"
                 />
 
@@ -147,7 +144,7 @@
                 android:id="@+id/tv_kal_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="千卡"
+                android:text="@string/sport_burned_unit"
                 android:textColor="@color/grey"
                  />
         </LinearLayout>
@@ -168,14 +165,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Expert advice" />
+            android:text="@string/expert_advice" />
 
         <TextView
             android:id="@+id/advice_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="10,000 steps daily exercise is a healthy and active lifestyle"
+            android:text="@string/advice_sport"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -208,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:singleLine="true"
-                android:text="Light" />
+                android:text="@string/light" />
         </LinearLayout>
 
         <LinearLayout
@@ -232,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                   android:singleLine="true"
-                android:text="Medium" />
+                android:text="@string/medium" />
         </LinearLayout>
 
         <LinearLayout
@@ -255,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                   android:singleLine="true"
-                android:text="Heavy" />
+                android:text="@string/heavy" />
         </LinearLayout>
 	</RelativeLayout>
 </RelativeLayout>

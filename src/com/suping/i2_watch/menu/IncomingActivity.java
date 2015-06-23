@@ -33,7 +33,7 @@ public class IncomingActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_incoming);
 		initViews();
 		setClick();
-		textViewTitle.setText("Incoming");
+		textViewTitle.setText(getResources().getString(R.string.incoming_reminder));
 	}
 	
 	@Override

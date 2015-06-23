@@ -19,6 +19,6 @@ public class SpalishActivity extends Activity {
 				startActivity(new Intent(SpalishActivity.this,Main.class));
 				finish();
 			}
-		}, 3000);
+		}, 2500);
 	}
 }

@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.suping.i2_watch.R;
 
 public class SignatureSetActivity extends Activity implements OnClickListener{
-	private EditText ed_sign;
-	private TextView tv_confirm;
-	private TextView tv_cancel;
+	private EditText edSign;
+	private TextView tvConfirm;
+	private TextView tvCancel;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,24 +25,27 @@ public class SignatureSetActivity extends Activity implements OnClickListener{
 	}
 	
 	private void initViews() {
-		tv_confirm = (TextView) findViewById(R.id.tv_confirm);
-		tv_cancel = (TextView) findViewById(R.id.tv_cancel);
-		ed_sign = (EditText) findViewById(R.id.ed_sign);
+		tvConfirm = (TextView) findViewById(R.id.tv_confirm);
+		tvCancel = (TextView) findViewById(R.id.tv_cancel);
+		edSign = (EditText) findViewById(R.id.ed_sign);
 //		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close);
 //		ImageSpan span = new ImageSpan(bitmap);
 //		SpannableString spanString = new SpannableString("clear");
 //		spanString.setSpan(span, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //		ed_sign.append(spanString);
-		ed_sign.setText(getIntent().getBundleExtra("bundle").getString("value"));
+		String str = getIntent().getBundleExtra("bundle").getString("value");
+		if(!str.equals(getResources().getString(R.string.signature_is_not_set))){
+			edSign.setText(getIntent().getBundleExtra("bundle").getString("value"));
+		}
 		//选择所有内容
-		ed_sign.selectAll();
+		edSign.selectAll();
 		//将光标移到最后一位
-		ed_sign.setSelection(ed_sign.getText().length());
+		edSign.setSelection(edSign.getText().length());
 	}
 	private void setClick() {
-		tv_confirm.setOnClickListener(this);
-		tv_cancel.setOnClickListener(this);
-		ed_sign.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		tvConfirm.setOnClickListener(this);
+		tvCancel.setOnClickListener(this);
+		edSign.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 		   @Override
 		   public void onFocusChange(View v, boolean hasFocus) {
 		       //如果获得焦点，则弹出键盘
@@ -57,7 +60,7 @@ public class SignatureSetActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.tv_confirm:
-			String ed = ed_sign.getText().toString().trim();
+			String ed = edSign.getText().toString().trim();
 			Bundle b = new Bundle();
 			b.putString("ed", ed);
 			Intent intent = new Intent(SignatureSetActivity.this,MenuActivity.class);

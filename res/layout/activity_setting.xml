@@ -29,6 +29,7 @@
                 android:paddingTop="8dp" >
 
                 <ImageView
+                       android:contentDescription="@string/app_name"
                     android:id="@+id/img_information"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -44,9 +45,10 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_information"
-                    android:text="Personal information" />
+                    android:text="@string/personal_information" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
                      android:padding="8dp"
                     android:layout_width="48dp"
@@ -72,6 +74,7 @@
                 android:paddingTop="8dp" >
 
                 <ImageView
+                       android:contentDescription="@string/app_name"
                     android:id="@+id/img_pedo"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -87,9 +90,10 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_pedo"
-                    android:text="Pedometer target" />
+                    android:text="@string/pedometer_target" />
 
                 <ImageView
+                       android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
                     android:padding="8dp"
                     android:layout_width="48dp"
@@ -130,7 +134,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_about"
-                    android:text="About" />
+                    android:text="@string/about" />
 
                 <ImageView
                     android:id="@+id/img_right_3"

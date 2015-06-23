@@ -34,11 +34,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                  	android:text="Name" 
+                  	android:text="@string/name_personal" 
                   	android:textSize="16sp"/>
 
                 <com.suping.i2_watch.view.CleanEditText
-                    android:hint="Input your name."
+                    android:hint="@string/input_your_name_"
                     android:singleLine="true"
                     android:id="@+id/ed_name"
                     android:layout_width="wrap_content"
@@ -72,11 +72,12 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
-                    android:text="Gender" 
+                    android:text="@string/gender" 
                     android:textSize="16sp"
                     />
                 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_male"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
@@ -85,6 +86,7 @@
                     android:layout_toRightOf="@+id/tv_gender"
                      />
                 <ImageView
+                           android:contentDescription="@string/app_name"
                     android:id="@+id/img_female"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
@@ -113,7 +115,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
-                    android:text="Height" 
+                    android:text="@string/height" 
                     
                     android:textSize="16sp"
                     />
@@ -127,7 +129,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/tv_height"
                        android:textColor="@color/grey"
-                    android:text="92" />
+                    />
  			<TextView
                     android:id="@+id/tv_height_unit"
                     android:layout_width="wrap_content"
@@ -137,10 +139,11 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/tv_height_value"
                        android:textColor="@color/grey"
-                    android:text="cm" />
+                     />
               
 
                 <ImageView
+                           android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
                       android:padding="8dp"
                     android:layout_width="48dp"
@@ -167,7 +170,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
-                    android:text="Weight" 
+                    android:text="@string/weight" 
                     android:textSize="16sp"
                     />
 				  
@@ -180,7 +183,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/tv_weight"
                        android:textColor="@color/grey"
-                    android:text="62" />
+                   />
  			<TextView
                     android:id="@+id/tv_weight_unit"
                     android:layout_width="wrap_content"
@@ -190,10 +193,11 @@
                     android:layout_marginLeft="10dp"
                        android:textColor="@color/grey"
                     android:layout_toRightOf="@id/tv_weight_value"
-                    android:text="lb" />
+                    />
               
 
                 <ImageView
+                           android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_4"
                      android:padding="8dp"
                     android:layout_width="48dp"
@@ -220,7 +224,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
-                    android:text="Birthday" 
+                    android:text="@string/birthday" 
                     android:textSize="16sp"
                     />
 				  
@@ -232,11 +236,12 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/tv_birthday"
-                    android:text="1003-02-23" 
+                    
                     android:textColor="@color/grey"/>
               
 
                 <ImageView
+                           android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_5"
                      android:padding="8dp"
                     android:layout_width="48dp"

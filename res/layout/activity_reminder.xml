@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="Interval" />
+                    android:text="@string/interval" />
 
                 <TextView
                     android:id="@+id/tv_interval_unit"
@@ -57,8 +57,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
+                        android:text="@string/unit_min"
                     android:layout_toLeftOf="@id/img_right_1"
-                    android:text="分钟"
                     android:textColor="@color/grey" />
 
                 <TextView
@@ -68,10 +68,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"
                     android:layout_toLeftOf="@id/tv_interval_unit"
-                    android:text="120"
                     android:textColor="@color/grey" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
                    android:padding="8dp"
                     android:layout_width="48dp"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="Start time" />
+                    android:text="@string/start_time" />
 
                 <TextView
                     android:id="@+id/tv_start_value"
@@ -108,10 +108,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@id/img_right_2"
-                    android:text="09:00"
                     android:textColor="@color/grey" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
                     android:padding="8dp"
                     android:layout_width="48dp"
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="End time" />
+                    android:text="@string/end_time" />
 
                 <TextView
                     android:id="@+id/tv_end_value"
@@ -148,10 +148,10 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@id/img_right_3"
-                    android:text="09:00"
                     android:textColor="@color/grey" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
                      android:padding="8dp"
                     android:layout_width="48dp"
@@ -177,7 +177,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="8dp"
-                    android:text="Repeat" />
+                    android:text="@string/repeat" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -188,7 +188,7 @@
                         android:id="@+id/tv_sun"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="周日"
+                        android:text="@string/sun"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -197,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周一"
+                        android:text="@string/mon"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -206,7 +206,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周二"
+                        android:text="@string/tue"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -215,7 +215,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周三"
+                        android:text="@string/wen"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -224,7 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周四"
+                        android:text="@string/thu"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -233,7 +233,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周五"
+                        android:text="@string/fri"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
 
@@ -242,7 +242,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="周六"
+                        android:text="@string/sat"
                         android:textColor="@color/grey"
                         android:textSize="12sp" />
                 </LinearLayout>

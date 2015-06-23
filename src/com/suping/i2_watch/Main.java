@@ -304,8 +304,8 @@ public class Main extends Activity implements OnClickListener {
 		sleepScrloo.addView(sleepV);
 		
 		mList = new ArrayList<>();
-		mList.add(sleepPull);
 		mList.add(sportPull);
+		mList.add(sleepPull);
 		
 		mViewPager.setAdapter(new ViewPagerAdapter(mList));
 		mViewPager.setCurrentItem(0);
@@ -359,10 +359,11 @@ public class Main extends Activity implements OnClickListener {
 		//设置圆环进度
 		ccSport.setmProgress(compltete);
 		//设置运动信息
-		double b = compltete/step;
-		Log.e("MAIN", b + "<--");
-		
-		tvSportTips.setText("You had completed " + DataUtil.getPercent(b) + " ,come on.");
+		Log.e("MAIN", compltete + "<-  ->" + step );
+//		double b = compltete*1.0/step;
+		String  start =  getResources().getString(R.string.sport_tips_start);
+		String  end =  getResources().getString(R.string.sport_tips_end);
+		tvSportTips.setText(start + DataUtil.getPercent(compltete,step) + end);
 	}
 	
 	/**

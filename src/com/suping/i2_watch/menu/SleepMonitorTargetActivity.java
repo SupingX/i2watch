@@ -30,4 +30,11 @@ public class SleepMonitorTargetActivity extends AbstractSetTimeActivity{
 		}
 		
 	}
+
+	@Override
+	public boolean checkTime() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
 }

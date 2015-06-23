@@ -174,6 +174,28 @@ public class ConnectEvolveActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case 1:
+			if (resultCode == RESULT_CANCELED) {
+				Log.e("connectEvovlveActivity", "蓝牙未打开");
+				finish();
+			} else if((resultCode == RESULT_OK) ){
+				Log.e("connectEvovlveActivity", "蓝牙已打开");
+				if(!mBleManager.isScanning()){
+//					Log.d("conn","postDelayed 5000  :  " + !mBleManager.isScanning() );
+//					mHandler.postDelayed(startOnOpen, 3000);
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_close:
@@ -206,33 +228,11 @@ public class ConnectEvolveActivity extends Activity implements OnClickListener {
 			mBleManager.stopScan();
 			updateScanning();
 			break;
-
+	
 		default:
 			break;
 		}
-
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case 1:
-			if (resultCode == RESULT_CANCELED) {
-				Log.e("connectEvovlveActivity", "蓝牙未打开");
-				finish();
-			} else if((resultCode == RESULT_OK) ){
-				Log.e("connectEvovlveActivity", "蓝牙已打开");
-				if(!mBleManager.isScanning()){
-//					Log.d("conn","postDelayed 5000  :  " + !mBleManager.isScanning() );
-//					mHandler.postDelayed(startOnOpen, 3000);
-				}
-			}
-			break;
-
-		default:
-			break;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
+	
 	}
 
 	private void initViews() {

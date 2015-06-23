@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Signature setting" />
+        android:text="@string/signature_setting" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:id="@+id/ed_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Can not be empty"
+            android:hint="@string/can_not_be_empty"
                android:digits="1234567890abcdefghijklmnopqrstuvwxyz"
             android:selectAllOnFocus="true"
             android:maxLength="16"
@@ -50,14 +50,14 @@
             android:id="@+id/tips_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Maximun 16 characters"
+            android:text="@string/maximun_16_characters"
             android:textColor="@color/grey" />
 
         <TextView
             android:id="@+id/tips_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Supports only letters and numbers"
+            android:text="@string/supports_only_letters_and_numbers"
             android:textColor="@color/grey" />
     </LinearLayout>
 
@@ -79,7 +79,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:textColor="@drawable/selector_text_confirm" />
 
         <TextView
@@ -92,7 +92,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@drawable/selector_text_cancel" />
     </RelativeLayout>
 

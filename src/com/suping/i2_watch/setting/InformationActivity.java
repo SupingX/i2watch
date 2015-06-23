@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -233,7 +232,7 @@ public class InformationActivity extends Activity implements OnClickListener {
 		textViewWeightUnit = (TextView) findViewById(R.id.tv_weight_unit);
 		textViewBirthdayValue = (TextView) findViewById(R.id.tv_birhtday_value);
 		// 初始化标题
-		textViewTitle.setText("Personal info");
+		textViewTitle.setText(getResources().getString(R.string.personal_information));
 		// 初始化姓名
 		initName();
 		// 初始化性别

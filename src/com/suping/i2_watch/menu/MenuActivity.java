@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +24,7 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.enerty.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
+import com.xtremeprog.sdk.ble.BleManager;
 
 public class MenuActivity extends Activity implements OnClickListener {
 	// 转发code
@@ -39,6 +42,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 
 	// 连续按退出间隔时间
 	private long exitTime = 0;
+	/** 蓝牙  **/ 
+	private BleManager mBleBleManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_menu);
 		initViews();
 		setClick();
+		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
+		Log.i("MenuActivity", "--mbleBleManager : " + mBleBleManager);
 	}
 
 	@Override
@@ -178,6 +185,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_BRIGHT, tvBright.getText()
 					.toString().trim());
 			byte[] hexData1 = I2WatchProtocolData.hexDataForUpdateBrightness(this);
+			mBleBleManager.writeCharactics(hexData1);
 			break;
 
 		// 减少
@@ -191,17 +199,24 @@ public class MenuActivity extends Activity implements OnClickListener {
 			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_BRIGHT, tvBright.getText()
 					.toString().trim());
 			byte[] hexData2 = I2WatchProtocolData.hexDataForUpdateBrightness(this);
+			mBleBleManager.writeCharactics(hexData2);
 			break;
 
 		case R.id.rl_shutdown:
+			
+			Resources resources = getResources();
+			String message = resources.getString(R.string.is_close);
+			String confirm = resources.getString(R.string.confirm);
+			String cancel = resources.getString(R.string.cancel);
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("确定关闭手环？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			builder.setMessage(message).setPositiveButton(confirm, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					byte[] hexData = I2WatchProtocolData.hexDataForCloseI2Watch();
 					// XtremApplication.finishActivity();
+					mBleBleManager.writeCharactics(hexData);
 				}
-			}).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+			}).setNegativeButton(cancel, new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -258,11 +273,11 @@ public class MenuActivity extends Activity implements OnClickListener {
 	 */
 	private void init() {
 		// 标题
-		tvTitle.setText("Menu");
+		tvTitle.setText(getResources().getString(R.string.menu));
 
 		// signature
 		String signature = (String) SharedPreferenceUtil.get(getApplicationContext(),
-				I2WatchProtocolData.SHARE_SIGN_SET, "signature is not set");
+				I2WatchProtocolData.SHARE_SIGN_SET, getResources().getString(R.string.signature_is_not_set));
 		tvSignset.setText(signature);
 
 		// 亮度
@@ -321,6 +336,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 				}
 				// 写入属性
 				byte[] hexData = I2WatchProtocolData.hexDataForLostOnoffI2Watch(MenuActivity.this);
+				mBleBleManager.writeCharactics(hexData);
 			}
 		});
 

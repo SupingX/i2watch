@@ -13,16 +13,16 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- 存储文件 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!-- 存储视屏 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 相机 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 读取手机联系人 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <!--   <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"

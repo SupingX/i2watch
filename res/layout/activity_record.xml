@@ -30,7 +30,7 @@
             android:clickable="true"
             android:gravity="center"
             android:button="@null" 
-            android:text="Pedo"
+            android:text="@string/sport_record"
             android:textColor="@color/color_top_text_pressed"
             android:textSize="@dimen/dime_top_text" >
         </RadioButton>
@@ -42,7 +42,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:text="Sleep"
+            android:text="@string/sleep_record"
             android:button="@null" 
             android:textColor="@color/white"
             android:textSize="@dimen/dime_top_text" >

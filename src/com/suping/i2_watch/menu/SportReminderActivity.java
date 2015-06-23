@@ -55,7 +55,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		mReceiver = new SportReminderBroadcastReceiver();
 		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
 		Log.i("SportReminderActivity", "--mbleBleManager : " + mBleBleManager);
-		tvTitle.setText("Activity reminder");
+		tvTitle.setText(getResources().getString(R.string.sport_reminder));
 		
 	}
 
@@ -143,7 +143,8 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 			
 			SportRemindProtocol sp = I2WatchProtocolData.protocolDataForActivityRemindSync(this);
 			Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
-//			mBleBleManager.writeCharactics(sp);
+			mBleBleManager.writeCharactics(sp);
+			
 			this.finish();
 			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;
@@ -234,15 +235,15 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	 */
 	private void initSetting() {
 		// interval
-		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, "30");
+		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, "00");
 		tvIntervalValue.setText(reminder_interval);
 		// start
-		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, "07");
-		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, "00");
+		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
 		tvStartValue.setText(reminder_start_hour + ":" + reminder_start_min);
 		// end
-		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, "22");
-		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, "00");
+		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
+		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
 		tvEndValue.setText(reminder_end_hour + ":" + reminder_end_min);
 
 	}

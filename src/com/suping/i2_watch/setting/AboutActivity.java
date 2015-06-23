@@ -19,7 +19,7 @@ public class AboutActivity extends Activity {
 		setContentView(R.layout.activity_about);
 		imgBack = (ImageView) findViewById(R.id.img_back);
 		textViewTitle = (TextView) findViewById(R.id.tv_title);
-		textViewTitle.setText("About");
+		textViewTitle.setText(getResources().getString(R.string.about));
 		imgBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

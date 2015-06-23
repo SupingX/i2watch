@@ -1,9 +1,7 @@
 package com.suping.i2_watch.menu;
 
-import java.util.Calendar;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.enerty.ClockSetProtocol;
 import com.suping.i2_watch.enerty.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
+import com.xtremeprog.sdk.ble.BleManager;
 
 public class ClockActivity extends Activity implements OnClickListener {
 	// 请求/结果状态
@@ -68,18 +68,17 @@ public class ClockActivity extends Activity implements OnClickListener {
 	private int clockValue_2;
 	private int clockValue_3;
 	
-	//
-	private BroadcastReceiver mReceiver;
-//	private AlarmReceiver alarmReceiver;
-	
+//	private BroadcastReceiver mReceiver;
+	private BleManager mBleManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_clock);
 		initViews();
 		setClick();
-		textViewTitle.setText("Clock");
+		textViewTitle.setText(getResources().getString(R.string.clock));
 //		mReceiver = new ClockBroadcastReceiver();
+		mBleManager = ((XtremApplication)getApplication()).getBleManager();
 	}
 
 	@Override
@@ -162,7 +161,7 @@ public class ClockActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.img_back:
 			ClockSetProtocol cp = I2WatchProtocolData.protocolDataForClockSync(this);
-			
+			mBleManager.writeCharactics(cp);
 			Intent retrunToMenu = new Intent(ClockActivity.this, MenuActivity.class);
 			startActivity(retrunToMenu);
 			this.finish();

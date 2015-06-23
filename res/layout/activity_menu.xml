@@ -44,7 +44,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_reminder"
-                    android:text="@string/activity_reminder" />
+                    android:text="@string/sport_reminder" />
 
                 <ImageView
                         android:contentDescription="@string/app_name"
@@ -438,7 +438,7 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="25dp"
-                     android:maxLength="16"
+                     android:maxLength="20"
                      android:singleLine="true"
                      
                     android:layout_toRightOf="@id/tv_signset"

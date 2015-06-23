@@ -2,6 +2,8 @@ package com.suping.i2_watch.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * 数据转换工具类
@@ -33,11 +35,11 @@ public class DataUtil {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * String 转变为16进制String字符, 每个字节2位, 不足补0
 	 */
-	public static String getStringByString (String value) {
+	public static String getStringByString(String value) {
 		String hex = Integer.toHexString(Integer.valueOf(value));
 		StringBuilder stringBuilder = new StringBuilder();
 		if (hex.length() == 1) {
@@ -148,6 +150,13 @@ public class DataUtil {
 	}
 
 	/**
+	 * 比较2个时间的大小
+	 */
+	public static boolean compareTime(Date time1, Date time2) {
+		return time1.before(time2);
+	}
+
+	/**
 	 * 根据传入的2个字节2位16进制字符比如FFFF, 计算返回int类型的绝对值
 	 */
 	public static int hexStringX2bytesToInt(String hexString) {
@@ -235,54 +244,51 @@ public class DataUtil {
 	 * @param b
 	 * @return
 	 */
-	public static String getPercent(double b) {
-		NumberFormat num = NumberFormat.getPercentInstance();
-		num.setMaximumIntegerDigits(3);
-		num.setMaximumFractionDigits(2);
-		return num.format(b);
+	public static String getPercent(int x, int total) {
+		// NumberFormat num = NumberFormat.getPercentInstance();
+		// NumberFormat nf = NumberFormat.getInstance(Locale.FRENCH);
+		// nf .setMaximumIntegerDigits(2);
+		// nf .setMaximumFractionDigits(2);
+		// return nf.format(b);
+
+		String result = "";// 接受百分比的值
+		double x_double = x * 1.0;
+		double tempresult = x_double / total;
+		// NumberFormat nf = NumberFormat.getPercentInstance(); 注释掉的也是一种方法
+		// nf.setMinimumFractionDigits( 2 ); 保留到小数点后几位
+		DecimalFormat df1 = new DecimalFormat("0.00%"); // ##.00%
+														// 百分比格式，后面不足2位的用0补齐
+		// result=nf.format(tempresult);
+		result = df1.format(tempresult);
+		return result;
 	}
-	
+
 	/**
-	 * 十进制的字符串  --> 十六进制的字符串
+	 * 十进制的字符串 --> 十六进制的字符串
+	 * 
 	 * @param value
 	 * @return
 	 */
-	public static String getHexFormOctString(String value){
+	public static String getHexFormOctString(String value) {
 		return Integer.toHexString(Integer.valueOf(value));
 	}
-	
+
 	/**
-	 * int n1 = 14; 
-	 * //十进制转成十六进制：
-	 * Integer.toHexString(n1); 
-	 * //十进制转成八进制
-	 * Integer.toOctalString(n1); 
-	 * //十进制转成二进制 
-	 * Integer.toBinaryString(12);
+	 * int n1 = 14; //十进制转成十六进制： Integer.toHexString(n1); //十进制转成八进制
+	 * Integer.toOctalString(n1); //十进制转成二进制 Integer.toBinaryString(12);
 	 * 
-	 * //十六进制转成十进制 
-	 * Integer.valueOf("FFFF",16).toString(); 
-	 * //十六进制转成二进制
-	 * Integer.toBinaryString(Integer.valueOf("FFFF",16)); 
-	 * //十六进制转成八进制
+	 * //十六进制转成十进制 Integer.valueOf("FFFF",16).toString(); //十六进制转成二进制
+	 * Integer.toBinaryString(Integer.valueOf("FFFF",16)); //十六进制转成八进制
 	 * Integer.toOctalString(Integer.valueOf("FFFF",16));
 	 * 
-	 * //八进制转成十进制 
-	 * Integer.valueOf("576",8).toString(); 
-	 * //八进制转成二进制
-	 * Integer.toBinaryString(Integer.valueOf("23",8)); 
-	 * //八进制转成十六进制
+	 * //八进制转成十进制 Integer.valueOf("576",8).toString(); //八进制转成二进制
+	 * Integer.toBinaryString(Integer.valueOf("23",8)); //八进制转成十六进制
 	 * Integer.toHexString(Integer.valueOf("23",8));
 	 * 
 	 * 
-	 * //二进制转十进制 
-	 * Integer.valueOf("0101",2).toString(); 
-	 * //二进制转八进制
-	 * Integer.toOctalString(Integer.parseInt("0101", 2)); 
-	 * //二进制转十六进制
+	 * //二进制转十进制 Integer.valueOf("0101",2).toString(); //二进制转八进制
+	 * Integer.toOctalString(Integer.parseInt("0101", 2)); //二进制转十六进制
 	 * Integer.toHexString(Integer.parseInt("0101", 2));
 	 */
-	
-	
-	
+
 }

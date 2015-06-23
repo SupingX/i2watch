@@ -31,9 +31,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="Start time" />
+                    android:text="@string/start_time" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
                      android:padding="8dp"
                     android:layout_width="48dp"
@@ -49,7 +50,6 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@id/img_right_2"
-                    android:text="09:00"
                     android:textColor="@color/grey" />
             </RelativeLayout>
 
@@ -71,9 +71,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="End time" />
+                    android:text="@string/end_time" />
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
                     android:padding="8dp"
                     android:layout_width="48dp"
@@ -89,7 +90,6 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@id/img_right_3"
-                    android:text="09:00"
                     android:textColor="@color/grey" />
             </RelativeLayout>
 

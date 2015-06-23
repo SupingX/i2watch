@@ -45,7 +45,7 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_sleep_monitor);
 		initViews();
 		setClick();
-		tvTitle.setText("Sleep monitor");
+		tvTitle.setText(getResources().getString(R.string.sleep_monitor));
 		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
 		Log.i("SleepMonitorActivity", "--mbleBleManager : " + mBleBleManager);
 	}
@@ -189,16 +189,16 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 	 */
 	private void initSetting() {
 		// target
-		String targetHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_HOUR, "07");
-		String targetMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_MIN, "00");
+		String targetHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+		String targetMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
 		tvTargetValue.setText(targetHour + ":" + targetMin);
 		// start
-		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_HOUR, "07");
-		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_MIN, "00");
+		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
 		tvStartValue.setText(startHour + ":" + startMin);
 		// end
-		String endHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_HOUR, "07");
-		String endMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_MIN, "00");
+		String endHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
+		String endMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
 		tvEndValue.setText(endHour + ":" + endMin);
 
 	}

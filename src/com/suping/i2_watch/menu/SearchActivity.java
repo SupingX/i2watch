@@ -4,17 +4,12 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
@@ -26,20 +21,20 @@ import com.xtremeprog.sdk.ble.BleService;
 
 public class SearchActivity extends Activity implements OnClickListener {
 	private String TAG = this.getClass().getSimpleName();
-	private ImageView imgRomation;
-	private Animation operatingAnim;
+//	private ImageView imgRomation;
+//	private Animation operatingAnim;
 	private TextView tvCancel;
 	private TextView tvSearchInfo;
 //	private boolean isConnected;
 	private RadarView radar;
 	
 //确保类内部的handler不含有对外部类的隐式引用 
-	private static Handler mHandler = new Handler(){
+	private  Handler mHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case 1:
-				mHandler.postDelayed(r, 6000);
+				mHandler.postDelayed(search, 6000);
 				
 				break;
 
@@ -125,14 +120,15 @@ public class SearchActivity extends Activity implements OnClickListener {
 		setLinstener();
 		mBleManager = ((XtremApplication)getApplication()).getBleManager();
 		Log.d(TAG, "mBleManager : " + mBleManager);
-		mHandler.post(r);
+		mHandler.post(search);
 	}
 	
-	private static Runnable r = new Runnable() {
+	private  Runnable search = new Runnable() {
 		
 		@Override
 		public void run() {
 			byte [] hexData = I2WatchProtocolData.hexDataForSearchI2Watch();
+			mBleManager.writeCharactics(hexData);
 			mHandler.sendEmptyMessage(1);
 		}
 		
@@ -165,6 +161,11 @@ public class SearchActivity extends Activity implements OnClickListener {
 //	    }   
 //		super.onConfigurationChanged(newConfig);
 //	}
+	@Override
+	protected void onDestroy() {
+		mHandler.removeCallbacks(search);
+		super.onDestroy();
+	}
 	
 	@Override
 	public void onClick(View v) {

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
@@ -80,8 +80,17 @@ public class CallfakerFromActivity extends Activity {
 		mListView = (ListView) findViewById(R.id.listV);
 		edName = (EditText) findViewById(R.id.ed_name);
 		edPhone = (EditText) findViewById(R.id.ed_phone);
+		
+		Resources resources = getResources();
+		String[] data = resources.getStringArray(R.array.cursor_list);
+//		String [] data = new String[]{
+//				resources.getString(R.string.custom),
+//				resources.getString(R.string.random),
+//				resources.getString(R.string.choose)
+//		};
+		
 		mListView.setAdapter(new ArrayAdapter<String>(CallfakerFromActivity.this,
-				android.R.layout.select_dialog_singlechoice, new String[] { "通讯录随机抽取", "从通讯录中选择", "自定义联系人" }));
+				android.R.layout.select_dialog_singlechoice, data));
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		// mListView.setItemChecked(0, true);
 		rlOk = (LinearLayout) findViewById(R.id.ok);
