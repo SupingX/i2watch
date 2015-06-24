@@ -272,6 +272,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 	 * 初始化值
 	 */
 	private void init() {
+		
 		// 标题
 		tvTitle.setText(getResources().getString(R.string.menu));
 
