@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="2" >
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    >
+    <LinearLayout
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/reduce"
+            android:src="@drawable/selector_btn_decrease_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2015-05-25" />
+
+        <ImageView
+                 android:contentDescription="@string/app_name"
+            android:id="@+id/increase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                   android:src="@drawable/selector_btn_increase_date" />
+    </LinearLayout>
+    
+        <TextView
+            android:padding="12dp"
+	        android:id="@+id/tv_sync_sport"
+	        android:clickable="true"
+	        android:layout_width="wrap_content"
+      		android:layout_height="48dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:text="同步"
+	        android:textColor="@drawable/selector_text_confirm" />
+        
+        </RelativeLayout>
+
+    <com.suping.i2_watch.view.SportCountView
+        android:id="@+id/count_sport"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#c2f" >
+
+        <TextView
+            android:id="@+id/count_sport_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="运动数据统计" />
+    </RelativeLayout>
+
+</LinearLayout>
