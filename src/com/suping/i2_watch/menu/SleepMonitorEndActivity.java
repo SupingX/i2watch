@@ -1,6 +1,6 @@
 package com.suping.i2_watch.menu;
 
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
@@ -34,7 +34,6 @@ public class SleepMonitorEndActivity extends AbstractSetTimeActivity {
 	@Override
 	public boolean checkTime() {
 		int hour = npHour.getValue();
-		int min = npMin.getValue();
 		
 		String hourStart = (String) SharedPreferenceUtil.get(SleepMonitorEndActivity.this,
 				I2WatchProtocolData.SHARE_MONITOR_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);

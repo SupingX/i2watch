@@ -10,8 +10,6 @@ import android.widget.NumberPicker.Formatter;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
-import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 /**
  * 抽象类
@@ -126,7 +124,4 @@ public abstract class AbstractSetTimeActivity extends Activity {
 	 * 检查时间设置是否正确
 	 */
 	abstract public boolean checkTime();
-	
-	
-	
 }

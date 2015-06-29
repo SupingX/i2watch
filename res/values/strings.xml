@@ -112,23 +112,27 @@
         <item name="choose"> Contacts for choose</item>
         <item name="custom"> Custom</item>
     </string-array>
-        <string name="personal_information">Personal information</string>
-        <string name="pedometer_target">Pedometer target</string>
-        <string name="about">About</string>
-        <string name="name_personal">Name</string>
-        <string name="input_your_name_">Input your name.</string>
-        <string name="gender">Gender</string>
-        <string name="height">Height</string>
-        <string name="weight">Weight</string>
-        <string name="birthday">Birthday</string>
-        
-        <string name="walk">walk about</string>
-        <string name="km">km</string>
-        <string name="expend">expend about</string>
-        <string name="expert_advice">Expert advice</string>
-        <string name="advice_sport">10,000 steps daily exercise is a healthy and active lifestyle</string>
-        <string name="light">Light</string>
-        <string name="medium">Medium</string>
-        <string name="heavy">Heavy</string>
+
+    <string name="personal_information">Personal information</string>
+    <string name="pedometer_target">Pedometer target</string>
+    <string name="about">About</string>
+    <string name="name_personal">Name</string>
+    <string name="input_your_name_">Input your name.</string>
+    <string name="gender">Gender</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="birthday">Birthday</string>
+    <string name="walk">walk about</string>
+    <string name="km">km</string>
+    <string name="expend">expend about</string>
+    <string name="expert_advice">Expert advice</string>
+    <string name="advice_sport">10,000 steps daily exercise is a healthy and active lifestyle</string>
+    <string name="light">Light</string>
+    <string name="medium">Medium</string>
+    <string name="heavy">Heavy</string>
+    <string name="disconnected">disconnected</string>
+    <string name="sport_remind_tips">在xx:xx 到 xx:xx,如果xxx分钟内没有运动，I2 Watch 将会震动提醒.</string>
+    <string name="search_unconnected">蓝牙未连接...</string>
+    <string name="title_activity_record_menu">RecordMenuActivity</string>
 
 </resources>

@@ -10,7 +10,7 @@ import android.widget.NumberPicker.OnScrollListener;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SportReminderIntervalActivity extends Activity {

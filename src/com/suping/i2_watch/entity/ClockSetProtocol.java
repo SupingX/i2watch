@@ -1,4 +1,4 @@
-package com.suping.i2_watch.enerty;
+package com.suping.i2_watch.entity;
 
 import com.suping.i2_watch.util.DataUtil;
 /**

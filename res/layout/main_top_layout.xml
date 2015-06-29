@@ -5,41 +5,39 @@
     android:background="@color/color_top_bg"
     tools:context="${packageName}.${activityClass}" >
 
-        <ImageView
-            android:id="@+id/img_setting"
-            android:layout_width="@dimen/dimen_top_height"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:contentDescription="@string/app_name"
-            android:focusable="true"
-            android:background="@drawable/selector_return_left"
-            android:src="@drawable/selector_icon_setting" />
+    <ImageView
+        android:id="@+id/img_setting"
+        android:layout_width="@dimen/dimen_top_height"
+        android:layout_height="@dimen/dimen_top_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_return_left"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        android:focusable="true"
+        android:src="@drawable/selector_icon_setting" />
 
-         <ImageView
-             
-             android:id="@+id/img_menu"
-             android:layout_width="@dimen/dimen_top_height"
-             android:layout_height="match_parent"
-             android:layout_alignParentLeft="true"
-             android:layout_centerVertical="true"
-             android:clickable="true"
-             android:contentDescription="@string/app_name"
-             android:focusable="true"
-             android:src="@drawable/selector_icon_menu" 
-             android:background="@drawable/selector_return_left"
-             />
+    <ImageView
+        android:id="@+id/img_menu"
+        android:layout_width="@dimen/dimen_top_height"
+        android:layout_height="@dimen/dimen_top_height"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_return_left"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        android:focusable="true"
+        android:src="@drawable/selector_icon_menu" />
 
     <TextView
         android:id="@+id/tv_title"
-        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:background="@drawable/selector_return_left"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@drawable/selector_color_text"
         android:textSize="@dimen/dime_top_text" />

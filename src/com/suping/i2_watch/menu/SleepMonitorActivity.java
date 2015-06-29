@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
-import com.suping.i2_watch.enerty.SleepMonitorProtocol;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.SleepMonitorProtocol;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.xtremeprog.sdk.ble.BleManager;
 
@@ -124,7 +124,7 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 			//
 			SleepMonitorProtocol sp = I2WatchProtocolData.protocolDataForSleepPeriodSync(this);
 			//m
-			//mBleBleManager.writeCharactics(sp);
+			mBleBleManager.writeCharactics(sp);
 			
 			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;

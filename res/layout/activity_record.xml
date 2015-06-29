@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}" >
-
     <RadioGroup
         android:id="@+id/rg_top"
         android:layout_width="match_parent"
@@ -11,6 +10,7 @@
         android:background="@color/color_top_bg"
         android:orientation="horizontal"
         android:weightSum="2" >
+
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="@dimen/dimen_top_height"
@@ -27,9 +27,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:button="@null"
             android:clickable="true"
             android:gravity="center"
-            android:button="@null" 
             android:text="@string/sport_record"
             android:textColor="@color/color_top_text_pressed"
             android:textSize="@dimen/dime_top_text" >
@@ -40,19 +40,22 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:button="@null"
             android:clickable="true"
             android:gravity="center_vertical"
             android:text="@string/sleep_record"
-            android:button="@null" 
             android:textColor="@color/white"
             android:textSize="@dimen/dime_top_text" >
+            
         </RadioButton>
-</RadioGroup>
-    <android.support.v4.view.ViewPager
+    </RadioGroup>
+    
+       <com.suping.i2_watch.view.NoScrollViewPager
+        android:layout_below="@id/rg_top"
         android:id="@+id/vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/top" >
-   </android.support.v4.view.ViewPager>
-
+        android:layout_alignParentBottom="true" >
+	</com.suping.i2_watch.view.NoScrollViewPager>
+	
 </RelativeLayout>

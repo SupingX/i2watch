@@ -12,8 +12,10 @@ import android.util.Log;
 public class FileUtil {
 	 private static final  String TAG = "FileUtil";  
 	    private static final File parentPath = Environment.getExternalStorageDirectory();  
+//	    private static final File parentPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+	    
 	    private static   String storagePath = "";  
-	    private static final String DST_FOLDER_NAME = "PlayCamera";  
+	    private static final String DST_FOLDER_NAME = "i2watch";  
 	  
 	    /**初始化保存路径 
 	     * @return 
@@ -50,6 +52,5 @@ public class FileUtil {
 	            Log.i(TAG, "saveBitmap:失败");  
 	            e.printStackTrace();  
 	        }  
-	  
 	    }  
 }

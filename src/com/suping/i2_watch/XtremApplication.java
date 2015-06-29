@@ -2,14 +2,14 @@ package com.suping.i2_watch;
 
 import java.util.ArrayList;
 
+import org.litepal.LitePalApplication;
+
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;
 import com.xtremeprog.sdk.ble.IBle;
 
 import android.app.Activity;
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

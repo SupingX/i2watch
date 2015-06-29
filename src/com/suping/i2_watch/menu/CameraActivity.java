@@ -9,6 +9,9 @@ import com.suping.i2_watch.view.CameraSurfaceView;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,11 +21,38 @@ public class CameraActivity extends Activity implements CamOpenOverCallback {
 	private CameraSurfaceView surfaceView = null;
 	/** ImageView ： 返回、拍照 **/
 	private ImageView imgBack, imgCamera;
+	
 	float previewRate = -1f;
+	
+	private Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+		}
+	};
+	
+	private Runnable openThread = new Runnable() {
+
+		@Override
+		public void run() {
+			CameraInterface.getInstance().doOpenCamera(CameraActivity.this);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.activity_camera);
+		initUI();
+		initViewParams();
+		imgCamera.setOnClickListener(new BtnListeners());
+		imgBack.setOnClickListener(new BtnListeners());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		Thread openThread = new Thread() {
 			@Override
 			public void run() {
@@ -31,16 +61,23 @@ public class CameraActivity extends Activity implements CamOpenOverCallback {
 			}
 		};
 		openThread.start();
-		setContentView(R.layout.activity_camera);
-		initUI();
-		initViewParams();
-
-		imgCamera.setOnClickListener(new BtnListeners());
-		imgBack.setOnClickListener(new BtnListeners());
+		
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		CameraInterface.getInstance().doStopCamera();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 
 	private void initUI() {
-		
+
 		imgBack = (ImageView) findViewById(R.id.img_back);
 		imgCamera = (ImageView) findViewById(R.id.img_camera);
 		surfaceView = (CameraSurfaceView) findViewById(R.id.surface);
@@ -66,13 +103,13 @@ public class CameraActivity extends Activity implements CamOpenOverCallback {
 	public void cameraHasOpened() {
 		// TODO Auto-generated method stub
 		SurfaceHolder holder = surfaceView.getSurfaceHolder();
+		Log.d("CaneraActivity", " holder.isCreating() -->" + holder.isCreating());
 		CameraInterface.getInstance().doStartPreview(holder, previewRate);
 	}
 
 	private class BtnListeners implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			switch (v.getId()) {
 			case R.id.img_camera:
 				CameraInterface.getInstance().doTakePicture();

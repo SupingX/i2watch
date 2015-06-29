@@ -3,19 +3,21 @@ package com.suping.i2_watch.view;
 import java.io.IOException;
 import java.util.List;
 
-import com.suping.i2_watch.util.CamParaUtil;
-import com.suping.i2_watch.util.FileUtil;
-import com.suping.i2_watch.util.ImageUtil;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.hardware.Camera.ErrorCallback;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import com.suping.i2_watch.util.CamParaUtil;
+import com.suping.i2_watch.util.FileUtil;
+import com.suping.i2_watch.util.ImageUtil;
 
 public class CameraInterface {
 	private static final String TAG = "yanzi";
@@ -47,8 +49,14 @@ public class CameraInterface {
 	 */
 	public void doOpenCamera(CamOpenOverCallback callback) {
 		Log.i(TAG, "Camera open....");
-		mCamera = Camera.open();
+		try {
+			mCamera = Camera.open();
+		} catch (Exception e) {
+			Log.e("CameraInterface", "openCamera异常。。。");
+		}
 		Log.i(TAG, "Camera open over....");
+		
+		//开启预览？
 		callback.cameraHasOpened();
 	}
 
@@ -65,9 +73,12 @@ public class CameraInterface {
 			return;
 		}
 		if (mCamera != null) {
-
 			mParams = mCamera.getParameters();
+			// setPictureFormat(int pixel_format):设置图片的格式，其取值为PixelFormat
+			// YCbCr_420_SP、PixelFormatRGB_565或者PixelFormatJPEG。
 			mParams.setPictureFormat(PixelFormat.JPEG);// 设置拍照后存储的图片格式
+		
+			
 			CamParaUtil.getInstance().printSupportPictureSize(mParams);
 			CamParaUtil.getInstance().printSupportPreviewSize(mParams);
 			// 设置PreviewSize和PictureSize
@@ -77,13 +88,13 @@ public class CameraInterface {
 			Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(mParams.getSupportedPreviewSizes(),
 					previewRate, 800);
 			mParams.setPreviewSize(previewSize.width, previewSize.height);
-
-			mCamera.setDisplayOrientation(90);
-
+			
+			
+			mCamera.setDisplayOrientation(90);//旋转90°
 			CamParaUtil.getInstance().printSupportFocusMode(mParams);
 			List<String> focusModes = mParams.getSupportedFocusModes();
 			if (focusModes.contains("continuous-video")) {
-				mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+				mParams.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);//焦点
 			}
 			mCamera.setParameters(mParams);
 
@@ -93,6 +104,9 @@ public class CameraInterface {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				mCamera.release();
+				mCamera = null;
+				isPreviewing=false;
 			}
 
 			isPreviewing = true;
@@ -125,34 +139,36 @@ public class CameraInterface {
 	/**
 	 * 拍照
 	 */
-	public void doTakePicture() {
+	public synchronized void doTakePicture() {
+		Log.e("--- CameraInterface ----", "isPreviewing : " + isPreviewing);
 		if (isPreviewing && (mCamera != null)) {
 			mCamera.takePicture(mShutterCallback, null, mJpegPictureCallback);
 		}
 	}
 
-	/* 为了实现拍照的快门声音及拍照保存照片需要下面三个回调变量 */
-	ShutterCallback mShutterCallback = new ShutterCallback()
+	/**  ↓↓↓↓↓↓↓↓↓↓↓↓↓ 为了实现拍照的快门声音及拍照保存照片需要下面三个回调变量  ↓↓↓↓↓↓↓↓↓↓↓↓↓  **/
+	
 	// 快门按下的回调，在这里我们可以设置类似播放“咔嚓”声之类的操作。默认的就是咔嚓。
-	{
+	private ShutterCallback mShutterCallback = new ShutterCallback() {
+	
 		public void onShutter() {
 			// TODO Auto-generated method stub
 			Log.i(TAG, "myShutterCallback:onShutter...");
 		}
 	};
-	PictureCallback mRawCallback = new PictureCallback()
+	
 	// 拍摄的未压缩原数据的回调,可以为null
-	{
-
+	private PictureCallback mRawCallback = new PictureCallback() {
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub
 			Log.i(TAG, "myRawCallback:onPictureTaken...");
 
 		}
 	};
-	PictureCallback mJpegPictureCallback = new PictureCallback()
+	
 	// 对jpeg图像数据的回调,最重要的一个回调
-	{
+	private PictureCallback mJpegPictureCallback = new PictureCallback() {
+	
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub
 			Log.i(TAG, "myJpegCallback:onPictureTaken...");
@@ -168,12 +184,42 @@ public class CameraInterface {
 				// 90)失效。
 				// 图片竟然不能旋转了，故这里要旋转下
 				Bitmap rotaBitmap = ImageUtil.getRotateBitmap(b, 90.0f);
-				FileUtil.saveBitmap(rotaBitmap);
+//				FileUtil.saveBitmap(rotaBitmap);
+				new SavePictureTask().execute(rotaBitmap);
 			}
 			// 再次进入预览
 			mCamera.startPreview();
 			isPreviewing = true;
 		}
 	};
-
+	/**  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 为了实现拍照的快门声音及拍照保存照片需要下面三个回调变量   ↑↑↑↑↑↑↑↑↑↑↑↑↑↑   **/
+	
+	//异步存贮照片
+	private class SavePictureTask extends AsyncTask<Bitmap, String, Boolean> {
+		@Override
+		protected Boolean doInBackground(Bitmap... params) {
+			Log.i("CameraInterface", "SavePictureTask ...存贮预览" );
+			try {
+				FileUtil.saveBitmap(params[0]);
+				return true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				mCamera.release();
+				mCamera = null;
+				isPreviewing=false;
+			}
+			return false;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if(result){
+				Log.i("CameraInterface", "SavePictureTask ...存贮成功" );
+			} else {
+				Log.i("CameraInterface", "SavePictureTask ...存贮失败" );
+			}
+		}
+	}
 }

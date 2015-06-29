@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.enerty.ClockSetProtocol;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.ClockSetProtocol;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.xtremeprog.sdk.ble.BleManager;
 

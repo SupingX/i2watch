@@ -1,9 +1,10 @@
 package com.suping.i2_watch.util;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+
+import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 
 /**
  * 数据转换工具类
@@ -290,5 +291,24 @@ public class DataUtil {
 	 * Integer.toOctalString(Integer.parseInt("0101", 2)); //二进制转十六进制
 	 * Integer.toHexString(Integer.parseInt("0101", 2));
 	 */
-
+	/**
+	 * 格式化日期
+	 * @param time
+	 * @return
+	 */
+	  public static String formatDateTime(long time) {
+	        if (0 == time) {
+	            return "";
+	        }
+	        SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+	        return mDateFormat.format(new Date(time));
+	    }
+	  
+	  /**
+	   * 设置最后更新日期
+	   */
+	 public static void setLastUpdateTime(PullToRefreshScrollView view) {
+	        String text = formatDateTime(System.currentTimeMillis());
+	        view.setLastUpdatedLabel(text);
+	    }
 }

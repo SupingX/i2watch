@@ -4,11 +4,15 @@ import java.text.DecimalFormat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
@@ -21,7 +25,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 	private TextView textViewTitle,textViewStep,textViewKm,textViewKcal;
 	private com.suping.i2_watch.view.CircleSeekBar seekbar;
 	private TextView textViewLight,textViewMedium,textViewHeavy;
-	private ImageView imgLight,imgMedium,imgHeavy;
+	private RadioGroup rgPedo;
 	private int goal;
 	public static final String SHARE_GOAL = "share_goal";
 	
@@ -57,20 +61,22 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 					R.anim.activity_from_left_to_right_exit);
 			break;
 			
-		case R.id.img_light_pedo:
+		case R.id.tv_light_pedo:
+			rgPedo.check(0);
 			seekbar.setProgress(5000);
 			goal = 5000;
-			updateUI(1);
+		
 			break;
-		case R.id.img_monitor_pedo:
+		case R.id.tv_monitor_pedo:
+			rgPedo.check(1);
 			seekbar.setProgress(10000);
 			goal = 10000;
-			updateUI(2);
+		
 			break;
-		case R.id.img_heavy_pedo:
+		case R.id.tv_heavy_pedo:
+			rgPedo.check(2);
 			seekbar.setProgress(15000);
 			goal = 15000;
-			updateUI(3);
 			break;
 		default:
 			break;
@@ -86,12 +92,18 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 		textViewStep.setText(goal+"");
 		
 	}
-
+	
+	private void setDrawable(TextView tv , int resourceid){
+		 Resources res = getResources();
+		 Drawable img = res.getDrawable(resourceid);
+		 // 调用setCompoundDrawables时，必须调用Drawable.setBounds()方法,否则图片不显示
+		 img.setBounds(0, 0, img.getMinimumWidth(), img.getMinimumHeight());
+		 tv.setCompoundDrawables(null, img, null, null); //
+	}
+	
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
-		imgLight = (ImageView) findViewById(R.id.img_light_pedo);
-		imgMedium = (ImageView) findViewById(R.id.img_monitor_pedo);
-		imgHeavy = (ImageView) findViewById(R.id.img_heavy_pedo);
+		rgPedo = (RadioGroup) findViewById(R.id.rg_pedo);
 		textViewTitle = (TextView) findViewById(R.id.tv_title);
 		textViewStep = (TextView) findViewById(R.id.tv_step_value);
 		textViewKm = (TextView) findViewById(R.id.tv_kg_value);
@@ -109,9 +121,29 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 	
 	private void setClick() {
 		imgBack.setOnClickListener(this);
-		imgLight.setOnClickListener(this);
-		imgMedium.setOnClickListener(this);
-		imgHeavy.setOnClickListener(this);
+		textViewLight.setOnClickListener(this);
+		textViewMedium.setOnClickListener(this);
+		textViewHeavy.setOnClickListener(this);
+		rgPedo.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.tv_light_pedo:
+					updateUI(1);
+					break;
+				case R.id.tv_monitor_pedo:
+					updateUI(2);
+					break;
+				case R.id.tv_heavy_pedo:
+					updateUI(3);
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
 	}
 	
 	/**
@@ -124,28 +156,27 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 			textViewLight.setTextColor(getResources().getColor(R.color.color_top_bg));
 			textViewMedium.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
-			imgLight.setImageResource(R.drawable.ic_targetlight);
-			imgMedium.setImageResource(R.drawable.selector_pedo_medium);
-			imgHeavy.setImageResource(R.drawable.selector_pedo_heavy);
-			
+			setDrawable(textViewLight,R.drawable.ic_targetlight);
+			setDrawable(textViewMedium,R.drawable.ic_targetmedium_unless);
+			setDrawable(textViewHeavy,R.drawable.ic_targetheavy_unless);
 			break;
 		case 2:
 			Log.d("OB", "case2");
 			textViewLight.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewMedium.setTextColor(getResources().getColor(R.color.color_top_bg));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
-			imgLight.setImageResource(R.drawable.selector_pedo_light);
-			imgMedium.setImageResource(R.drawable.ic_targetmedium);
-			imgHeavy.setImageResource(R.drawable.selector_pedo_heavy);
+			setDrawable(textViewLight,R.drawable.ic_targetlight_unless);
+			setDrawable(textViewMedium,R.drawable.ic_targetmedium);
+			setDrawable(textViewHeavy,R.drawable.ic_targetheavy_unless);
 			break;
 		case 3:
 			Log.d("OB", "case3");
 			textViewLight.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewMedium.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.color_top_bg));
-			imgLight.setImageResource(R.drawable.selector_pedo_light);
-			imgMedium.setImageResource(R.drawable.selector_pedo_medium);
-			imgHeavy.setImageResource(R.drawable.ic_targetheavy);
+			setDrawable(textViewLight,R.drawable.ic_targetlight_unless);
+			setDrawable(textViewMedium,R.drawable.ic_targetmedium_unless);
+			setDrawable(textViewHeavy,R.drawable.ic_targetheavy);
 			break;
 
 		default:

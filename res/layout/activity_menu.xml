@@ -475,7 +475,7 @@
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_shutdown" />
+                    android:src="@drawable/ic_action_call" />
 
                 <TextView
                     android:id="@+id/tv_incoming"
@@ -527,7 +527,7 @@
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_shutdown" />
+                    android:src="@drawable/ic_action_cc_bcc" />
 
                 <TextView
                     android:id="@+id/tv_callfaker"

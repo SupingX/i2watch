@@ -25,7 +25,7 @@
             android:layout_centerInParent="true"
            	android:textColor="@drawable/selector_text_confirm"
            	android:clickable="true"
-            android:text="disconnected" />
+            android:text="@string/disconnected" />
 
         <ImageView
                 android:contentDescription="@string/app_name"

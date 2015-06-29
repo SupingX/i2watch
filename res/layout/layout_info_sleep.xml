@@ -40,7 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="9.0"
                 android:textColor="@color/color_sleep_text"
                 android:textSize="30sp" />
 
@@ -71,6 +70,7 @@
                 android:layout_centerHorizontal="true" >
 
                 <ImageView
+                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_goal"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="12.0" />
+                 />
 
                 <TextView
                     android:id="@+id/unit"
@@ -124,6 +124,7 @@
             android:gravity="center" >
 
             <ImageView
+                     android:contentDescription="@string/app_name"
                 android:id="@+id/img_deep"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -144,7 +145,6 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="12.0"
                 android:textColor="@color/color_sleep_text"
                 android:textSize="18sp" />
 
@@ -171,6 +171,7 @@
             android:gravity="center" >
 
             <ImageView
+                     android:contentDescription="@string/app_name"
                 android:id="@+id/img_light"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -192,7 +193,6 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="12.0"
                 android:textColor="@color/color_sleep_text"
                 android:textSize="18sp" />
 
@@ -219,6 +219,7 @@
             android:gravity="center" >
 
             <ImageView
+                     android:contentDescription="@string/app_name"
                 android:id="@+id/img_awake"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -239,7 +240,6 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="1.2"
                 android:textColor="@color/color_sleep_text"
                 android:textSize="18sp" />
 

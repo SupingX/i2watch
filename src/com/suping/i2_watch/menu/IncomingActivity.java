@@ -1,6 +1,7 @@
 package com.suping.i2_watch.menu;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.app.Activity;
@@ -17,10 +18,7 @@ import android.widget.Toast;
 
 public class IncomingActivity extends Activity implements OnClickListener{
 	
-	public final static String SHARE_INCOMING_START_HOUR = "incoming_start_hour";
-	public final static String SHARE_INCOMING_START_MIN = "incoming_start_min";
-	public final static String SHARE_INCOMING_END_HOUR = "incoming_end_hour";
-	public final static String SHARE_INCOMING_END_MIN = "incoming_end_min";
+
 	
 	private ImageView imgBack;
 	private TextView textViewTitle;
@@ -52,8 +50,8 @@ public class IncomingActivity extends Activity implements OnClickListener{
 					Log.e("incoming", "value : " + value);
 					textViewStart.setText(value);
 	//				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_START, value);
-					SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_START_HOUR, min);
-					SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_START_MIN, sec);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_HOUR, min);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_MIN, sec);
 					break;
 				default:
 					break;
@@ -69,8 +67,8 @@ public class IncomingActivity extends Activity implements OnClickListener{
 					String value = min+":"+sec;
 					textViewEnd.setText(value);
 	//				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_END, value);
-					SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_END_HOUR, min);
-					SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_END_MIN, sec);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_HOUR, min);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_MIN, sec);
 					break;
 				default:
 					break;
@@ -127,12 +125,12 @@ public class IncomingActivity extends Activity implements OnClickListener{
 		rlStart = (RelativeLayout) findViewById(R.id.rl_start);
 		rlEnd = (RelativeLayout) findViewById(R.id.rl_end);
 		
-		String incomingStartHour = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_INCOMING_START_HOUR, "07");
-		String incomingStartMin = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_INCOMING_START_MIN, "00");
+		String incomingStartHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+		String incomingStartMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
 		textViewStart.setText(incomingStartHour + ":" +incomingStartMin);
 		
-		String incomingEndHour = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_INCOMING_END_HOUR, "07");
-		String incomingEndMin = (String) SharedPreferenceUtil.get(getApplicationContext(), SHARE_INCOMING_END_MIN, "00");
+		String incomingEndHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
+		String incomingEndMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
 		textViewEnd.setText(incomingEndHour + ":" + incomingEndMin);
 		
 	}

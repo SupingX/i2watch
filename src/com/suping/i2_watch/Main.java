@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.litepal.LitePalApplication;
+import org.litepal.crud.DataSupport;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -24,7 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,8 +33,10 @@ import android.widget.Toast;
 import com.lee.pullrefresh.ui.PullToRefreshBase;
 import com.lee.pullrefresh.ui.PullToRefreshBase.OnRefreshListener;
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
+import com.suping.i2_watch.entity.History;
 import com.suping.i2_watch.menu.MenuActivity;
 import com.suping.i2_watch.menu.RecordActivity;
+import com.suping.i2_watch.menu.db.DbUtil;
 import com.suping.i2_watch.setting.PedometerActivity;
 import com.suping.i2_watch.setting.SettingActivity;
 import com.suping.i2_watch.util.DataUtil;
@@ -80,14 +83,17 @@ public class Main extends Activity implements OnClickListener {
 	private ColorsCircle ccSport;
 	/** 圆环 睡眠（sleep）  **/
 	private ColorsCircle ccSleep;
-	/** 导航圆点 radioGroup **/
-	private RadioGroup rgDot;
+//	/** 导航圆点 radioGroup **/
+//	private RadioGroup rgDot;
 	/** 导航圆点 radioButton : sleep DOT & sport DOT **/
 	private RadioButton rbDotSleep,rbDotSport;
 	/** 双击间隔 退出  **/
 	private long exitTime = 0;
 	/** 蓝牙工具 **/
 	private BleManager mBleManager;
+	/** 上次更新时间   **/
+	
+	
 	private Handler mHandler = new Handler(){
 		
 	};
@@ -165,14 +171,19 @@ public class Main extends Activity implements OnClickListener {
 		setListener();
 		intiSportValue();
 		intiSleepValue();
+		
+	
+		
+	
 	}
 	
 	@Override
 	protected void onResume() {
 		IntentFilter mIntentFilter = BleService.getIntentFilter();
 		registerReceiver(mReceiver, mIntentFilter);
-		mBleManager = ((XtremApplication)getApplication()).getBleManager();
+		mBleManager = ((LitePalApplication)getApplication()).getBleManager();
 		Log.e("Main.java", "mBleManager : " + mBleManager);
+		
 //		updateBlueState();
 		super.onResume();
 	}
@@ -184,6 +195,7 @@ public class Main extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		mHandler.removeCallbacks(reScan);
+		Log.e("Main", "我销毁了...");
 		super.onDestroy();
 	}
 	
@@ -204,9 +216,9 @@ public class Main extends Activity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 		case R.id.tv_title:
-			//第一次进入，不回扫描，则不用停止
-			//连接成功，也不用停止
-			//断开连接，会启动扫描。点击了连接就停止扫描
+			//第一次进入( isscanning = false , isconnectted = false )，不会扫描，则不用停止
+			//连接成功   ( isscanning = false , isconnectted = true )，也不用停止
+			//断开连接( isscanning = true , isconnectted = false )，会启动扫描。点击了连接就停止扫描
 			if(mBleManager.isScanning()){
 				mBleManager.stopScan();
 			}
@@ -217,9 +229,11 @@ public class Main extends Activity implements OnClickListener {
 			if(!mBleManager.isConnectted()){
 				mBleManager.setCurrentAddress(null);
 			}
+			
 			mHandler.removeCallbacks(reScan);
 			Intent intentBluetooth = new Intent(Main.this, ConnectEvolveActivity.class);
 			startActivity(intentBluetooth);
+			
 			break;
 		
 		case R.id.color_circle_sport:
@@ -262,7 +276,7 @@ public class Main extends Activity implements OnClickListener {
 		imgMenu = (ImageView) findViewById(R.id.img_menu);
 		imgSetting = (ImageView) findViewById(R.id.img_setting);
 		tvTitle = (TextView) findViewById(R.id.tv_title);
-		rgDot = (RadioGroup) findViewById(R.id.rg_dot);
+//		rgDot = (RadioGroup) findViewById(R.id.rg_dot);
 		rbDotSport = (RadioButton) findViewById(R.id.rb_dot_sport);
 		rbDotSleep = (RadioButton) findViewById(R.id.rb_dot_sleep);
 		
@@ -293,11 +307,11 @@ public class Main extends Activity implements OnClickListener {
 		View sleepV = inflater.inflate(R.layout.layout_info_sleep, null);
 		ccSleep = (ColorsCircle) sleepV.findViewById(R.id.color_circle_sleep);
 		tvSleepGoal = (TextView) sleepV.findViewById(R.id.tv_sleep_pedo);
-		tvSleepComplete = (TextView) sportV.findViewById(R.id.tv_sleep_complete);
-		tvSleepDeep = (TextView) sportV.findViewById(R.id.tv_deep_value);
-		tvSleepLight = (TextView) sportV.findViewById(R.id.tv_light_value);
-		tvAwak = (TextView) sportV.findViewById(R.id.tv_awake_value);
-		tvSleepTips = (TextView) sportV.findViewById(R.id.tv_sleep_tips);
+		tvSleepComplete = (TextView) sleepV.findViewById(R.id.tv_sleep_complete);
+		tvSleepDeep = (TextView) sleepV.findViewById(R.id.tv_deep_value);
+		tvSleepLight = (TextView) sleepV.findViewById(R.id.tv_light_value);
+		tvAwak = (TextView) sleepV.findViewById(R.id.tv_awake_value);
+		tvSleepTips = (TextView) sleepV.findViewById(R.id.tv_sleep_tips);
 			// >睡眠下拉刷新
 		sleepPull = new PullToRefreshScrollView(this);
 		sleepScrloo = sleepPull.getRefreshableView();
@@ -370,6 +384,13 @@ public class Main extends Activity implements OnClickListener {
 	 * 初始化睡眠数据
 	 */
 	private void intiSleepValue(){
+		tvSleepComplete.setText("9.0");
+		tvSleepGoal.setText("12.0");
+		tvSleepDeep.setText("12.0");
+		tvSleepLight.setText("12.0");
+		tvAwak.setText("1.2");
+		tvSleepTips.setText("睡眠质量 : 优");
+		
 		
 	}
 	
@@ -396,8 +417,9 @@ public class Main extends Activity implements OnClickListener {
 					@Override
 					public void run() {
 						Toast.makeText(Main.this, "运动信息已刷新...", Toast.LENGTH_SHORT).show();
+//						ccSport.setmProgress(mProgress);
 						sportPull.onPullDownRefreshComplete();
-						setLastUpdateTime(sportPull);
+						DataUtil.setLastUpdateTime(sportPull);
 					}
 				}, 2*1000);
 			
@@ -420,7 +442,7 @@ public class Main extends Activity implements OnClickListener {
 					public void run() {
 						Toast.makeText(Main.this, "睡眠信息已刷新...", Toast.LENGTH_SHORT).show();
 						sleepPull.onPullDownRefreshComplete();
-						setLastUpdateTime(sleepPull);
+						DataUtil.setLastUpdateTime(sleepPull);
 					}
 				}, 2*1000);
 			
@@ -435,26 +457,7 @@ public class Main extends Activity implements OnClickListener {
 
 	}
 	
-	/**
-	 * 格式化日期
-	 * @param time
-	 * @return
-	 */
-	  private String formatDateTime(long time) {
-	        if (0 == time) {
-	            return "";
-	        }
-	        SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
-	        return mDateFormat.format(new Date(time));
-	    }
-	  
-	  /**
-	   * 设置最后更新日期
-	   */
-	 private void setLastUpdateTime(PullToRefreshScrollView view) {
-	        String text = formatDateTime(System.currentTimeMillis());
-	        view.setLastUpdatedLabel(text);
-	    }
+
 	
 	/**
 	 * 蓝牙状态  灰色：未连接

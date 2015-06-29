@@ -1,4 +1,4 @@
-package com.suping.i2_watch.enerty;
+package com.suping.i2_watch.entity;
 
 import android.content.Context;
 import android.util.Log;
@@ -40,7 +40,13 @@ public class I2WatchProtocolData {
 	public final static String SHARE_CLOCK_CHECKBOX_1 = "share_clock_cb_item_1";
 	public final static String SHARE_CLOCK_CHECKBOX_2 = "share_clock_cb_item_2";
 	public final static String SHARE_CLOCK_CHECKBOX_3 = "share_clock_cb_item_3";
-
+	
+	//来电提醒设置
+	public final static String SHARE_INCOMING_START_HOUR = "incoming_start_hour";
+	public final static String SHARE_INCOMING_START_MIN = "incoming_start_min";
+	public final static String SHARE_INCOMING_END_HOUR = "incoming_end_hour";
+	public final static String SHARE_INCOMING_END_MIN = "incoming_end_min";
+	
 	// 存贮地址
 	/** 运动提醒开关 **/
 	public static final String SHARE_ACTIVITY = "share_activity";
@@ -273,6 +279,46 @@ public class I2WatchProtocolData {
 	}
 
 	/**
+	 * 来电提醒时段设置协议的 ProtocolWrite
+	 * 
+	 * @return
+	 */
+	public static AbstractProtocolWrite protocolForCallingAlarmPeriodSync(Context context) {
+		String startHour = (String) SharedPreferenceUtil.get(context, SHARE_INCOMING_START_HOUR, DEFAULT_START_HOUR);
+		String startMin = (String) SharedPreferenceUtil.get(context, SHARE_INCOMING_START_MIN, DEFAULT_START_MIN);
+		String endHour = (String) SharedPreferenceUtil.get(context, SHARE_INCOMING_END_HOUR, DEFAULT_END_HOUR);
+		String endMin = (String) SharedPreferenceUtil.get(context, SHARE_INCOMING_END_MIN, DEFAULT_END_MIN);
+		String onoff = (boolean) SharedPreferenceUtil.get(context, SHARE_INCOMING, false) ? "01" : "00";
+		// 初始化IncomingProtocol
+				IncomingRemindProtocol sp = new IncomingRemindProtocol();
+				sp.setEndHour(DataUtil.getStringByString(endHour));
+				sp.setEndMin(DataUtil.getStringByString(endMin));
+				sp.setOnoff(onoff);
+				sp.setStartHour(DataUtil.getStringByString(startHour));
+				sp.setStartMin(DataUtil.getStringByString(startMin));
+				// log
+				Log.i("I2WatchProtocol", "----------------------------------------------------------");
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.protocol 	   ：" + IncomingRemindProtocol.protocol);
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getOnoff 	   ：" + sp.getOnoff());
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartHour ：" + sp.getStartHour());
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartMin  ：" + sp.getStartMin());
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndHour   ：" + sp.getEndHour());
+				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndMin    ：" + sp.getEndMin());
+				Log.v("I2WatchProtocol", "hexDataForCallingAlarmPeriodSync : 来电提醒数据 ：" + sp.toString());
+				Log.i("I2WatchProtocol", "----------------------------------------------------------");
+				return sp;
+	}
+	
+	/**
+	 * 来电提醒时段设置协议的 hexData
+	 * 
+	 * @return
+	 */
+	public static byte[] hexDataForCallingAlarmPeriodSync(Context context) {
+		return  protocolForCallingAlarmPeriodSync(context).toByte();
+	}	
+	
+	/**
 	 * 取出存在本地的运动提醒数据, 转换成发送协议的 hexData
 	 * 
 	 * @return
@@ -411,16 +457,6 @@ public class I2WatchProtocolData {
 	}
 
 	/**
-	 * 来电提醒时段设置协议的 hexData
-	 * 
-	 * @return
-	 */
-	public static byte[] hexDataForCallingAlarmPeriodSync() {
-
-		return null;
-	}
-
-	/**
 	 * 取历史数据的 hexData
 	 * 
 	 * @param historyType
@@ -501,5 +537,5 @@ public class I2WatchProtocolData {
 		}
 		return value;
 	}
-
+	
 }

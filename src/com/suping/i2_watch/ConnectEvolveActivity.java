@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;
+import com.xtremeprog.sdk.ble.BleManager.BlueState;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -145,15 +146,18 @@ public class ConnectEvolveActivity extends Activity implements OnClickListener {
 //		Log.e("connectEvolveActivity", "获取 mBleManager : " + mBleManager);
 //		Log.e("conn", mBleManager + "");
 		updateCurrentDevice();
-		if(!mBleManager.isEnabled()){
-			mBleManager.open(ConnectEvolveActivity.this);
-		} else {
-			if(!mBleManager.isScanning()){
-				Log.d("conn","postDelayed 500  :  " + !mBleManager.isScanning());
-				mHandler.postDelayed(startOnOpen,500 );
-			}
-		}
-		updateScanning();
+		
+
+//		if(!mBleManager.isEnabled()){
+//			mBleManager.open(ConnectEvolveActivity.this);
+//		} else {
+//			if(!mBleManager.isScanning()){
+//				Log.d("conn","postDelayed 500  :  " + !mBleManager.isScanning());
+//				mHandler.postDelayed(startOnOpen,500 );
+//			}
+//		}
+//		updateScanning();
+		checkBlue();
 		
 	}
 
@@ -175,6 +179,7 @@ public class ConnectEvolveActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.e("connectEvovlveActivity", "【resultCode : " + resultCode +"】");
 		switch (requestCode) {
 		case 1:
 			if (resultCode == RESULT_CANCELED) {
@@ -322,6 +327,63 @@ public class ConnectEvolveActivity extends Activity implements OnClickListener {
 		startActivity(intent);
 		finish();
 	}
+
+
+	/**
+		 * 是否开启蓝牙
+		 */
+		private void checkBlue(){
+			BleManager.BlueState state = mBleManager.getBlueState(this);
+	//		if(state.equals(BlueState.CLOSE)){
+	////			mBleManager.open(ConnectEvolveActivity.this);
+	//			mHandler.post(new Runnable() {
+	//				@Override
+	//				public void run() {
+	//					// TODO Auto-generated method stub
+	//					if(){
+	//						
+	//					}
+	//					mHandler.postDelayed(startOnOpen,4000 );
+	//					mBleManager.open();
+	//				}
+	//			});
+	//		}
+	//		else if(state.equals(BlueState.OPEN)){
+	//			if(!mBleManager.isScanning()){
+	//				Log.d("conn","postDelayed 500  :  " + !mBleManager.isScanning());
+	//				mHandler.postDelayed(startOnOpen,500 );
+	//			}
+	//		}
+	//		else if(state.equals(BlueState.NON)){
+	//			
+	//		}
+			
+			if((state.equals(BlueState.CLOSE))){
+				mHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if(mBleManager.getBlueState(ConnectEvolveActivity.this).equals(BlueState.CLOSE)){
+	
+							Toast.makeText(ConnectEvolveActivity.this, "打开蓝牙超时，请重新连接", Toast.LENGTH_LONG).show();
+							finish();
+						} else if(mBleManager.getBlueState(ConnectEvolveActivity.this).equals(BlueState.OPEN)){
+	//						if(!mBleManager.isScanning()){
+	//							mBleManager.startScan();
+		//					}
+		//					updateScanning();
+						}
+					}
+				},10*1000 );
+				mBleManager.open();
+			}
+			else if(state.equals(BlueState.OPEN)){
+				if(!mBleManager.isScanning()){
+					Log.d("conn","postDelayed 500  :  " + !mBleManager.isScanning());
+					mHandler.postDelayed(startOnOpen,500 );
+				}
+			}
+		
+		}
 
 
 	/**

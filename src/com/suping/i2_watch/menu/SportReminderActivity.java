@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
-import com.suping.i2_watch.enerty.SportRemindProtocol;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.SportRemindProtocol;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;

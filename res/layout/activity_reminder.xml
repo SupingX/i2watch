@@ -27,7 +27,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="15dp"
                 android:paddingTop="8dp"
-                android:text="在xx:xx 到 xx:xx,如果xxx分钟内没有运动，I2 Watch 将会震动提醒."
+                android:text="@string/sport_remind_tips"
                 android:textColor="@color/grey"
                 android:textSize="12sp" />
 

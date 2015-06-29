@@ -22,7 +22,9 @@ import android.widget.Toast;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.AbstractProtocolWrite;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.IncomingRemindProtocol;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.xtremeprog.sdk.ble.BleManager;
 
@@ -134,7 +136,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_search:
 			Intent intentSearch = new Intent(MenuActivity.this, SearchActivity.class);
 			startActivity(intentSearch);
-			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
+//			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
 		// 记录
@@ -350,6 +352,9 @@ public class MenuActivity extends Activity implements OnClickListener {
 				} else {
 					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING, false);
 				}
+				// 写入属性
+				AbstractProtocolWrite p = I2WatchProtocolData.protocolForCallingAlarmPeriodSync(MenuActivity.this);
+				mBleBleManager.writeCharactics(p);
 			}
 		});
 	}

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.suping.i2_watch.enerty.AbstractProtocolWrite;
-import com.suping.i2_watch.enerty.SportRemindProtocol;
+import com.suping.i2_watch.entity.AbstractProtocolWrite;
+import com.suping.i2_watch.entity.SportRemindProtocol;
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
@@ -17,7 +17,9 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.Toast;
 /**
  * 
  * 连接蓝牙辅助s
@@ -54,9 +56,35 @@ public class BleManager {
 	 */
 	private boolean isConnectted;
 	/**
-	 * 蓝牙是否打开
+	 * 蓝牙打开状态
 	 */
-	private boolean isEnable;
+	public enum BlueState {
+		NON,OPEN,CLOSE
+	}
+	
+	/**
+	 * 获取蓝牙状态
+	 * @param context
+	 * @return
+	 */
+	public BlueState getBlueState(Context context){
+		if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+		    Toast.makeText(context, "手机不支持蓝牙", Toast.LENGTH_SHORT).show();
+			Log.v("BleManager", "手机不支持蓝牙");
+			return BlueState.NON;
+		}
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter .getDefaultAdapter(); 
+		if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+			Log.v("BleManager", "蓝牙未打开");
+			return BlueState.CLOSE;
+		}else {
+			Log.v("BleManager", "蓝牙已开启");
+			return BlueState.OPEN;
+		}
+	}
+	
+	
+	
 	/**
 	 * 当前连接地址
 	 */
@@ -222,6 +250,15 @@ public class BleManager {
 			Log.e("BleManager", "蓝牙可用");
 			return true;
 		}
+	}
+	
+	/**
+	 * 打开蓝牙
+	 * @param ac
+	 */
+	public void open(){
+	    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); 
+	    mBluetoothAdapter.enable();
 	}
 	
 	/**

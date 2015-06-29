@@ -1,11 +1,10 @@
 package com.suping.i2_watch.menu;
 
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SportRemindStartTimeActivity extends AbstractSetTimeActivity {
 	public final static int RESULT_STARTTIME = 22;

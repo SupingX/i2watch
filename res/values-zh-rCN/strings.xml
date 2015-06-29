@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	  <string name="disconnected">未连接</string>
     <string name="incoming_message">来电联系人</string>
     <string name="cursor_random">通讯录随机抽取</string>
     <string name="pedometer">目标</string>
@@ -87,5 +87,7 @@
     <string name="light">适量</string>
     <string name="medium">中等</string>
     <string name="heavy">大量</string>
+     <string name="sport_remind_tips">在xx:xx 到 xx:xx,如果xxx分钟内没有运动，I2 Watch 将会震动提醒.</string>
+       <string name="search_unconnected">蓝牙未连接...</string>
 
 </resources>

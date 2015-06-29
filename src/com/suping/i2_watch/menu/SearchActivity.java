@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.enerty.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolData;
 import com.suping.i2_watch.view.RadarView;
 import com.xtremeprog.sdk.ble.BleManager;
 import com.xtremeprog.sdk.ble.BleService;
