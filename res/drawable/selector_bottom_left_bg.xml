@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape>
+			<!-- 圆角 -->
+            <corners 
+                android:bottomLeftRadius="8dp"
+                />
+            <!-- 填充 -->
+            <solid android:color="@color/menu_pressed" />
+      <!--    <stroke
+           	 android:width="0.01dp" 
+     		 android:color="@color/grey" /> -->
+        </shape>
+    </item>
+    <item android:state_focused="true">  
+        <shape>
+			<!-- 圆角 -->
+            <corners  
+                android:bottomLeftRadius="8dp"
+                 />
+            <!-- 填充 -->
+            <solid android:color="@color/menu_pressed" />
+        <!--   <stroke
+           	 android:width="0.01dp" 
+     		 android:color="@color/grey" /> -->
+        </shape>
+    </item>
+    <item>  
+        <shape>
+			<!-- 圆角 -->
+            <corners 
+                android:bottomLeftRadius="8dp"
+                   />
+            <!-- 填充 -->
+            <solid android:color="@null" />
+         <!--   <stroke
+           	 android:width="0.01dp" 
+     		 android:color="@color/grey" /> -->
+        </shape>
+    </item>
+</selector>
