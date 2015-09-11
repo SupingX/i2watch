@@ -41,12 +41,12 @@ public class CamParaUtil {
 	        }  
 	        return list.get(i);  
 	    }  
-	    public Size getPropPictureSize(List<Camera.Size> list, float th, int minWidth){  
+	    public Size getPropPictureSize(List<Camera.Size> list, float rate, int minWidth){  
 	        Collections.sort(list, sizeComparator);  
 	  
 	        int i = 0;  
 	        for(Size s:list){  
-	            if((s.width >= minWidth) && equalRate(s, th)){  
+	            if((s.width >= minWidth) && equalRate(s, rate)){  
 	                Log.i(TAG, "PictureSize : w = " + s.width + "h = " + s.height);  
 	                break;  
 	            }  

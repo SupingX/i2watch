@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}" >
+   
     <RadioGroup
         android:id="@+id/rg_top"
         android:layout_width="match_parent"
@@ -22,6 +23,7 @@
             android:padding="12dp"
             android:src="@drawable/selector_icon_back" />
 
+
         <RadioButton
             android:id="@+id/rb_record_sport"
             android:layout_width="0dp"
@@ -36,18 +38,26 @@
         </RadioButton>
 
         <RadioButton
+                  android:gravity="center"
             android:id="@+id/rb_record_sleep"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
             android:clickable="true"
-            android:gravity="center_vertical"
             android:text="@string/sleep_record"
             android:textColor="@color/white"
             android:textSize="@dimen/dime_top_text" >
-            
         </RadioButton>
+          <TextView
+              android:gravity="center"
+            android:id="@+id/tv_sync"
+    		android:layout_width="@dimen/dimen_top_height"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:textSize="12sp"
+            android:text="同步"
+            android:textColor="@drawable/selector_color_text" />
     </RadioGroup>
     
        <com.suping.i2_watch.view.NoScrollViewPager
@@ -57,5 +67,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true" >
 	</com.suping.i2_watch.view.NoScrollViewPager>
+	
 	
 </RelativeLayout>

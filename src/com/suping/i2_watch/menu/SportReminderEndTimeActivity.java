@@ -1,6 +1,6 @@
 package com.suping.i2_watch.menu;
 
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
@@ -18,17 +18,18 @@ public class SportReminderEndTimeActivity extends AbstractSetTimeActivity {
 
 	@Override
 	public void initValue() {
-		String hour = (String) SharedPreferenceUtil.get(SportReminderEndTimeActivity.this, I2WatchProtocolData.SHARE_END_HOUR,
-				I2WatchProtocolData.DEFAULT_END_HOUR);
+		String hour = (String) SharedPreferenceUtil.get(SportReminderEndTimeActivity.this, I2WatchProtocolDataForWrite.SHARE_END_HOUR,
+				I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
 		npHour.setValue(Integer.valueOf(hour));
 
-		String min = (String) SharedPreferenceUtil.get(SportReminderEndTimeActivity.this, I2WatchProtocolData.SHARE_END_MIN,
-				I2WatchProtocolData.DEFAULT_END_MIN);
-		if (min.equals(values[0])) {
-			npMin.setValue(0);
-		} else if (min.equals(values[1])) {
-			npMin.setValue(1);
-		}
+		String min = (String) SharedPreferenceUtil.get(SportReminderEndTimeActivity.this, I2WatchProtocolDataForWrite.SHARE_END_MIN,
+				I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
+		npMin.setValue(Integer.valueOf(min));
+//		if (min.equals(values[0])) {
+//			npMin.setValue(0);
+//		} else if (min.equals(values[1])) {
+//			npMin.setValue(1);
+//		}
 
 	}
 	@Override
@@ -36,7 +37,7 @@ public class SportReminderEndTimeActivity extends AbstractSetTimeActivity {
 		int hour = npHour.getValue();
 		
 		String hourStart = (String) SharedPreferenceUtil.get(SportReminderEndTimeActivity.this,
-				I2WatchProtocolData.SHARE_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
+				I2WatchProtocolDataForWrite.SHARE_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
 		
 		if(hour <= Integer.parseInt(hourStart)){ //开始时间大于结束时间
 			Log.e("SportReminderEndTimeActivity", "开始时间大于结束时间，设置错误。");

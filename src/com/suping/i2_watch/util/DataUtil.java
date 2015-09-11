@@ -20,7 +20,7 @@ public class DataUtil {
 	/**
 	 * byte[]转变为16进制String字符, 每个字节2位, 不足补0
 	 */
-	public static String getStringByBytes(byte[] bytes) {
+	public static String byteToHexString(byte[] bytes) {
 		String result = null;
 		String hex = null;
 		if (bytes != null && bytes.length > 0) {

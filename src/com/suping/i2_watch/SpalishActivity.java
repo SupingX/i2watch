@@ -11,14 +11,12 @@ public class SpalishActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_spalish);
-		
 		new Handler().postDelayed(new Runnable() {
-			
 			@Override
 			public void run() {
 				startActivity(new Intent(SpalishActivity.this,Main.class));
 				finish();
 			}
-		}, 2500);
+		}, 2000);
 	}
 }

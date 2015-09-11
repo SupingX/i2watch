@@ -10,7 +10,7 @@ import android.widget.NumberPicker.OnScrollListener;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SportReminderIntervalActivity extends Activity {
@@ -48,7 +48,7 @@ public class SportReminderIntervalActivity extends Activity {
 
 	private void initvalue() {
 		String interval = (String) SharedPreferenceUtil.get(SportReminderIntervalActivity.this,
-				I2WatchProtocolData.SHARE_INTERVAL, "150");
+				I2WatchProtocolDataForWrite.SHARE_INTERVAL, "150");
 		if (interval.equals(values[0])) {
 			npInterval.setValue(0);
 		} else if (interval.equals(values[1])) {

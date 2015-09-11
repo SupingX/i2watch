@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.suping.i2_watch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2" >
-	<RelativeLayout 
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    >
+
     <LinearLayout
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal" >
 
         <ImageView
-            android:contentDescription="@string/app_name"
             android:id="@+id/reduce"
-            android:src="@drawable/selector_btn_decrease_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/selector_btn_decrease_date" />
 
         <TextView
             android:id="@+id/date"
@@ -30,43 +26,134 @@
             android:text="2015-05-25" />
 
         <ImageView
-                 android:contentDescription="@string/app_name"
             android:id="@+id/increase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-                   android:src="@drawable/selector_btn_increase_date" />
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/selector_btn_increase_date" />
     </LinearLayout>
-    
-        <TextView
-            android:padding="12dp"
-	        android:id="@+id/tv_sync_sport"
-	        android:clickable="true"
-	        android:layout_width="wrap_content"
-      		android:layout_height="48dp"
-	        android:layout_alignParentRight="true"
-	        android:layout_centerVertical="true"
-	        android:text="同步"
-	        android:textColor="@drawable/selector_text_confirm" />
-        
-        </RelativeLayout>
 
-    <com.suping.i2_watch.view.SportCountView
-        android:id="@+id/count_sport"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
 
-    <RelativeLayout
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="NO DATA"
+            android:textColor="@color/grey"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <com.suping.i2_watch.view.CountView
+            android:id="@+id/count_sport"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:rect_color="@color/color_sport_text" />
+    </FrameLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#c2f" >
+        android:orientation="vertical"
+        android:padding="20dp" >
 
         <TextView
             android:id="@+id/count_sport_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="运动数据统计" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:text="Total -"
+            android:textColor="@color/grey"
+            android:textSize="22sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/count_sport_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Steps : " />
+
+            <TextView
+                android:id="@+id/count_sport_steps_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3840"
+                android:textColor="@color/color_sport_text" />
+
+            <TextView
+                android:id="@+id/count_sport_steps_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  步 "
+                android:textColor="@color/color_sport_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/count_sport_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calorie : " />
+
+            <TextView
+                android:id="@+id/count_sport_cal_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.55"
+                android:textColor="@color/color_sport_text" />
+
+            <TextView
+                android:id="@+id/count_sport_cal_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 千卡"
+                android:textColor="@color/color_sport_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/count_sport_target"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Target completion rate : " />
+
+            <TextView
+                android:id="@+id/count_sport_target_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="76.80 "
+                android:textColor="@color/color_sport_text" />
+
+            <TextView
+                android:id="@+id/count_sport_target_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:textColor="@color/color_sport_text" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

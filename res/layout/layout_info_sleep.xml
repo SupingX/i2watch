@@ -71,13 +71,13 @@
 
                 <ImageView
                     android:contentDescription="@string/app_name"
-                    android:id="@+id/img_goal"
+                    android:id="@+id/img_sleep_goal"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_target_sleep" />
 
                 <TextView
-                    android:id="@+id/tv_goal"
+                    android:id="@+id/tv_sleep_goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

@@ -6,35 +6,40 @@
     android:orientation="vertical"
     tools:context="${packageName}.${activityClass}" >
 
-   <include layout="@layout/top_layout" />
+    <include layout="@layout/top_layout" />
 
     <ScrollView
+                  android:background="@color/grey_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
         <LinearLayout
+  
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            
 
-            <TextView
-                android:id="@+id/tv_tips"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="15dp"
-                android:paddingTop="8dp"
-                android:text="@string/sport_remind_tips"
-                android:textColor="@color/grey"
-                android:textSize="12sp" />
-
-            <View
+         
+			     <TextView
+			         android:layout_marginLeft="20dp"
+			         android:layout_marginTop="40dp"
+			         android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                         android:textColor="@color/grey_text"
+                    android:text="时间设定" />
+			    <LinearLayout 
+			        android:layout_height="wrap_content"
+			        android:layout_width="match_parent"
+			        android:orientation="vertical"
+			        android:background="@color/white"
+			        >
+			           <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
-
+               />
             <RelativeLayout
                 android:id="@+id/rl_interval"
                 style="@style/itemlist"
@@ -57,8 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
-                        android:text="@string/unit_min"
                     android:layout_toLeftOf="@id/img_right_1"
+                    android:text="@string/unit_min"
                     android:textColor="@color/grey" />
 
                 <TextView
@@ -71,13 +76,13 @@
                     android:textColor="@color/grey" />
 
                 <ImageView
-                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
-                   android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
 
@@ -111,13 +116,13 @@
                     android:textColor="@color/grey" />
 
                 <ImageView
-                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
 
@@ -151,106 +156,102 @@
                     android:textColor="@color/grey" />
 
                 <ImageView
-                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
-                     android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-
-            <View
+</LinearLayout> 
+         <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
-
+               />
+        	     <TextView
+			         android:layout_marginLeft="20dp"
+			         android:layout_marginTop="20dp"
+			         android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/grey_text"
+                    android:text="有效日期" />
+        	              <View
+                style="@style/line"
+               />
             <LinearLayout
                 style="@style/itemlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:paddingRight="20dp"
+                android:layout_gravity="center"
+              android:orientation="horizontal"
+                    android:weightSum="7"  >
 
-                <TextView
-                    android:id="@+id/tv_repeat_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/repeat" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" >
 
                     <TextView
                         android:id="@+id/tv_sun"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sun"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/sun" />
 
                     <TextView
                         android:id="@+id/tv_mon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/mon"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/mon" />
 
                     <TextView
                         android:id="@+id/tv_tue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/tue"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/tue" />
 
                     <TextView
                         android:id="@+id/tv_wen"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/wen"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/wen" />
 
                     <TextView
                         android:id="@+id/tv_thu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/thu"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/thu" />
 
                     <TextView
                         android:id="@+id/tv_fri"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/fri"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/fri" />
 
                     <TextView
                         android:id="@+id/tv_sat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="@string/sat"
-                        android:textColor="@color/grey"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                        style="@style/weekday"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/sat" />
             </LinearLayout>
-
-            <View
+         <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+               />
         </LinearLayout>
     </ScrollView>
 

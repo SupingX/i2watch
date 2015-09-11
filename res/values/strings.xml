@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">I2 Watch</string>
-    <string name="app_version">I2 Watch 1.0</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="title_activity_connect">ConnectActivity</string>
@@ -134,5 +133,6 @@
     <string name="sport_remind_tips">在xx:xx 到 xx:xx,如果xxx分钟内没有运动，I2 Watch 将会震动提醒.</string>
     <string name="search_unconnected">蓝牙未连接...</string>
     <string name="title_activity_record_menu">RecordMenuActivity</string>
+    <string name="title_activity_device">DeviceActivity</string>
 
 </resources>

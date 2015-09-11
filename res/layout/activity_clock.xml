@@ -2,110 +2,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/grey_bg"
     android:orientation="vertical"
     tools:context="${packageName}.${activityClass}" >
-	    <include
-        android:layout_width="wrap_content"
-        layout="@layout/top_layout" />
 
+    <include
+        layout="@layout/top_layout" />
+  <View
+      android:layout_marginTop="40dp"
+                style="@style/line"
+            />
     <ScrollView
         android:id="@+id/scl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <LinearLayout
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
             <LinearLayout
                 style="@style/itemlist"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:paddingRight="20dp"
+                android:weightSum="1" >
+
+                <TextView
+                    android:id="@+id/tv_clock_1"
+                    android:text="01:20"
+                    style="@style/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
 
                 <LinearLayout
                     android:id="@+id/ll_item_1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/tv_clock_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/clock"
-                        />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/tv_sun_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sun"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_mon_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/mon"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_tue_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/tue"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_wen_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/wen"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_thu_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/thu"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_fri_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/fri"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_sat_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/sat"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                    
                 </LinearLayout>
 
                 <CheckBox
@@ -122,91 +63,26 @@
 
             <LinearLayout
                 style="@style/itemlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+         android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:paddingRight="20dp"
+                android:weightSum="1" >
+
+                <TextView
+                    android:id="@+id/tv_clock_2"
+                    style="@style/clock"
+                    
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:id="@+id/ll_item_2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/tv_clock_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                            style="@style/clock"
-                      />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/tv_sun_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sun"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_mon_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/mon"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_tue_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/tue"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_wen_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/wen"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_thu_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/thu"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_fri_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/fri"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_sat_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/sat"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <CheckBox
@@ -223,90 +99,25 @@
 
             <LinearLayout
                 style="@style/itemlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:paddingRight="20dp"
+                android:weightSum="1" >
+
+                <TextView
+                    android:id="@+id/tv_clock_3"
+                    style="@style/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:id="@+id/ll_item_3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/tv_clock_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                           style="@style/clock" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/tv_sun_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sun"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_mon_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/mon"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_tue_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/tue"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_wen_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/wen"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_thu_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/thu"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_fri_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/fri"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tv_sat_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/weekday"
-                            android:text="@string/sat"
-                            android:textColor="@color/grey"
-                            android:textSize="12sp" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <CheckBox
@@ -316,10 +127,12 @@
                     android:layout_marginLeft="20dp"
                     android:button="@drawable/selector_switch_checkbox" />
             </LinearLayout>
+            
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+           />
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

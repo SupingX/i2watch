@@ -142,14 +142,14 @@ public class CameraInterface {
 	public synchronized void doTakePicture() {
 		Log.e("--- CameraInterface ----", "isPreviewing : " + isPreviewing);
 		if (isPreviewing && (mCamera != null)) {
-			mCamera.takePicture(mShutterCallback, null, mJpegPictureCallback);
+			mCamera.takePicture(new MyShutterCallback(), null, new MyJpegPictureCallback());
 		}
 	}
 
 	/**  ↓↓↓↓↓↓↓↓↓↓↓↓↓ 为了实现拍照的快门声音及拍照保存照片需要下面三个回调变量  ↓↓↓↓↓↓↓↓↓↓↓↓↓  **/
 	
 	// 快门按下的回调，在这里我们可以设置类似播放“咔嚓”声之类的操作。默认的就是咔嚓。
-	private ShutterCallback mShutterCallback = new ShutterCallback() {
+	private class MyShutterCallback implements ShutterCallback {
 	
 		public void onShutter() {
 			// TODO Auto-generated method stub
@@ -167,7 +167,7 @@ public class CameraInterface {
 	};
 	
 	// 对jpeg图像数据的回调,最重要的一个回调
-	private PictureCallback mJpegPictureCallback = new PictureCallback() {
+	private class MyJpegPictureCallback implements PictureCallback {
 	
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub

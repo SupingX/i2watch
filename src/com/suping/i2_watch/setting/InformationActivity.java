@@ -18,7 +18,6 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.CleanEditText;
-import com.xtremeprog.sdk.ble.BleManager;
 
 public class InformationActivity extends Activity implements OnClickListener {
 	public final static int REQ_HEIGHT = 12221121;
@@ -71,8 +70,6 @@ public class InformationActivity extends Activity implements OnClickListener {
 	private int month;
 	private int day;
 	
-	/** 蓝牙 **/
-	private BleManager mBleManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +77,6 @@ public class InformationActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_information);
 		initViews();
 		setClick();
-		mBleManager = ((XtremApplication)getApplication()).getBleManager();
-		Log.i("informationActivity", "--mBleManager : " + mBleManager);
 	}
 
 	@Override
@@ -161,8 +156,8 @@ public class InformationActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent returnSetting = new Intent(InformationActivity.this, SettingActivity.class);
-			startActivity(returnSetting);
+//			Intent returnSetting = new Intent(InformationActivity.this, SettingActivity.class);
+//			startActivity(returnSetting);
 			this.finish();
 			overridePendingTransition(
 			// 左右是指手机屏幕的左右

@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,33 +21,40 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.entity.AbstractProtocolWrite;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
-import com.suping.i2_watch.entity.IncomingRemindProtocol;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
-import com.xtremeprog.sdk.ble.BleManager;
 
-public class MenuActivity extends Activity implements OnClickListener {
+public class MenuActivity extends BaseActivity implements OnClickListener {
 	// 转发code
 	/** SignSet requestCode **/
-	private static final int REQ_SIGNSET = 0x200200;
+	private static final int REQ_SIGNSET = 0x0200;
 	/** camera requestCode **/
-	private static final int REQ_CAMERA = 0x20023300;
+	private static final int REQ_CAMERA = 0x23300;
 	// WedgetS
 	private ImageView imgBack;
 	private TextView tvTitle, tvSignset, tvBright;
 	private Button btnIncrease, btnDecrease;
 	private CheckBox cbActivityReminder, cbReminderOnOff, cbIncoming;
-	private RelativeLayout rlActivityReminder, rlSleep, rlClock, rlCamera, rlSignset, rlIncoming, rlCallfaker,
-			rlSearch, rlShutDown, rlRecord;
+	private RelativeLayout rlActivityReminder, rlSleep, rlClock, rlCamera, rlSignset, rlIncoming, rlCallfaker, rlSearch, rlShutDown, rlRecord;
+	private AbstractSimpleBlueService mSimpleBlueService;
+	private Handler mHandler = new Handler() {
 
+	};
 	// 连续按退出间隔时间
 	private long exitTime = 0;
-	/** 蓝牙  **/ 
-	private BleManager mBleBleManager;
+	private TextView tvClock1;
+	private TextView tvClock2;
+	private TextView tvClock3;
+	private TextView tvSleepStart;
+	private TextView tvSleepEnd;
+
+	/** 蓝牙 **/
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +62,44 @@ public class MenuActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_menu);
 		initViews();
 		setClick();
-		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
-		Log.i("MenuActivity", "--mbleBleManager : " + mBleBleManager);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService = getSimpleBlueService();
 	}
 
 	@Override
 	protected void onResume() {
-		init();
+		updateTextView();
+
 		super.onResume();
 	}
+
+	private void updateTextView() {
+		// 闹钟设置时间
+		String hourFirst = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_1, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String minFirst = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_1, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
+		tvClock1.setText(hourFirst + ":" + minFirst);
+		String hourSecond = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_2, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String minSecond = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_2, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
+		tvClock2.setText(hourSecond + ":" + minSecond);
+		String hourThrid = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_3, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String minThrid = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_3, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
+		tvClock3.setText(hourThrid + ":" + minThrid);
+
+		// 睡眠时间
+		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
+		tvSleepStart.setText(startHour + ":" + startMin);
+		String endHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String endMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_MIN, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
+		tvSleepEnd.setText(endHour + ":" + endMin);
+
+	}
+
+	private long lastLightSetTime = 0;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -73,7 +111,6 @@ public class MenuActivity extends Activity implements OnClickListener {
 			if (resultCode == RESULT_OK) {
 				String value = data.getExtras().getString("ed");
 				tvSignset.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_SIGN_SET, value);
 			} else if (resultCode == RESULT_CANCELED) {
 			} else {
 			}
@@ -95,8 +132,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent retrunToMain = new Intent(MenuActivity.this, Main.class);
-			startActivity(retrunToMain);
+			// Intent retrunToMain = new Intent(MenuActivity.this, Main.class);
+			// startActivity(retrunToMain);
 			this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
@@ -105,7 +142,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_reminder:
 			Intent reminderIntent = new Intent(MenuActivity.this, SportReminderActivity.class);
 			startActivity(reminderIntent);
-			this.finish();
+			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
@@ -113,7 +150,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_sleep:
 			Intent sleepIntent = new Intent(MenuActivity.this, SleepMonitorActivity.class);
 			startActivity(sleepIntent);
-			this.finish();
+			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
@@ -121,13 +158,12 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_clock:
 			Intent clockIntent = new Intent(MenuActivity.this, ClockActivity.class);
 			startActivity(clockIntent);
-			this.finish();
+			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
 		// 相机
 		case R.id.rl_camera:
-			
 			Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
 			startActivity(intent);
 			break;
@@ -136,7 +172,8 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_search:
 			Intent intentSearch = new Intent(MenuActivity.this, SearchActivity.class);
 			startActivity(intentSearch);
-//			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
+			// overridePendingTransition(R.anim.activity_from_right_to_left_enter,
+			// R.anim.activity_from_right_to_left_exit);
 			break;
 
 		// 记录
@@ -157,14 +194,13 @@ public class MenuActivity extends Activity implements OnClickListener {
 			b.putString("value", value);
 			signsetIntent.putExtra("bundle", b);
 			startActivityForResult(signsetIntent, REQ_SIGNSET);
-
 			break;
 
 		// 来电提醒
 		case R.id.rl_incoming:
 			Intent incomingIntent = new Intent(MenuActivity.this, IncomingActivity.class);
 			startActivity(incomingIntent);
-			this.finish();
+			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
@@ -172,7 +208,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.rl_callfaker:
 			Intent callfakerIntent = new Intent(MenuActivity.this, CallfakerActivity.class);
 			startActivity(callfakerIntent);
-			this.finish();
+			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 
@@ -184,10 +220,18 @@ public class MenuActivity extends Activity implements OnClickListener {
 			} else {
 				tvBright.setText(String.valueOf(bright1 - 1));
 			}
-			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_BRIGHT, tvBright.getText()
-					.toString().trim());
-			byte[] hexData1 = I2WatchProtocolData.hexDataForUpdateBrightness(this);
-			mBleBleManager.writeCharactics(hexData1);
+			long currentDecreaseTime = System.currentTimeMillis();
+			long diff = currentDecreaseTime - lastLightSetTime;
+			// 现在按的时刻大于上次按的时刻
+			if (diff > 1000L) {
+				lastLightSetTime = currentDecreaseTime;
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, tvBright.getText().toString().trim());
+				if (isConnected()) {
+					byte[] hexDataDecrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(this);
+					mSimpleBlueService.writeCharacteristic(hexDataDecrease);
+					lastLightSetTime = System.currentTimeMillis();
+				}
+			}
 			break;
 
 		// 减少
@@ -198,14 +242,19 @@ public class MenuActivity extends Activity implements OnClickListener {
 			} else {
 				tvBright.setText(String.valueOf(bright2 + 1));
 			}
-			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_BRIGHT, tvBright.getText()
-					.toString().trim());
-			byte[] hexData2 = I2WatchProtocolData.hexDataForUpdateBrightness(this);
-			mBleBleManager.writeCharactics(hexData2);
+			long currentIncreaseTime = System.currentTimeMillis();
+			long diffIncrease = currentIncreaseTime - lastLightSetTime;
+			if (diffIncrease > 1000L) {
+				lastLightSetTime = currentIncreaseTime;
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, tvBright.getText().toString().trim());
+				if (isConnected()) {
+					byte[] hexDataIncrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(this);
+					mSimpleBlueService.writeCharacteristic(hexDataIncrease);
+				}
+			}
 			break;
 
 		case R.id.rl_shutdown:
-			
 			Resources resources = getResources();
 			String message = resources.getString(R.string.is_close);
 			String confirm = resources.getString(R.string.confirm);
@@ -214,15 +263,16 @@ public class MenuActivity extends Activity implements OnClickListener {
 			builder.setMessage(message).setPositiveButton(confirm, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					byte[] hexData = I2WatchProtocolData.hexDataForCloseI2Watch();
+					byte[] hexData = I2WatchProtocolDataForWrite.hexDataForCloseI2Watch();
 					// XtremApplication.finishActivity();
-					mBleBleManager.writeCharactics(hexData);
+					// mBleManager.writeCharactics(hexData);
+					if (isConnected()) {
+						mSimpleBlueService.writeCharacteristic(hexData);
+					}
 				}
 			}).setNegativeButton(cancel, new DialogInterface.OnClickListener() {
-
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-
 				}
 			}).create().show();
 			break;
@@ -232,24 +282,30 @@ public class MenuActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-			} else {
-				finish();
-				System.exit(0);
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//				exitTime = System.currentTimeMillis();
+//			} else {
+//				finish();
+//				System.exit(0);
+//			}
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
 		tvTitle = (TextView) findViewById(R.id.tv_title);
+		tvClock1 = (TextView) findViewById(R.id.tv_clock_1);
+		tvClock2 = (TextView) findViewById(R.id.tv_clock_2);
+		tvClock3 = (TextView) findViewById(R.id.tv_clock_3);
+		tvSleepStart = (TextView) findViewById(R.id.tv_monitor_sleep_start);
+		tvSleepEnd = (TextView) findViewById(R.id.tv_monitor_sleep_end);
+
 		tvSignset = (TextView) findViewById(R.id.tv_signset_value);
 		tvBright = (TextView) findViewById(R.id.tv_bright_value);
 		btnIncrease = (Button) findViewById(R.id.btn_increase);
@@ -267,36 +323,32 @@ public class MenuActivity extends Activity implements OnClickListener {
 		cbActivityReminder = (CheckBox) findViewById(R.id.cb_reminder);
 		cbReminderOnOff = (CheckBox) findViewById(R.id.cb_reminder_nf);
 		cbIncoming = (CheckBox) findViewById(R.id.cb_incoming);
+		initValues();
 
 	}
 
 	/**
 	 * 初始化值
 	 */
-	private void init() {
-		
+	private void initValues() {
+
 		// 标题
 		tvTitle.setText(getResources().getString(R.string.menu));
 
 		// signature
-		String signature = (String) SharedPreferenceUtil.get(getApplicationContext(),
-				I2WatchProtocolData.SHARE_SIGN_SET, getResources().getString(R.string.signature_is_not_set));
+		String signature = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_SIGN_SET, getResources().getString(R.string.signature_is_not_set));
 		tvSignset.setText(signature);
 
 		// 亮度
-		String bright = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_BRIGHT,
-				"5");
+		String bright = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, "5");
 		tvBright.setText(bright);
 
-		boolean reminder = (boolean) SharedPreferenceUtil.get(getApplicationContext(),
-				I2WatchProtocolData.SHARE_ACTIVITY, false);
+		// 提醒
+		boolean reminder = (boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_ACTIVITY, false);
 		cbActivityReminder.setChecked(reminder);
-		boolean reminder_nf = (boolean) SharedPreferenceUtil.get(getApplicationContext(),
-				I2WatchProtocolData.SHARE_NON, false);
+		boolean reminder_nf = (boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, false);
 		cbReminderOnOff.setChecked(reminder_nf);
-		boolean reminder_incoming = (boolean) SharedPreferenceUtil.get(getApplicationContext(),
-				I2WatchProtocolData.SHARE_INCOMING, false);
-		// Log.e("menu", "incoming : " + String.valueOf(reminder_incoming));
+		boolean reminder_incoming = (boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING, false);
 		cbIncoming.setChecked(reminder_incoming);
 	}
 
@@ -316,15 +368,24 @@ public class MenuActivity extends Activity implements OnClickListener {
 		rlSearch.setOnClickListener(this);
 		rlRecord.setOnClickListener(this);
 
-		// 活动开关
+		// 运动提醒开关
 		cbActivityReminder.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_ACTIVITY, true);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_ACTIVITY, true);
 				} else {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_ACTIVITY, false);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_ACTIVITY, false);
 				}
+
+				Log.v("MenuActivity", "运动提醒 ：" + isChecked);
+				mHandler.post(new Runnable() {
+					public void run() {
+						if (isConnected()) {
+							mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(MenuActivity.this).toByte());
+						}
+					}
+				});
 			}
 		});
 
@@ -333,13 +394,20 @@ public class MenuActivity extends Activity implements OnClickListener {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_NON, true);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, true);
 				} else {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_NON, false);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, false);
 				}
-				// 写入属性
-				byte[] hexData = I2WatchProtocolData.hexDataForLostOnoffI2Watch(MenuActivity.this);
-				mBleBleManager.writeCharactics(hexData);
+				Log.v("MenuActivity", "防丢提醒 ：" + isChecked);
+				mHandler.post(new Runnable() {
+					public void run() {
+						if (isConnected()) {
+							// 写入属性
+							byte[] hexData = I2WatchProtocolDataForWrite.hexDataForLostOnoffI2Watch(MenuActivity.this);
+							mSimpleBlueService.writeCharacteristic(hexData);
+						}
+					}
+				});
 			}
 		});
 
@@ -348,13 +416,21 @@ public class MenuActivity extends Activity implements OnClickListener {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING, true);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING, true);
 				} else {
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING, false);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING, false);
 				}
 				// 写入属性
-				AbstractProtocolWrite p = I2WatchProtocolData.protocolForCallingAlarmPeriodSync(MenuActivity.this);
-				mBleBleManager.writeCharactics(p);
+				Log.v("MenuActivity", "来电提醒 ：" + isChecked);
+				mHandler.post(new Runnable() {
+					public void run() {
+						if (isConnected()) {
+
+							AbstractProtocolWrite p = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(MenuActivity.this);
+							mSimpleBlueService.writeCharacteristic(p.toByte());
+						}
+					}
+				});
 			}
 		});
 	}

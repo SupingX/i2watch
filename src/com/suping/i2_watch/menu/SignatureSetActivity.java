@@ -8,13 +8,19 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
-public class SignatureSetActivity extends Activity implements OnClickListener{
+public class SignatureSetActivity extends BaseActivity implements OnClickListener{
 	private EditText edSign;
 	private TextView tvConfirm;
 	private TextView tvCancel;
+	private AbstractSimpleBlueService mSimpleBlueService;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,6 +29,15 @@ public class SignatureSetActivity extends Activity implements OnClickListener{
 		initViews();
 		setClick();
 	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		mSimpleBlueService = getSimpleBlueService();
+		
+	}
+	
 	
 	private void initViews() {
 		tvConfirm = (TextView) findViewById(R.id.tv_confirm);
@@ -55,16 +70,33 @@ public class SignatureSetActivity extends Activity implements OnClickListener{
 		   }
 		});
 	}
-
+	
+	@Override
+	protected void onDestroy() {
+	
+		
+		super.onDestroy();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.tv_confirm:
 			String ed = edSign.getText().toString().trim();
+			if(ed == null || ed.equals("")){
+				Toast.makeText(SignatureSetActivity.this, "签名为空...", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			Bundle b = new Bundle();
 			b.putString("ed", ed);
 			Intent intent = new Intent(SignatureSetActivity.this,MenuActivity.class);
 			intent.putExtras(b);
+			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_SIGN_SET, ed);
+			if (isConnected()) {
+				mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
+			}else{
+				
+			}
 			setResult(RESULT_OK, intent);
 			finish();
 			break;

@@ -12,14 +12,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.view.RadarView;
-import com.xtremeprog.sdk.ble.BleManager;
-import com.xtremeprog.sdk.ble.BleService;
 
-public class SearchActivity extends Activity implements OnClickListener {
+public class SearchActivity extends BaseActivity implements OnClickListener {
 	private String TAG = this.getClass().getSimpleName();
 //	private ImageView imgRomation;
 //	private Animation operatingAnim;
@@ -44,36 +44,35 @@ public class SearchActivity extends Activity implements OnClickListener {
 			super.handleMessage(msg);
 		}
 	};
-	private BleManager mBleManager;
 	
-	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
-			} else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
-			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
-			} else if (BleService.BLE_GATT_CONNECTED.equals(action)) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mBleManager.setConnectted(true);
-						updateConnectedState();
-					}
-				});
-			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
-
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mBleManager.setConnectted(false);
-						updateConnectedState();
-					}
-				});
-			}
-		}
-	};
+//	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			String action = intent.getAction();
+//			if (BleService.BLE_NOT_SUPPORTED.equals(action)) {
+//			} else if (BleService.BLE_DEVICE_FOUND.equals(action)) {
+//			} else if (BleService.BLE_NO_BT_ADAPTER.equals(action)) {
+//			} else if (BleService.BLE_GATT_CONNECTED.equals(action)) {
+//				runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						mBleManager.setConnectted(true);
+//						updateConnectedState();
+//					}
+//				});
+//			} else if (BleService.BLE_GATT_DISCONNECTED.equals(action)) {
+//
+//				runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						mBleManager.setConnectted(false);
+//						updateConnectedState();
+//					}
+//				});
+//			}
+//		}
+//	};
 	
 	/**
 	 * 开始旋转
@@ -95,7 +94,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 		}
 	};
 
-
+	
+	private AbstractSimpleBlueService mSimpleBlueService;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,8 +118,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 //		initAnimation();
 		initViews();
 		setLinstener();
-		mBleManager = ((XtremApplication)getApplication()).getBleManager();
-		Log.d(TAG, "mBleManager : " + mBleManager);
 		mHandler.post(search);
 	}
 	
@@ -127,28 +125,35 @@ public class SearchActivity extends Activity implements OnClickListener {
 		
 		@Override
 		public void run() {
-			byte [] hexData = I2WatchProtocolData.hexDataForSearchI2Watch();
-			mBleManager.writeCharactics(hexData);
+	
 			mHandler.sendEmptyMessage(1);
 		}
 		
 	};
 	
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService = getSimpleBlueService();
+	}
+
 	@Override
 	protected void onResume() {
 		//for test
 //		isConnected = true;
-//		mHandler.post(start);
+		mHandler.post(start);
 //		updateConnectedState();
-		
-		registerReceiver(mBroadcastReceiver, BleService.getIntentFilter());
+		if (isConnected()) {
+			byte [] hexData = I2WatchProtocolDataForWrite.hexDataForSearchI2Watch();
+			mSimpleBlueService.writeCharacteristic(hexData);
+		}
 		updateConnectedState();
 		super.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
-		unregisterReceiver(mBroadcastReceiver);
 		radar.stop();
 		super.onPause();
 	}
@@ -174,15 +179,15 @@ public class SearchActivity extends Activity implements OnClickListener {
 			finish();
 			break;
 		case R.id.radar:
-			if (mBleManager.isConnectted()) {
-				mHandler.post(stop);
-//				isConnected = !isConnected;
-				updateConnectedState();
-			} else {
-				mHandler.post(start);
-//				isConnected = !isConnected;
-				updateConnectedState();
-			}
+//			if (mBleManager.isConnectted()) {
+//				mHandler.post(stop);
+////				isConnected = !isConnected;
+//				updateConnectedState();
+//			} else {
+//				mHandler.post(start);
+////				isConnected = !isConnected;
+//				updateConnectedState();
+//			}
 			break;
 		default:
 			break;
@@ -221,12 +226,10 @@ public class SearchActivity extends Activity implements OnClickListener {
 	 * @param isConnected
 	 */
 	private void updateConnectedState(){
-		if(mBleManager.isConnectted()){
+		if(isConnected()){
 			tvSearchInfo.setVisibility(View.GONE);
-			radar.start();
 		} else {
 			tvSearchInfo.setVisibility(View.VISIBLE);
-			radar.stop();
 		}
 	}
 }

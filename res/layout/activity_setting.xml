@@ -2,22 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/grey_bg"
     android:orientation="vertical"
     tools:context="${packageName}.${activityClass}" >
 
     <include layout="@layout/top_layout" />
-
+    <View
+                style="@style/line"
+               android:layout_marginTop="40dp" />
     <ScrollView
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+ 
             <RelativeLayout
+                
                 android:id="@+id/rl_information"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -60,7 +64,7 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_pedo"
@@ -105,10 +109,19 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+            />
+            
+               <View
+               android:layout_height="20dp"
+               android:layout_width="match_parent"
+               android:background="@color/grey_bg"
+            />
+                   <View
+                style="@style/line"
+             />
 
             <RelativeLayout
-                android:id="@+id/rl_about"
+                android:id="@+id/rl_device"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/selector_bg_menu"
@@ -124,7 +137,7 @@
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_reminder_nf" />
+                    android:src="@drawable/ic_search" />
 
                 <TextView
                     android:id="@+id/tv_about"
@@ -134,7 +147,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_about"
-                    android:text="@string/about" />
+                    android:text="Bind Device" />
 
                 <ImageView
                     android:id="@+id/img_right_3"
@@ -144,11 +157,71 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
+                
+                 <TextView
+                    android:id="@+id/tv_device"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toLeftOf="@id/img_right_3"
+                    android:text="--" />
+            </RelativeLayout>
+                <View
+                style="@style/line"
+             />
+             <View
+               android:layout_height="20dp"
+               android:layout_width="match_parent"
+               android:background="@color/grey_bg"
+            />
+                 <View
+                style="@style/line"
+             />
+
+            <RelativeLayout
+                android:id="@+id/rl_about"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector_bg_menu"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingBottom="8dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/img_device"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_reminder_nf" />
+
+                <TextView
+                    android:id="@+id/tv_device_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_device"
+                    android:text="@string/about" />
+
+                <ImageView
+                    android:id="@+id/img_right_4"
+                    android:padding="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+             />
         </LinearLayout>
+        
     </ScrollView>
 
 </LinearLayout>

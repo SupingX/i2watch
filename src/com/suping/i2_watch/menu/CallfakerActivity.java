@@ -40,7 +40,6 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 				String cursor = b.getString("cursor");
 				tvPhone.setText(cursor);
 				break;
-
 			default:
 				break;
 			}
@@ -69,24 +68,18 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent retrunToMain = new Intent(CallfakerActivity.this,
-					MenuActivity.class);
-			startActivity(retrunToMain);
+//			Intent retrunToMain = new Intent(CallfakerActivity.this,
+//					MenuActivity.class);
+//			startActivity(retrunToMain);
 			this.finish();
-			overridePendingTransition(R.anim.activity_from_left_to_right_enter,
-					R.anim.activity_from_left_to_right_exit);
+//			overridePendingTransition(R.anim.activity_from_left_to_right_enter,
+//					R.anim.activity_from_left_to_right_exit);
 			break;
 		case R.id.rl_call:
-			Log.e("callfaker", "!!!!!");
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(CallfakerActivity.this,
-							CallfakerFromActivity.class);
-					startActivityForResult(intent, 1);
-				}
-			});
+			Log.e("Callfaker", "rl_call-----------------------");
+			Intent intent = new Intent(CallfakerActivity.this,
+					CallfakerFromActivity.class);
+			startActivityForResult(intent, 1);
 			break;
 
 		default:

@@ -53,5 +53,9 @@
         <attr name="pointer_halo_color" format="string"></attr>
         <attr name="text_color" format="string"></attr>
     </declare-styleable>
+    
+     <declare-styleable name="CountView">
+         <attr name="rect_color" format="color" />
+    </declare-styleable>
 
 </resources>

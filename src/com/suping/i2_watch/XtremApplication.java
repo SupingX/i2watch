@@ -2,11 +2,8 @@ package com.suping.i2_watch;
 
 import java.util.ArrayList;
 
-import org.litepal.LitePalApplication;
-
-import com.xtremeprog.sdk.ble.BleManager;
-import com.xtremeprog.sdk.ble.BleService;
-import com.xtremeprog.sdk.ble.IBle;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.SimpleBlueService;
 
 import android.app.Activity;
 import android.app.Application;
@@ -23,59 +20,43 @@ import android.util.Log;
  *
  */
 public class XtremApplication extends Application {
-	private BleService mService;
-	private IBle mBle;
-	private BleManager mbleManager;
 	
-	private static ArrayList<Activity> activities = new ArrayList<Activity>();
 
-	private final ServiceConnection mServiceConnection = new ServiceConnection() {
+	
+	private AbstractSimpleBlueService mSimpleBlueService;
+	
+	private ServiceConnection mSimpleBlueServiceConn = new ServiceConnection() {
+		
 		@Override
-		public void onServiceConnected(ComponentName className,
-				IBinder rawBinder) {
-			mService = ((BleService.LocalBinder) rawBinder).getService();
-			mBle = mService.getBle();
-			mbleManager = BleManager.instance(mBle);
-			Log.i("APP", "mBle : " + mBle);
-			Log.i("APP", "mbleManager : " + mbleManager);
+		public void onServiceDisconnected(ComponentName name) {
+			mSimpleBlueService = null;
 		}
-
+		
 		@Override
-		public void onServiceDisconnected(ComponentName classname) {
-			mService = null;
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mSimpleBlueService =  (AbstractSimpleBlueService) (((AbstractSimpleBlueService.MyBinder)service).getService());
+		
 		}
 	};
+	
+	public AbstractSimpleBlueService getSimpleBlueService(){
+		return this.mSimpleBlueService;
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Intent bindIntent = new Intent(this, BleService.class);
-		bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+		
+		Intent liteIntent = new Intent(this, SimpleBlueService.class);
+		bindService(liteIntent, mSimpleBlueServiceConn, Context.BIND_AUTO_CREATE);
+	
 	}
 	
-	public BleManager getBleManager(){
-		return mbleManager;
-	}
-	public static void addActivity(Activity activity) {
-		activities.add(activity);
-	}
-
-	public static void finishActivity() {
-		for (Activity activity : activities) {
-			if (activity != null) {
-				activity.finish();
-			}
-		}
-		Process.killProcess(Process.myPid());
-		System.exit(0);
-	}
 	
 	@Override
 	public void onTerminate() {
-		mbleManager.disconnect();
-		mbleManager.clear();
-		mbleManager = null;
-		unbindService(mServiceConnection);
+		mSimpleBlueService.close();
+		unbindService(mSimpleBlueServiceConn);
 		onTerminate();
 	}
 

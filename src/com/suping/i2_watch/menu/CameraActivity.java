@@ -1,6 +1,9 @@
 package com.suping.i2_watch.menu;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.util.DisplayUtil;
 import com.suping.i2_watch.view.CameraInterface;
 import com.suping.i2_watch.view.CameraInterface.CamOpenOverCallback;
@@ -17,10 +20,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
-public class CameraActivity extends Activity implements CamOpenOverCallback {
+public class CameraActivity extends BaseActivity implements CamOpenOverCallback {
 	private CameraSurfaceView surfaceView = null;
 	/** ImageView ： 返回、拍照 **/
 	private ImageView imgBack, imgCamera;
+	private AbstractSimpleBlueService mSimpleBlueService;
 	
 	float previewRate = -1f;
 	
@@ -51,8 +55,17 @@ public class CameraActivity extends Activity implements CamOpenOverCallback {
 	}
 	
 	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService = getSimpleBlueService();
+	}
+	
+	@Override
 	protected void onResume() {
 		super.onResume();
+		if (isConnected()) {
+			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(1));
+		}
 		Thread openThread = new Thread() {
 			@Override
 			public void run() {
@@ -71,9 +84,18 @@ public class CameraActivity extends Activity implements CamOpenOverCallback {
 		CameraInterface.getInstance().doStopCamera();
 	}
 	
+	
+	@Override
+	protected void onStop() {
+		if (isConnected()) {
+			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(0));
+		}
+		super.onStop();
+	}
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	
 	}
 
 	private void initUI() {

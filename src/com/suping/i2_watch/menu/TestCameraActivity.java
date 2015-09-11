@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.util.DisplayUtil;
 import com.suping.i2_watch.view.CameraPreview;
 
@@ -128,7 +128,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 	 */
 	private void initCamera() {
 		// 开启相机发送数据
-		byte[] hexData = I2WatchProtocolData.hexDataForUpdatePhotographState(1);
+		byte[] hexData = I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(1);
 		// Create an instance of Camera
 		try {
 			mCamera = getCameraInstance(0);
@@ -171,7 +171,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 		switch (v.getId()) {
 		case R.id.img_back:
 			// 退出发数据
-			byte[] hexData = I2WatchProtocolData.hexDataForUpdatePhotographState(0);
+			byte[] hexData = I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(0);
 
 			finish();
 			break;

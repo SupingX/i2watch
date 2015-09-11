@@ -52,8 +52,8 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 		switch (v.getId()) {
 		case R.id.img_back:
 			SharedPreferenceUtil.put(getApplicationContext(), SHARE_GOAL, goal);
-			Intent returnSetting = new Intent(PedometerActivity.this,SettingActivity.class);
-			startActivity(returnSetting);
+//			Intent returnSetting = new Intent(PedometerActivity.this,SettingActivity.class);
+//			startActivity(returnSetting);
 			this.finish();
 			overridePendingTransition(
 					//左右是指手机屏幕的左右

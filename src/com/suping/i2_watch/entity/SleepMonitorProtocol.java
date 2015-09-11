@@ -2,7 +2,7 @@ package com.suping.i2_watch.entity;
 
 import com.suping.i2_watch.util.DataUtil;
 
-public class SleepMonitorProtocol extends AbstractProtocolWrite{
+public class SleepMonitorProtocol {
 	
 	/** 协议头   **/
 	public static final String protocol = "21"; 
@@ -60,7 +60,6 @@ public class SleepMonitorProtocol extends AbstractProtocolWrite{
 		return protocol + startHour + startMin + endHour + endMin;
 	}
 	
-	@Override
 	public byte[] toByte() {
 		return DataUtil.getBytesByString(toString());
 	}

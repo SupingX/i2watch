@@ -40,29 +40,30 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
         android:weightSum="2"
-        android:layout_marginTop="20dp" >
+     	 >
 		<TextView
+		    android:padding="20dp"
             android:id="@+id/tv_negative"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clickable="true"
            	android:focusable="true"
-            android:padding="8dp"
             android:text="Cancel"
+            android:background="@drawable/selector_bottom_left_bg"
             android:textColor="@drawable/selector_text_cancel" />
 		
         <TextView
+            	    android:padding="20dp"
             android:id="@+id/tv_positive"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:layout_height="match_parent"
                android:gravity="center"
             android:text="Confirm"
+                  android:background="@drawable/selector_bottom_right_bg"
             android:clickable="true"
             android:focusable="true"
             android:textColor="@drawable/selector_text_confirm" />

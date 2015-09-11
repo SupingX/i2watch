@@ -1,7 +1,11 @@
 package com.suping.i2_watch.menu;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.AbstractProtocolWrite;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.entity.SportRemindProtocol;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.app.Activity;
@@ -16,15 +20,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class IncomingActivity extends Activity implements OnClickListener{
-	
-
-	
+/**
+ * 来电提醒 设置： 开始时间 结束时间
+ * 
+ * @author Administrator
+ *
+ */
+public class IncomingActivity extends BaseActivity implements OnClickListener{
 	private ImageView imgBack;
 	private TextView textViewTitle;
 	private TextView textViewStart,textViewEnd;
 	private RelativeLayout rlStart,rlEnd;
 	private long exitTime = 0;
+	private AbstractSimpleBlueService mSimpleBlueService;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,6 +43,28 @@ public class IncomingActivity extends Activity implements OnClickListener{
 		textViewTitle.setText(getResources().getString(R.string.incoming_reminder));
 	}
 	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService  = getSimpleBlueService();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		doWriteToWatch();
+		super.onDestroy();
+	}
+	
+	private void doWriteToWatch(){
+		AbstractProtocolWrite protocolForCallingAlarmPeriodSync = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(this);
+		Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + protocolForCallingAlarmPeriodSync.toString());
+		if (isConnected()) {
+			getSimpleBlueService().writeCharacteristic(protocolForCallingAlarmPeriodSync.toByte());
+		}else{
+			showShortToast("手环未连接");
+		}
+	}
+
 	@Override
 		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 			super.onActivityResult(requestCode, resultCode, data);
@@ -50,8 +81,8 @@ public class IncomingActivity extends Activity implements OnClickListener{
 					Log.e("incoming", "value : " + value);
 					textViewStart.setText(value);
 	//				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_START, value);
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_HOUR, min);
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_MIN, sec);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_START_HOUR, min);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_START_MIN, sec);
 					break;
 				default:
 					break;
@@ -67,8 +98,8 @@ public class IncomingActivity extends Activity implements OnClickListener{
 					String value = min+":"+sec;
 					textViewEnd.setText(value);
 	//				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_END, value);
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_HOUR, min);
-					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_MIN, sec);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_END_HOUR, min);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_END_MIN, sec);
 					break;
 				default:
 					break;
@@ -84,11 +115,11 @@ public class IncomingActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent retrunToMain = new Intent(IncomingActivity.this,MenuActivity.class);
-			startActivity(retrunToMain);
+//			Intent retrunToMain = new Intent(IncomingActivity.this,MenuActivity.class);
+//			startActivity(retrunToMain);
 			this.finish();
-			overridePendingTransition(R.anim.activity_from_left_to_right_enter,
-					R.anim.activity_from_left_to_right_exit);
+//			overridePendingTransition(R.anim.activity_from_left_to_right_enter,
+//					R.anim.activity_from_left_to_right_exit);
 			break;
 			
 		case R.id.rl_start:
@@ -102,20 +133,20 @@ public class IncomingActivity extends Activity implements OnClickListener{
 		}
 	}
 	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){   
-	        if((System.currentTimeMillis()-exitTime) > 2000){  
-	            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();                                
-	            exitTime = System.currentTimeMillis();   
-	        } else {
-	            finish();
-	            System.exit(0);
-	        }
-	        return true;   
-	    }
-	    return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//	    if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){   
+//	        if((System.currentTimeMillis()-exitTime) > 2000){  
+//	            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();                                
+//	            exitTime = System.currentTimeMillis();   
+//	        } else {
+//	            finish();
+//	            System.exit(0);
+//	        }
+//	        return true;   
+//	    }
+//	    return super.onKeyDown(keyCode, event);
+//	}
 
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
@@ -125,12 +156,12 @@ public class IncomingActivity extends Activity implements OnClickListener{
 		rlStart = (RelativeLayout) findViewById(R.id.rl_start);
 		rlEnd = (RelativeLayout) findViewById(R.id.rl_end);
 		
-		String incomingStartHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
-		String incomingStartMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
+		String incomingStartHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+		String incomingStartMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
 		textViewStart.setText(incomingStartHour + ":" +incomingStartMin);
 		
-		String incomingEndHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
-		String incomingEndMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INCOMING_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
+		String incomingEndHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String incomingEndMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_END_MIN, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
 		textViewEnd.setText(incomingEndHour + ":" + incomingEndMin);
 		
 	}

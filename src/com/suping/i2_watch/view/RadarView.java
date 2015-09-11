@@ -65,7 +65,7 @@ public class RadarView extends View {
 		mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
 			@Override
 			public void onAnimationUpdate(ValueAnimator animation) {
-				Log.e("雷达", "angel : " + angel);
+//				Log.e("雷达", "angel : " + angel);
 				angel = (Float) animation.getAnimatedValue();
 				mMatrix.reset();
 				mMatrix.setRotate(angel, mWidth / 2, mHeight / 2);
@@ -96,7 +96,7 @@ public class RadarView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Log.e("雷达", "onDraw()");
+//		Log.e("雷达", "onDraw()");
 		Paint p = new Paint();
 		p.setAntiAlias(true);
 		canvas.drawColor(getResources().getColor(R.color.white));

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+       android:background="@color/grey_bg"
     android:orientation="vertical"
       android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,13 +10,28 @@
 
     <ScrollView
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content" >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+			    <View
+			              android:layout_marginTop="40dp"
+                style="@style/line"
+              />
+            <LinearLayout 
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="@color/white"
+                >
+                
+                
+      
+          
             <RelativeLayout
+          
                 android:id="@+id/rl_start"
                 style="@style/itemlist"
                 android:layout_width="match_parent"
@@ -131,10 +146,10 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-
-            <View
+                 <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+    />
+                 </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

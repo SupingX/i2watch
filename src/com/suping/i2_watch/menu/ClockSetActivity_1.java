@@ -1,6 +1,6 @@
 package com.suping.i2_watch.menu;
 
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.content.Intent;
@@ -16,17 +16,18 @@ public class ClockSetActivity_1 extends AbstractSetTimeActivity {
 	}
 	@Override
 	public void initValue() {
-		String hour = (String) SharedPreferenceUtil.get(ClockSetActivity_1.this, I2WatchProtocolData.SHARE_CLOCK_SETTIME_HOUR_1,
+		String hour = (String) SharedPreferenceUtil.get(ClockSetActivity_1.this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_1,
 				"07");
 		npHour.setValue(Integer.valueOf(hour));
 
-		String min = (String) SharedPreferenceUtil.get(ClockSetActivity_1.this, I2WatchProtocolData.SHARE_CLOCK_SETTIME_MIN_1,
+		String min = (String) SharedPreferenceUtil.get(ClockSetActivity_1.this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_1,
 				"00");
-		if (min.equals(values[0])) {
-			npMin.setValue(0);
-		} else if (min.equals(values[1])) {
-			npMin.setValue(1);
-		}
+//		if (min.equals(values[0])) {
+//			npMin.setValue(0);
+//		} else if (min.equals(values[1])) {
+//			npMin.setValue(1);
+//		}
+		npMin.setValue(Integer.valueOf(min));
 		
 	}
 	@Override

@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,7 +21,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xtremeprog.sdk.ble.BleManager;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.SimpleBlueService;
 
 /**
  * 未使用
@@ -27,9 +31,19 @@ import com.xtremeprog.sdk.ble.BleManager;
  */
 public abstract class BaseActivity extends FragmentActivity {
 	protected XtremApplication mApplication;
-	protected BleManager mBleManager;
+	
+	public boolean isConnected(){
+		AbstractSimpleBlueService mSimpleBlueService = getSimpleBlueService();
+		return 	 (null!=mSimpleBlueService&&mSimpleBlueService.isBinded()&&mSimpleBlueService.getConnectState()==BluetoothProfile.STATE_CONNECTED) ;
+	}
+	
 //	protected FlippingLoadingDialog mLoadingDialog;
-
+	public void showIosDialog(Context context,String msg){
+		new com.suping.i2_watch.view.AlertDialog(context).builder().setMsg(msg).setCancelable(true).show();
+	}
+	public void showIosDialog(Context context,String msg,String title){
+		new com.suping.i2_watch.view.AlertDialog(context).builder().setMsg(msg).setCancelable(true).show();
+	}
 	/**
 	 * 屏幕的宽度、高度、密度
 	 */
@@ -43,10 +57,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mApplication = (XtremApplication) getApplication();
-		mBleManager = mApplication.getBleManager();
 //		mLoadingDialog = new FlippingLoadingDialog(this, "请求提交中");
-		Log.e("Main.java", "mBleManager : " + mBleManager);
-		
 		DisplayMetrics metric = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metric);
 		mScreenWidth = metric.widthPixels;
@@ -59,12 +70,35 @@ public abstract class BaseActivity extends FragmentActivity {
 		clearAsyncTask();
 		super.onDestroy();
 	}
-
-	/** 初始化视图 **/
-	protected abstract void initViews();
-
-	/** 初始化事件 **/
-	protected abstract void setListener();
+	/**
+	 * 等待框
+	 * @param msg
+	 * @return
+	 */
+	protected ProgressDialog showProgressDialog(String msg) {
+		ProgressDialog pDialog;
+		pDialog = new ProgressDialog(this);
+			pDialog.setCancelable(false);
+			pDialog.setMessage(msg);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+			return pDialog;
+	}
+	
+	/**
+	 * 等待框
+	 * @param msg
+	 * @return
+	 */
+	protected ProgressDialog showProgressDialog(String msg,boolean icancel) {
+		ProgressDialog pDialog;
+		pDialog = new ProgressDialog(this);
+			pDialog.setCancelable(icancel);
+			pDialog.setMessage(msg);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+			return pDialog;
+	}
 
 	protected void putAsyncTask(AsyncTask<Void, Void, Boolean> asyncTask) {
 		mAsyncTasks.add(asyncTask.execute());
@@ -219,4 +253,11 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected void defaultFinish() {
 		super.finish();
 	}
+	
+	/** 默认退出 **/
+	protected AbstractSimpleBlueService getSimpleBlueService() {
+		return ((XtremApplication)getApplication()).getSimpleBlueService();
+	}
+	
+	
 }

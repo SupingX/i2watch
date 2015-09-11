@@ -1,25 +1,21 @@
 package com.suping.i2_watch.menu;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.entity.SleepMonitorProtocol;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
-import com.xtremeprog.sdk.ble.BleManager;
 
-public class SleepMonitorActivity extends Activity implements OnClickListener {
+public class SleepMonitorActivity extends BaseActivity implements OnClickListener {
 
 	private final static int REQ_TARGET = 4;
 	private final static int REQ_STARTTIME = 5;
@@ -27,7 +23,6 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 	private final static int RESULT_TARGET = 44;
 	private final static int RESULT_STARTTIME = 55;
 	private final static int RESULT_ENDTIME = 66;
-	
 	private ImageView imgBack;
 	private TextView tvTitle;
 	/** TextView 目标睡眠时间/开始时刻/结束时刻  **/
@@ -37,7 +32,7 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 
 	private long exitTime = 0;
 	/** 蓝牙  **/ 
-	private BleManager mBleBleManager;
+	private AbstractSimpleBlueService mSimpleBlueService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +41,26 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 		initViews();
 		setClick();
 		tvTitle.setText(getResources().getString(R.string.sleep_monitor));
-		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
-		Log.i("SleepMonitorActivity", "--mbleBleManager : " + mBleBleManager);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService = getSimpleBlueService();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		doWriteToWatch();
+		super.onDestroy();
+	}
+	
+	private void doWriteToWatch() {
+		if (isConnected()) {
+			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForClockSync(this).toByte());
+		}else{
+			showShortToast("手环未连接");
+		}
 	}
 
 	@Override
@@ -62,10 +75,10 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 				Bundle b = data.getExtras();
 				String min = b.getString("min");
 				String sec = b.getString("sec");
-				String value = min + ":" + sec;
+				String value = min + " 小时 " + sec+" 分钟 ";
 				tvTargetValue.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN, sec);
 
 				break;
 			default:
@@ -83,8 +96,8 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 				tvStartValue.setText(value);
 				// SharedPreferenceUtil.put(getApplicationContext(),
 				// "sleep_start", value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_MIN, sec);
 				break;
 			default:
 				break;
@@ -101,8 +114,8 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 				tvEndValue.setText(value);
 				// SharedPreferenceUtil.put(getApplicationContext(),
 				// "sleep_end", value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_MIN, sec);
 				break;
 			default:
 				break;
@@ -118,15 +131,14 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent retrunToMain = new Intent(SleepMonitorActivity.this, MenuActivity.class);
-			startActivity(retrunToMain);
+//			Intent retrunToMain = new Intent(SleepMonitorActivity.this, MenuActivity.class);
+//			startActivity(retrunToMain);
 			this.finish();
 			//
-			SleepMonitorProtocol sp = I2WatchProtocolData.protocolDataForSleepPeriodSync(this);
+			SleepMonitorProtocol sp = I2WatchProtocolDataForWrite.protocolDataForSleepPeriodSync(this);
 			//m
-			mBleBleManager.writeCharactics(sp);
 			
-			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
+//			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;
 
 		case R.id.rl_target:
@@ -144,20 +156,20 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-			} else {
-				finish();
-				System.exit(0);
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//				exitTime = System.currentTimeMillis();
+//			} else {
+//				finish();
+//				System.exit(0);
+//			}
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
@@ -189,16 +201,16 @@ public class SleepMonitorActivity extends Activity implements OnClickListener {
 	 */
 	private void initSetting() {
 		// target
-		String targetHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
-		String targetMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_TARGET_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
-		tvTargetValue.setText(targetHour + ":" + targetMin);
+		String targetHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+		String targetMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
+		tvTargetValue.setText(targetHour + " 小时 " + targetMin +"分钟");
 		// start
-		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
-		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
+		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
 		tvStartValue.setText(startHour + ":" + startMin);
 		// end
-		String endHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
-		String endMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_MONITOR_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
+		String endHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String endMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_END_MIN, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
 		tvEndValue.setText(endHour + ":" + endMin);
 
 	}

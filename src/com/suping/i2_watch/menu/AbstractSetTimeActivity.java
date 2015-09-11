@@ -50,10 +50,13 @@ public abstract class AbstractSetTimeActivity extends Activity {
 		
 		
 		npMin = (NumberPicker) findViewById(R.id.np_sec);
-		values = new String[] { "00", "30" };
-		npMin.setDisplayedValues(values);
-		npMin.setMaxValue(values.length - 1);
+		npMin.setMaxValue(23);
 		npMin.setMinValue(0);
+		
+//		values = new String[] { "00", "30" };
+//		npMin.setDisplayedValues(values);
+//		npMin.setMaxValue(values.length - 1);
+//		npMin.setMinValue(0);
 //		npMin.setValue(0);
 //		((EditText) (np_sec.getChildAt(1))).setFocusable(false);
 //		((EditText) (np_sec.getChildAt(1))).setFocusableInTouchMode(false);
@@ -88,7 +91,7 @@ public abstract class AbstractSetTimeActivity extends Activity {
 				}
 				
 				String minStr = hour < 10 ? "0" + hour : hour + "";
-				String secStr = values[min];
+				String secStr = min<10?"0"+min:min+"";
 				// Toast.makeText(getApplicationContext(), min+"|||||"+sec,
 				// 0).show();
 				b = new Bundle();
@@ -99,6 +102,16 @@ public abstract class AbstractSetTimeActivity extends Activity {
 		});
 		//格式化
 		npHour.setFormatter(new Formatter() {
+			@Override
+			public String format(int value) {
+				String tmp = String.valueOf(value);
+				if (value < 10) {
+					tmp = "0" + tmp;
+				}
+				return tmp;
+			}
+		});
+		npMin.setFormatter(new Formatter() {
 			@Override
 			public String format(int value) {
 				String tmp = String.valueOf(value);

@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="${packageName}.${activityClass}" >
 
     <include layout="@layout/top_layout_right" />
@@ -16,14 +16,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
+            
+            <View  android:layout_height="12dp"
+                android:layout_width="match_parent"
+                android:background="@color/grey_bg"
+                />
+                <View
+                style="@style/line"
+             />
             <RelativeLayout
                 android:id="@+id/rl_reminder"
                 style="@style/itemlist"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginBottom="-1dp"
-                android:layout_marginTop="-1dp"
                 android:clickable="true"
                 android:focusable="true" >
 
@@ -70,8 +75,45 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" /><RelativeLayout android:id="@+id/rl_incoming" style="@style/itemlist" android:layout_width="match_parent" android:layout_height="48dp" android:clickable="true" android:focusable="true">
 
+                <ImageView android:id="@+id/img_incoming" android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:src="@drawable/ic_action_call" />
+
+                <TextView android:id="@+id/tv_incoming" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_gravity="center_vertical" android:layout_marginLeft="15dp" android:layout_toRightOf="@id/img_incoming" android:text="@string/incoming_reminder" />
+
+                <ImageView android:id="@+id/img_right_00" android:layout_width="48dp" android:layout_height="48dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:padding="8dp" android:src="@drawable/icon_right_arrow" />
+
+                <CheckBox android:id="@+id/cb_incoming" android:layout_width="50dp" android:layout_height="32dp" android:layout_centerVertical="true" android:layout_marginRight="20dp" android:layout_toLeftOf="@id/img_right_00" android:button="@drawable/selector_switch_checkbox" android:checked="false" android:clickable="true" />
+
+            </RelativeLayout>
+
+            
+
+            <View
+                style="@style/line"
+                android:layout_marginLeft="55dp" />
+
+            
+                <RelativeLayout android:background="@color/white" android:id="@+id/rl_nf" android:layout_width="match_parent" android:layout_height="48dp" android:clickable="true" android:focusable="true" android:paddingBottom="8dp" android:paddingLeft="20dp" android:paddingTop="8dp">
+
+                <ImageView android:id="@+id/img_reminder_nf" android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:src="@drawable/ic_reminder_nf" />
+
+                <TextView android:id="@+id/tv_reminder_nf" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_gravity="center_vertical" android:layout_marginLeft="15dp" android:layout_toRightOf="@id/img_reminder_nf" android:text="@string/disconnect_reminder" />
+
+                <ImageView android:id="@+id/img_right_4" android:layout_width="48dp" android:layout_height="48dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:padding="8dp" android:src="@drawable/icon_right_arrow" android:visibility="invisible" />
+
+                <CheckBox android:id="@+id/cb_reminder_nf" android:layout_width="50dp" android:layout_height="32dp" android:layout_centerVertical="true" android:layout_marginRight="20dp" android:layout_toLeftOf="@id/img_right_4" android:button="@drawable/selector_switch_checkbox" android:checked="false" android:clickable="true" />
+            </RelativeLayout><View
+                style="@style/line"
+             />
+  <View  android:layout_height="20dp"
+                android:layout_width="match_parent"
+                android:background="@color/grey_bg"
+                />
+			
+      <View
+                style="@style/line"
+             />
             <RelativeLayout
                 android:id="@+id/rl_sleep"
                 style="@style/itemlist"
@@ -79,7 +121,7 @@
                 android:layout_height="48dp"
                 android:clickable="true"
                 android:focusable="true" >
-
+	
                 <ImageView
                         android:contentDescription="@string/app_name"
                     android:id="@+id/img_monitor"
@@ -91,6 +133,7 @@
 
                 <TextView
                     android:id="@+id/tv_monitor"
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -108,11 +151,47 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
+                    <LinearLayout 
+                       android:layout_toLeftOf="@id/img_right_2"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                <TextView
+                    android:textColor="@color/grey_text"
+                    
+                    android:id="@+id/tv_monitor_sleep_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="00:00" />
+                    <TextView
+                    android:textColor="@color/grey_text"
+                    
+                    android:id="@+id/tv_monitor_sleep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text=" - " />
+                        <TextView
+                    android:textColor="@color/grey_text"
+                    
+                    android:id="@+id/tv_monitor_sleep_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="12:00" />
+                </LinearLayout>
+                
+                
             </RelativeLayout>
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_clock"
@@ -150,65 +229,56 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
-            </RelativeLayout>
-
-            <View
-                style="@style/line"
-                android:layout_marginLeft="20dp" />
-
-            <RelativeLayout
-                android:id="@+id/rl_nf"
-                style="@style/itemlist"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:clickable="true"
-                android:focusable="true" >
-
-                <ImageView
-                        android:contentDescription="@string/app_name"
-                    android:id="@+id/img_reminder_nf"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_reminder_nf" />
-
-                <TextView
-                    android:id="@+id/tv_reminder_nf"
+                <LinearLayout 
+                       android:layout_toLeftOf="@id/img_right_3"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                    android:id="@+id/tv_clock_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/img_reminder_nf"
-                    android:text="@string/disconnect_reminder" />
-
-                <ImageView
-                        android:contentDescription="@string/app_name"
-                    android:id="@+id/img_right_4"
-                    android:padding="8dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
+                    android:textColor="@color/green_text"
+                    android:text="12:00" />
+                        <TextView
+                    android:textColor="@color/grey_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/icon_right_arrow"
-                    android:visibility="invisible" />
-
-                <CheckBox
-                    android:id="@+id/cb_reminder_nf"
-                    android:layout_width="50dp"
-                    android:layout_height="32dp"
+                    android:layout_gravity="center_vertical"
+                    android:text=" | " />
+                        <TextView
+                    android:id="@+id/tv_clock_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_toLeftOf="@id/img_right_4"
-                    android:button="@drawable/selector_switch_checkbox"
-                    android:checked="false"
-                    android:clickable="true" />
+                    android:layout_gravity="center_vertical"
+                                    android:textColor="@color/green_text"
+                    android:text="00:00" />
+                                   <TextView
+                    android:textColor="@color/grey_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text=" | " />
+                            <TextView
+                    android:id="@+id/tv_clock_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                                    android:textColor="@color/green_text"
+                    android:text="00:00" />
+                    </LinearLayout>
             </RelativeLayout>
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_camera"
@@ -250,7 +320,7 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_search"
@@ -292,7 +362,7 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_record"
@@ -334,7 +404,7 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_bright"
@@ -383,7 +453,7 @@
                     android:layout_marginRight="20dp"
                     android:text="@string/add" 
                     android:textSize="22sp"
-                    android:textColor="@color/color_top_text_pressed"
+                    android:textColor="@color/blue_text"
                     android:background="@drawable/selector_btn_increase_bg"
                     />
                     <Button
@@ -395,14 +465,14 @@
                     android:layout_marginRight="-1dp"
                     android:gravity="center"
                      android:textSize="22sp"
-                    android:textColor="@color/color_top_text_pressed"
+                    android:textColor="@color/blue_text"
                     android:background="@drawable/selector_btn_decrease_bg"
                     android:text="@string/jian" />
             </RelativeLayout>
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 
             <RelativeLayout
                 android:id="@+id/rl_signset"
@@ -455,63 +525,9 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-
-            <View
-                style="@style/line"
-                android:layout_marginLeft="20dp" />
-
-            <RelativeLayout
-                android:id="@+id/rl_incoming"
-                style="@style/itemlist"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:clickable="true"
-                android:focusable="true" >
-
-                <ImageView
-                        android:contentDescription="@string/app_name"
-                    android:id="@+id/img_incoming"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_action_call" />
-
-                <TextView
-                    android:id="@+id/tv_incoming"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="15dp"
-                    android:layout_toRightOf="@id/img_incoming"
-                    android:text="@string/incoming_reminder" />
-            
-
-                <ImageView
-                        android:contentDescription="@string/app_name"
-                    android:id="@+id/img_right_00"
-                      android:padding="8dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_right_arrow" />
-                    <CheckBox
-                    android:id="@+id/cb_incoming"
-                    android:layout_width="50dp"
-                    android:layout_height="32dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_toLeftOf="@id/img_right_00"
-                    android:button="@drawable/selector_switch_checkbox"
-                    android:checked="false"
-                    android:clickable="true" />
-
-            </RelativeLayout>
               <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="55dp" />
 			<RelativeLayout
                 android:id="@+id/rl_callfaker"
                 style="@style/itemlist"
@@ -549,10 +565,16 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-              <View
+                <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
-            
+             />
+             <View  android:layout_height="20dp"
+                android:layout_width="match_parent"
+                android:background="@color/grey_bg"
+                />
+                <View
+                style="@style/line"
+             />
             <RelativeLayout
                 android:id="@+id/rl_shutdown"
                 style="@style/itemlist"
@@ -590,10 +612,14 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-
-            <View
+    <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+             />
+           <View  android:layout_height="12dp"
+                android:layout_width="match_parent"
+                android:background="@color/grey_bg"
+                />
+           
             
 
           

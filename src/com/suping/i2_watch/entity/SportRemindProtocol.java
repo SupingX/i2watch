@@ -7,7 +7,7 @@ import com.suping.i2_watch.util.DataUtil;
  * @author Administrator
  * 
  */
-public class SportRemindProtocol extends AbstractProtocolWrite {
+public class SportRemindProtocol  {
 	/** 协议头   **/
 	public static final String protocol = "19"; 
 	/** 重复                   ：为一个十六进制的字符串**/

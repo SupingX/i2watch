@@ -1,8 +1,6 @@
 package com.suping.i2_watch.menu;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,15 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.XtremApplication;
-import com.suping.i2_watch.entity.I2WatchProtocolData;
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.entity.SportRemindProtocol;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
-import com.xtremeprog.sdk.ble.BleManager;
-import com.xtremeprog.sdk.ble.BleService;
 
-public class SportReminderActivity extends Activity implements OnClickListener {
+public class SportReminderActivity extends BaseActivity implements OnClickListener {
 	// requestcode & resultCode
 	private final static int REQ_INTERVAL = 1;
 	private final static int REQ_STARTTIME = 2;
@@ -42,9 +38,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	/** 重复次数    **/ 
 	private int repeatValue;
 	/** broadcastReceiver  **/ 
-	private SportReminderBroadcastReceiver mReceiver;
 	/** 蓝牙  **/ 
-	private BleManager mBleBleManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,25 +46,36 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_reminder);
 		initViews();
 		setClick();
-		mReceiver = new SportReminderBroadcastReceiver();
-		mBleBleManager = ((XtremApplication)getApplication()).getBleManager();
-		Log.i("SportReminderActivity", "--mbleBleManager : " + mBleBleManager);
 		tvTitle.setText(getResources().getString(R.string.sport_reminder));
 		
 	}
 
 	@Override
 	protected void onResume() {
-		registerReceiver(mReceiver, BleService.getIntentFilter());
 		super.onResume();
 	}
 
+	
+	
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(mReceiver);
+		writeToWatch();
+		
 		super.onDestroy();
 	}
+	
+	
+	private void writeToWatch(){
 
+		SportRemindProtocol sp = I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(this);
+		Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
+		if (isConnected()) {
+			getSimpleBlueService().writeCharacteristic(sp.toByte());
+		}else{
+			showShortToast("手环未连接");
+		}
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -82,9 +87,9 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 			case RESULT_INTERVAL:
 				Bundle b = data.getExtras();
 				String time = b.getString("time");
-				time = time == null ? I2WatchProtocolData.DEFAULT_INTERVAL : time;
+				time = time == null ? I2WatchProtocolDataForWrite.DEFAULT_INTERVAL : time;
 				tvIntervalValue.setText(time);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, time);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, time);
 				//写入数据 设置interval（间隔）
 //				mBleBleManager.writeCharactics(DataUtil.hexStringX2bytesToInt(time));
 				break;
@@ -101,8 +106,8 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 				String sec = b.getString("sec");
 				String value = min + ":" + sec;
 				tvStartValue.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_START_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_START_MIN, sec);
 				//写入数据 设置starttime（开始时间）
 				
 				break;
@@ -119,8 +124,8 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 				String sec = b.getString("sec");
 				String value = min + ":" + sec;
 				tvEndValue.setText(value);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, min);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, sec);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_END_HOUR, min);
+				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_END_MIN, sec);
 				//写入数据 设置endtime（结束时间）
 				break;
 			default:
@@ -138,15 +143,10 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			Intent retrunToMain = new Intent(SportReminderActivity.this, MenuActivity.class);
-			startActivity(retrunToMain);
-			
-			SportRemindProtocol sp = I2WatchProtocolData.protocolDataForActivityRemindSync(this);
-			Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
-			mBleBleManager.writeCharactics(sp);
-			
+//			Intent retrunToMain = new Intent(SportReminderActivity.this, MenuActivity.class);
+//			startActivity(retrunToMain);
 			this.finish();
-			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
+//			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;
 		/**
 		 * 
@@ -193,20 +193,20 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-			} else {
-				finish();
-				System.exit(0);
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//				exitTime = System.currentTimeMillis();
+//			} else {
+//				finish();
+//				System.exit(0);
+//			}
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
@@ -235,15 +235,15 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	 */
 	private void initSetting() {
 		// interval
-		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_INTERVAL, "00");
+		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, "00");
 		tvIntervalValue.setText(reminder_interval);
 		// start
-		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_HOUR, I2WatchProtocolData.DEFAULT_START_HOUR);
-		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_START_MIN, I2WatchProtocolData.DEFAULT_START_MIN);
+		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+		String reminder_start_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
 		tvStartValue.setText(reminder_start_hour + ":" + reminder_start_min);
 		// end
-		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_HOUR, I2WatchProtocolData.DEFAULT_END_HOUR);
-		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_END_MIN, I2WatchProtocolData.DEFAULT_END_MIN);
+		String reminder_end_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+		String reminder_end_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_END_MIN, I2WatchProtocolDataForWrite.DEFAULT_END_MIN);
 		tvEndValue.setText(reminder_end_hour + ":" + reminder_end_min);
 
 	}
@@ -252,7 +252,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	 * 初始化周期
 	 */
 	private void initWeekday() {
-		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolData.SHARE_REPEAT, 0b00000000);
+		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_REPEAT, 0b00000000);
 		Log.d("OB", "初始化repeatValue-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tvSun, WeekdayEnum.SUN.getDay());
 		updateTextview(tvMon, WeekdayEnum.MON.getDay());
@@ -288,7 +288,7 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 		repeatValue ^= weekday;
 		Log.d("OB", tv.getId() + "-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tv, weekday);
-		SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolData.SHARE_REPEAT, repeatValue);
+		SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_REPEAT, repeatValue);
 		//写入下位机  repeatValue ：01001111
 		
 	}
@@ -309,28 +309,4 @@ public class SportReminderActivity extends Activity implements OnClickListener {
 	}
 
 
-	/**
-	 * broadcastReceiver
-	 * 
-	 * @author Administrator
-	 * 
-	 */
-	private class SportReminderBroadcastReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (action.equals(BleService.BLE_GATT_CONNECTED)) {
-				
-				
-			} else if (action.equals(BleService.BLE_GATT_DISCONNECTED)) {
-
-			} else if (action.equals(BleService.BLE_CHARACTERISTIC_WRITE)) {
-
-			} else if (action.equals(BleService.BLE_CHARACTERISTIC_READ)) {
-
-			} else if (action.equals(BleService.BLE_CHARACTERISTIC_NOTIFICATION)) {
-
-			}
-		}
-	}
 }

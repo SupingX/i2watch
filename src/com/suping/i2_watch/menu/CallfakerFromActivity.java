@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -25,14 +26,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 
-public class CallfakerFromActivity extends Activity {
+public class CallfakerFromActivity extends Activity implements OnClickListener {
 	private TextView tvCancel;
 	private TextView tvConfirm;
-	private ListView mListView;
-	private int selectedPosition;
+	private TextView tvRandom;
+	private TextView tvChoose;
+	private TextView tvCustom;
 	private LinearLayout rlOk;
 	private EditText edName, edPhone;
 
@@ -47,21 +50,23 @@ public class CallfakerFromActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.e("onActivityResult","onActivityResult");
 		switch (requestCode) {
 		case 1:
 			switch (resultCode) {
 			case RESULT_OK:
-
 				Uri contactUri = data.getData(); //
 				Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
 				cursor.moveToFirst();
 				String num = getContactNumberFromCursor(cursor);
 				String name = getContactNameFromCursor(cursor);
-				Log.e("custom", num + " " + name);
-				mListView.setItemChecked(selectedPosition, true);
-				returnResult(name + " " + num);
+				Log.e("choose", num + " " + name);
+				returnResult(name + " " + num,RESULT_OK);
+				finish();
 				break;
-
+			case RESULT_CANCELED :
+				returnResult(null,RESULT_CANCELED);
+				break;
 			default:
 				break;
 			}
@@ -73,83 +78,97 @@ public class CallfakerFromActivity extends Activity {
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-
+	
+	
+	@Override
+	protected void onDestroy() {
+		returnResult(null, RESULT_CANCELED);
+		super.onDestroy();
+	}
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+	
+		case R.id.tv_positive:
+			// 当选中自定义
+			String name = edName.getText().toString().trim();
+			if(name==null||name.equals("")){Toast.makeText(CallfakerFromActivity.this, "姓名为空", Toast.LENGTH_SHORT).show();return;}
+			String phone = edPhone.getText().toString().trim();
+			if(phone==null||phone.equals("")){Toast.makeText(CallfakerFromActivity.this, "号码为空", Toast.LENGTH_SHORT).show();return;}
+			returnResult(name + " " + phone,RESULT_OK);
+			break;
+		case R.id.tv_negative:
+			returnResult(null,RESULT_CANCELED);
+			break;
+		case R.id.tv_random:
+			Log.e("listView", "随机--" );
+			update(1);
+			String value = getRandom();
+			rlOk.setVisibility(View.GONE);
+			returnResult(value,RESULT_OK);
+			break;
+		case R.id.tv_choose:
+			Log.e("listView", "导入--");
+			update(2);
+			rlOk.setVisibility(View.GONE);
+			Intent intentPick = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+			startActivityForResult(intentPick, 1);
+//			finish();
+			break;
+		case R.id.tv_custom:
+			Log.e("listView", "自定义--" );
+			update(3);
+			rlOk.setVisibility(View.VISIBLE);
+			break;
+		
+		default:
+			break;
+		}
+	}
+	
+	private void clear(Resources r){
+		tvRandom.setTextColor(r.getColor(R.color.confirm));
+		tvCustom.setTextColor(r.getColor(R.color.confirm));
+		tvChoose.setTextColor(r.getColor(R.color.confirm));
+	}
+	
+	private void update(int index){
+		Resources r = getResources();
+		clear(r);
+		switch (index) {
+		case 1:
+			tvRandom.setTextColor(r.getColor(R.color.color_top_text_pressed));
+			break;
+		case 2:
+			tvChoose.setTextColor(r.getColor(R.color.color_top_text_pressed));
+			break;
+		case 3:
+			tvCustom.setTextColor(r.getColor(R.color.color_top_text_pressed));
+			break;
+		default:
+			break;
+		}
+	}
 	private void initViews() {
 		tvCancel = (TextView) findViewById(R.id.tv_negative);
 		tvConfirm = (TextView) findViewById(R.id.tv_positive);
-		mListView = (ListView) findViewById(R.id.listV);
+		tvCustom = (TextView) findViewById(R.id.tv_custom);
+		tvRandom = (TextView) findViewById(R.id.tv_random);
+		tvChoose = (TextView) findViewById(R.id.tv_choose);
 		edName = (EditText) findViewById(R.id.ed_name);
 		edPhone = (EditText) findViewById(R.id.ed_phone);
-		
-		Resources resources = getResources();
-		String[] data = resources.getStringArray(R.array.cursor_list);
-//		String [] data = new String[]{
-//				resources.getString(R.string.custom),
-//				resources.getString(R.string.random),
-//				resources.getString(R.string.choose)
-//		};
-		
-		mListView.setAdapter(new ArrayAdapter<String>(CallfakerFromActivity.this,
-				android.R.layout.select_dialog_singlechoice, data));
-		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		// mListView.setItemChecked(0, true);
 		rlOk = (LinearLayout) findViewById(R.id.ok);
 	}
 
 	private void setListener() {
-		// 退出
-		tvCancel.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
-
-		// 确定
-		tvConfirm.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// 当选中自定义
-				String name = edName.getText().toString().trim();
-				String phone = edPhone.getText().toString().trim();
-				returnResult(name + " " + phone);
-
-			}
-		});
-
-		mListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				switch (position) {
-				case 0:
-					Log.e("listView", "随机--" + position);
-					rlOk.setVisibility(View.GONE);
-					selectedPosition = 0;
-					String value = getRandom();
-					returnResult(value);
-					break;
-				case 1:
-					Log.e("listView", "导入--" + position);
-					rlOk.setVisibility(View.GONE);
-					selectedPosition = 1;
-					Intent intentPick = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-					startActivityForResult(intentPick, 1);
-					break;
-				case 2:
-					Log.e("listView", "自定义--" + position);
-					rlOk.setVisibility(View.VISIBLE);
-					selectedPosition = 2;
-					break;
-				default:
-					break;
-				}
-
-			}
-		});
+		tvCancel.setOnClickListener(this);
+		tvConfirm.setOnClickListener(this);
+		tvChoose.setOnClickListener(this);
+		tvCustom.setOnClickListener(this);
+		tvRandom.setOnClickListener(this);
 	}
-
+		
+		
 	/**
 	 * 获取联系人姓名+电话Map<Integer,Map<String,String>>
 	 */
@@ -171,7 +190,6 @@ public class CallfakerFromActivity extends Activity {
 				int phoneCount = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
 				if (phoneCount > 0) {
-
 					// // 获得联系人的电话号码列表
 					Cursor phonesCursor = getContentResolver().query(
 							ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
@@ -181,7 +199,7 @@ public class CallfakerFromActivity extends Activity {
 							// // 遍历所有的电话号码
 							String phoneNumber = phonesCursor.getString(phonesCursor
 									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-							Log.e("通讯录", "联系人姓名： " + disPlayName + "，联系人电话: " + phoneNumber);
+							Log.v("通讯录", "联系人姓名： " + disPlayName + "，联系人电话: " + phoneNumber);
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(disPlayName, phoneNumber);
 							list.add(map);
@@ -204,16 +222,18 @@ public class CallfakerFromActivity extends Activity {
 		List<Map<String, String>> list = getCursorList();
 		String name = "";
 		String phone = "";
+		Log.i("listView", "list.size()--" + list.size());
 		if (!(list == null || list.size() == 0)) {
-			int i = (int) (Math.random() * list.size()) + 1;
-			Log.i("listView", "随机联系人--" + i);
+//			int i = (int) (Math.random() * list.size());
+			int i = new Random().nextInt(list.size());
+			Log.i("listView", "随机数--" + i);
 			Log.i("listView", "随机联系人--" + list.get(i).toString());
 			Iterator<Entry<String, String>> iter = list.get(i).entrySet().iterator();
 			while (iter.hasNext()) {
 				Entry<String, String> s = iter.next();
 				name = s.getKey();
 				phone = s.getValue();
-				Log.w("listView", name + "==" + phone);
+				Log.i("listView", "随机：" +name + "--〉" + phone);
 			}
 		} else {
 			Log.e("listView", "联系人列表为空...");
@@ -271,12 +291,15 @@ public class CallfakerFromActivity extends Activity {
 	 * @author Administrator
 	 * 
 	 */
-	private void returnResult(String value) {
-		Intent intentRandom = new Intent(CallfakerFromActivity.this, CallfakerActivity.class);
-		Bundle b = new Bundle();
-		b.putString("cursor", value);
-		intentRandom.putExtras(b);
-		setResult(RESULT_OK, intentRandom);
+	private void returnResult(String value,int result) {
+		Intent intentRandom  = new Intent(CallfakerFromActivity.this, CallfakerActivity.class);
+		Bundle b;
+		if (value!=null) {
+			b = new Bundle();
+			b.putString("cursor", value);
+			intentRandom.putExtras(b);
+		}
+		setResult(result, intentRandom);
 		finish();
 	}
 }

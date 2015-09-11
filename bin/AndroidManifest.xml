@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.suping.i2_watch"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="i1.0.150910.001" >
 
     <!-- https://github.com/SupingX/i2watch.git -->
     <uses-sdk
@@ -23,7 +23,7 @@
 
     <!--
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     -->
 
     <uses-feature
@@ -47,34 +47,30 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
+        </receiver>
         -->
         <activity
-            android:name="com.suping.i2_watch.Main"
+            android:name=".Main"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.SettingActivity"
+            android:name=".setting.SettingActivity"
             android:label="@string/title_activity_setting" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.MenuActivity"
+            android:name=".menu.MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
 
         <service
-            android:name="com.suping.i2_watch.bluetooth.BleService"
-            android:enabled="true" >
-        </service>
-        <service
-            android:name="com.xtremeprog.sdk.ble.BleService"
+            android:name=".service.SimpleBlueService"
             android:enabled="true" >
         </service>
 
         <activity
-            android:name="com.suping.i2_watch.ConnectActivity"
+            android:name=".ConnectActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_connect"
             android:launchMode="singleTop"
@@ -82,7 +78,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.ConnectEvolveActivity"
+            android:name=".ConnectEvolveActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_connect"
             android:launchMode="singleTop"
@@ -90,11 +86,11 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SportReminderActivity"
+            android:name=".menu.SportReminderActivity"
             android:label="@string/title_activity_reminder" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.BaseDialogActivity"
+            android:name=".BaseDialogActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_base_dialog"
             android:launchMode="singleTop"
@@ -102,7 +98,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SportReminderIntervalActivity"
+            android:name=".menu.SportReminderIntervalActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_interval_dialog"
             android:launchMode="singleTop"
@@ -110,7 +106,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SportRemindStartTimeActivity"
+            android:name=".menu.SportRemindStartTimeActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_start_time"
             android:launchMode="singleTop"
@@ -118,7 +114,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SportReminderEndTimeActivity"
+            android:name=".menu.SportReminderEndTimeActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_end_time"
             android:launchMode="singleTop"
@@ -126,11 +122,11 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SleepMonitorActivity"
+            android:name=".menu.SleepMonitorActivity"
             android:label="@string/title_activity_sleep_monitor" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SleepMonitorTargetActivity"
+            android:name=".menu.SleepMonitorTargetActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_sleep_monitor_target"
             android:launchMode="singleTop"
@@ -138,7 +134,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SleepMonitorStartActivity"
+            android:name=".menu.SleepMonitorStartActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_sleep_monitor_start"
             android:launchMode="singleTop"
@@ -146,7 +142,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SleepMonitorEndActivity"
+            android:name=".menu.SleepMonitorEndActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_sleep_monitor_end"
             android:launchMode="singleTop"
@@ -154,11 +150,11 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.ClockActivity"
+            android:name=".menu.ClockActivity"
             android:label="@string/title_activity_clock" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.ClockSetActivity_1"
+            android:name=".menu.ClockSetActivity_1"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_clock_set_activity_1"
             android:launchMode="singleTop"
@@ -166,7 +162,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.ClockSetActivity_2"
+            android:name=".menu.ClockSetActivity_2"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_clock_set_activity_2"
             android:launchMode="singleTop"
@@ -174,7 +170,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.ClockSetActivity_3"
+            android:name=".menu.ClockSetActivity_3"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_clock_set_activity_3"
             android:launchMode="singleTop"
@@ -182,7 +178,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SignatureSetActivity"
+            android:name=".menu.SignatureSetActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_signature_set"
             android:launchMode="singleTop"
@@ -190,15 +186,16 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.CameraActivity"
+            android:name=".menu.CameraActivity"
+                   android:screenOrientation="portrait"
             android:label="@string/title_activity_camera" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.InformationActivity"
+            android:name=".setting.InformationActivity"
             android:label="@string/title_activity_information" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.HeightActivity"
+            android:name=".setting.HeightActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_height"
             android:launchMode="singleTop"
@@ -206,7 +203,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.WeightActivity"
+            android:name=".setting.WeightActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_weight"
             android:launchMode="singleTop"
@@ -214,7 +211,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.BirthdayActivity"
+            android:name=".setting.BirthdayActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_birthday"
             android:launchMode="singleTop"
@@ -222,19 +219,19 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.PedometerActivity"
+            android:name=".setting.PedometerActivity"
             android:label="@string/title_activity_pedometer" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.AboutActivity"
+            android:name=".setting.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.IncomingActivity"
+            android:name=".menu.IncomingActivity"
             android:label="@string/title_activity_incoming" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.IncomingStarttimeActivity"
+            android:name=".menu.IncomingStarttimeActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_incoming_starttime"
             android:launchMode="singleTop"
@@ -242,7 +239,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.IncomingEndtimeActivity"
+            android:name=".menu.IncomingEndtimeActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_incoming_endtime"
             android:launchMode="singleTop"
@@ -250,15 +247,15 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.AbstractSet2Activity"
+            android:name=".menu.AbstractSet2Activity"
             android:label="@string/title_activity_abstract_set2" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.CallfakerActivity"
+            android:name=".menu.CallfakerActivity"
             android:label="@string/title_activity_callfaker" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.CallfakerFromActivity"
+            android:name=".menu.CallfakerFromActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_callfaker_from"
             android:launchMode="singleTop"
@@ -266,7 +263,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.SearchActivity"
+            android:name=".menu.SearchActivity"
             android:configChanges="locale|layoutDirection"
             android:label="@string/title_activity_search"
             android:launchMode="singleTop"
@@ -274,7 +271,7 @@
             android:theme="@style/DialogActivity" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.SpalishActivity"
+            android:name=".SpalishActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -283,13 +280,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.suping.i2_watch.menu.RecordActivity"
+            android:name=".menu.RecordActivity"
             android:label="@string/title_activity_record" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.RecordMenuActivity"
-            android:theme="@style/MyDialogStyleBottom"
-            android:label="@string/title_activity_record_menu" >
+            android:name="com.suping.i2_watch.setting.DeviceActivity"
+            android:label="@string/title_activity_device" >
         </activity>
     </application>
 
