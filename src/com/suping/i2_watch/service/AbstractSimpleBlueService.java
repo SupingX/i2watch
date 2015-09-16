@@ -1,10 +1,22 @@
 package com.suping.i2_watch.service;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
+
+
+
+
+
+
+
+
+import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.util.L;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -21,6 +33,7 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,6 +57,21 @@ public abstract class AbstractSimpleBlueService extends Service {
 	private boolean isScanning;
 	private BluetoothGattService mBluetoothGattService;
 	public Handler mHander = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 0xabc:
+				index++;
+				if (index<values.size()) {
+					mHander.postDelayed(runWrite, 3000);
+				}else{
+					doWriteOver();
+				}
+				break;
+
+			default:
+				break;
+			}
+		};
 	};
 	private int connectState;
 	
@@ -89,20 +117,57 @@ public abstract class AbstractSimpleBlueService extends Service {
 	private boolean isWrieteServiceFound;
 	private BluetoothGattCharacteristic characteristicWrite;
 
-	public synchronized void writeCharacteristic(byte[] order) {
+	public  void writeCharacteristic(byte[] order) {
 		try {
-			synchronized(characteristicWrite){
 				logE("写数据");
 				if (characteristicWrite != null) {
 					characteristicWrite.setValue(order);
 					mSimpleBluetooth.write(characteristicWrite);
 				}
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	private int writeCount = 0;
+	private int writeInterval = 200;
+	private Handler mHandler = new Handler(){};
+	
+	
+	private int index = 0;
+	private List<byte[] > values = new ArrayList<>(); 
+	/**
+	 * 
+	 * @param value
+	 */
+	private Runnable runWrite =new Runnable() {
+		@Override
+		public void run() {
+			writeCharacteristic(values.get(index));
+			long currentTimeMillis = System.currentTimeMillis();
+			L.e("时间点："+currentTimeMillis);
+			mHander.sendEmptyMessage(0xabc);
+		}
+	};
+	/**
+	 * 写一串数据 
+	 * @param values
+	 */
+	public void writeValueToDevice( final List<byte[]> values) {
+		if (values==null ) {
+			return ;
+		}
+		if (values.size()<=0) {
+			return;
+		}
+		//清空数据 
+		index = 0;
+		this.values.clear();
+		//获取数据 
+		this.values = values;
+		mHander.post(runWrite);
+	}
+	
 	public int getConnectState() {
 		return connectState;
 	}
@@ -194,7 +259,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 			sendBroadcastForDeviceFound(device, rssi);
 			String bindedName = getBindedName();
 			String bindedAddress = getBindedAddress();
-			if (isBinded() && device.getAddress().equals(bindedAddress) && device.getName().equals(bindedName)) {
+			//&& device.getName().equals(bindedName)
+			if (isBinded() && device.getAddress().equals(bindedAddress) ) {
 				Log.e("AbstractSimpleBluetooth", "bindedName,bindedAddress = " + bindedName + "," + bindedAddress);
 				mHander.postDelayed(new Runnable() {
 					@Override
@@ -225,6 +291,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 					descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 					gatt.writeDescriptor(descriptor);
 					sendBroadcastForServiceDiscoveredWriteDevice(gatt, status);
+					doServicediscovered();
 					saveDevice(gatt.getDevice());// 绑定蓝牙
 					isWrieteServiceFound = true;
 					//停止搜索？
@@ -235,6 +302,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 				}
 			}
 		}
+
+	
 
 		@Override
 		public void onReadRemoteRssiCallBack(BluetoothGatt gatt, int rssi, int status) {
@@ -282,8 +351,11 @@ public abstract class AbstractSimpleBlueService extends Service {
 								if (!isWrieteServiceFound) {
 									mSimpleBluetooth.close();// 清空Gatt
 									scanDevice(true); // 开始搜索
-									sendBroadcastForRemind();
-									doSomeThingWhereDisconnected();
+									boolean isRemindOpen = (Boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, false);
+									if (isRemindOpen) {
+										sendBroadcastForRemind();
+										doSomeThingWhereDisconnected();
+									}
 								}
 
 							}
@@ -388,7 +460,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 	}
 
 
-	
+	public abstract  void doServicediscovered();
 	public abstract void doSomeThingWhereDisconnected();
+	public abstract void 	doWriteOver();
 
 }

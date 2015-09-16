@@ -1,15 +1,16 @@
 package com.suping.i2_watch.menu;
 
 import com.suping.i2_watch.BaseActivity;
+import com.suping.i2_watch.MyBroadcastReceiver;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.SimpleBlueService;
 import com.suping.i2_watch.util.DisplayUtil;
 import com.suping.i2_watch.view.CameraInterface;
 import com.suping.i2_watch.view.CameraInterface.CamOpenOverCallback;
 import com.suping.i2_watch.view.CameraSurfaceView;
 
-import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,11 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 	/** ImageView ： 返回、拍照 **/
 	private ImageView imgBack, imgCamera;
 	private AbstractSimpleBlueService mSimpleBlueService;
+		private MyBroadcastReceiver mReceiver = new MyBroadcastReceiver(){
+		public void doCamera() {
+			CameraInterface.getInstance().doTakePicture();
+		};
+	};
 	
 	float previewRate = -1f;
 	
@@ -58,6 +64,7 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 	protected void onStart() {
 		super.onStart();
 		mSimpleBlueService = getSimpleBlueService();
+		registerReceiver(mReceiver, SimpleBlueService.getIntentFilter());
 	}
 	
 	@Override
@@ -69,7 +76,6 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 		Thread openThread = new Thread() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				CameraInterface.getInstance().doOpenCamera(CameraActivity.this);
 			}
 		};
@@ -90,6 +96,8 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 		if (isConnected()) {
 			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(0));
 		}
+		
+		unregisterReceiver(mReceiver);
 		super.onStop();
 	}
 	@Override

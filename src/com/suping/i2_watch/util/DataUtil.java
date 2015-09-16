@@ -2,6 +2,7 @@ package com.suping.i2_watch.util;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
@@ -36,7 +37,9 @@ public class DataUtil {
 		}
 		return result;
 	}
-
+	public static long getUnsignedIntt(long data) { // 将int数据转换为0~4294967295
+		return data & 0x0FFFFFFFFl;
+	}
 	/**
 	 * String 转变为16进制String字符, 每个字节2位, 不足补0
 	 */
@@ -293,22 +296,29 @@ public class DataUtil {
 	 */
 	/**
 	 * 格式化日期
+	 * 
 	 * @param time
 	 * @return
 	 */
-	  public static String formatDateTime(long time) {
-	        if (0 == time) {
-	            return "";
-	        }
-	        SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
-	        return mDateFormat.format(new Date(time));
-	    }
-	  
-	  /**
-	   * 设置最后更新日期
-	   */
-	 public static void setLastUpdateTime(PullToRefreshScrollView view) {
-	        String text = formatDateTime(System.currentTimeMillis());
-	        view.setLastUpdatedLabel(text);
-	    }
+	public static String formatDateTime(long time) {
+		if (0 == time) {
+			return "";
+		}
+		SimpleDateFormat mDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+		return mDateFormat.format(new Date(time));
+	}
+
+	/**
+	 * 设置最后更新日期
+	 */
+	public static void setLastUpdateTime(PullToRefreshScrollView view) {
+		String text = formatDateTime(System.currentTimeMillis());
+		view.setLastUpdatedLabel(text);
+	}
+	public static String format(float value) {
+		DecimalFormat df = new DecimalFormat("0.00");
+		return df.format(value);
+
+	}
+
 }

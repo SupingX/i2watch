@@ -3,4 +3,13 @@
     <dimen name="weekday">4dp</dimen>
     <dimen name="dime_top_text">18sp</dimen>
     <dimen name="dimen_top_height">48dp</dimen>
+    
+        <dimen name="virtual_call_incoming_name_margintop">20dip</dimen>
+    <dimen name="virtual_call_slipview_margintop">90dip</dimen>
+    <dimen name="virtual_call_dial_content_margintop">20dip</dimen>
+    <dimen name="virtual_call_btn_hang_up_phone_margintop">16dip</dimen>
+    <dimen name="virtual_call_btn_hang_up_phone_height">40dip</dimen>
+    <dimen name="virtual_call_item_bg_width">90dp</dimen>
+    <dimen name="virtual_call_item_bg_height">60dp</dimen>
+    
 </resources>

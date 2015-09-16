@@ -155,7 +155,7 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 				@Override
 				public void onClick(int which) {
 					Log.e("RecordFragment", "同步所有历史数据");
-					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(2, 255);
+					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(2, 0);
 				}
 			})
 			.addSheetItem("同步今天记录", SheetItemColor.Blue, new OnSheetItemClickListener() {
@@ -163,7 +163,7 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 				@Override
 				public void onClick(int which) {
 					Log.e("RecordFragment", "同步今天数据");
-					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 2);
+					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
 				}
 			});
 			dialogSync.show();

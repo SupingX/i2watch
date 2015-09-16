@@ -2,7 +2,6 @@ package com.suping.i2_watch.menu;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -11,107 +10,134 @@ import java.util.Random;
 import org.litepal.crud.DataSupport;
 
 import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
-import com.suping.i2_watch.view.CountView;
-import com.suping.i2_watch.view.CountView.OnDataChange;
-import com.suping.i2_watch.view.CountView.OnSrollChange;
+import com.suping.i2_watch.entity.HistorySleep;
+import com.suping.i2_watch.entity.HistorySport;
+import com.suping.i2_watch.util.DataUtil;
+import com.suping.i2_watch.util.L;
+import com.suping.i2_watch.view.SleepCountView;
+import com.suping.i2_watch.view.SportCountView;
+import com.suping.i2_watch.view.SportCountView.OnStepsChangeListener;
 
 public class RecordFragment extends Fragment {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private int flag;
-	private TextView tvCountSportInfo;
 
 	/** 下一天/上一天 **/
 	private ImageView reduce, inrease, reduceSleep, inreaseSleep;
 	/** 日期 **/
 	private TextView tvDate, tvDateSleep;
 	/** 统计图 **/
-	private CountView countSport, countSleep;
-	/** 同步选择对话框 **/
-	private AlertDialog dialogSync;
-	
-	
+	// private CountView
+	// countSleep;
+	private SportCountView sportCountView;
+	private SleepCountView sleepCountView;
+
 	/**
 	 * 运动视图点击事件
 	 */
 	private OnClickListener sportOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			stepTotal = 0;
+			timeTotal = 0;
 			switch (v.getId()) {
 			case R.id.reduce:
-				// TODO Auto-generated method stub
 				Log.e("RecordFragment", "减少");
+				List<HistorySport> sports = DataSupport.where("year=? and month =? and day = ? and hour = ? ", "2015", "05", "19", "0").find(HistorySport.class);
+				L.e(sports + "");
 				textViewDateChange(tvDate, -1);
-				countSport.setHours(new int[] { 22, 33, 44, 66, 111, 442, 515, 412, 666, 11, 22, 44, 55, 22, 13, 56,
-						78, 89, 54, 65, 34, 55, 77, 22 });
+				String dateStr1 = tvDate.getText().toString();
+				// sportCountView.setSteps(getRandomData());//模拟数据
+				int[] dataForSport1 = getDataForSport(dateStr1);
+				if (dataForSport1 != null) {
+					sportCountView.setSteps(dataForSport1);
+				}
+
 				break;
 			case R.id.increase:
-				// TODO Auto-generated method stub
 				Log.e("RecordFragment", "增加");
 				textViewDateChange(tvDate, 1);
+				// sportCountView.setSteps(getRandomData());//模拟数据
+				String dateStr2 = tvDate.getText().toString();
+				int[] dataForSport2 = getDataForSport(dateStr2);
+				if (dataForSport2 != null) {
+					sportCountView.setSteps(dataForSport2);
+				}
 				break;
-//			case R.id.tv_sync_sport:
-//				showDialog();
-//				logHistoryThread.start();
-//				break;
 			default:
 				break;
 			}
+
+			updateSportInfo(stepTotal, timeTotal);
 		}
 	};
+
+	private int stepTotal;
+	private int timeTotal;
 
 	/**
 	 * 睡眠视图点击事件
 	 */
 	private OnClickListener sleepOnClickListener = new OnClickListener() {
+
 		@Override
 		public void onClick(View v) {
+			deepTotal = 0;
+			lightTotal = 0;
+			awakTotal = 0;
 			switch (v.getId()) {
 			case R.id.reduce_sleep:
-				// TODO Auto-generated method stub
 				Log.e("RecordFragment", "增加sleep");
 				textViewDateChange(tvDateSleep, -1);
-				// DataSupport.deleteAll(History.class);
-				add();
+				String dateStr1 = tvDateSleep.getText().toString();
+				int[] dataForSleep1 = getDataForSleep(dateStr1);
+				if (dataForSleep1 != null) {
+					sleepCountView.setSleeps(dataForSleep1);
+				}
 				break;
 			case R.id.increase_sleep:
-				// TODO Auto-generated method stub
 				Log.e("RecordFragment", "增加sleep");
-				// String dateStr = tvDateSleep.getText().toString();
-				// tvDateSleep.setText(changeDate(dateStr, 1));
-				// startAnimation(tvDateSleep);
 				textViewDateChange(tvDateSleep, 1);
-				getDataFromDb("150528", 0);
+				String dateStr2 = tvDateSleep.getText().toString();
+				getDataForSleep(dateStr2);
+				int[] dataForSleep2 = getDataForSleep(dateStr2);
+				if (dataForSleep2 != null) {
+					sleepCountView.setSleeps(dataForSleep2);
+				}
 				break;
-//			case R.id.tv_sync_sleep:
-//				showDialog();
-//				break;
 			default:
 				break;
 			}
+
+			updateSleepInfo(deepTotal, lightTotal, awakTotal);
 		}
 	};
+	private TextView tvSportCal;
+	private TextView tvSportTime;
+	private TextView tvSportDistance;
+	private int deepTotal;
+	private int lightTotal;
+	private int awakTotal;
+	private TextView tvSleepDeep;
+	private TextView tvSleepLight;
+	private TextView tvSleepAwak;
+
 	/**
 	 * Dialog视图点击事件
 	 * 
 	 * 0 取消读取历史数据 1 读取当天历史数据 2 读取所有历史数据 0x5a 删除所有历史数据
 	 */
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -129,27 +155,62 @@ public class RecordFragment extends Fragment {
 			inreaseSleep = (ImageView) getActivity().findViewById(R.id.increase_sleep);
 			tvDateSleep = (TextView) getActivity().findViewById(R.id.date_sleep);
 			tvDateSleep.setText(sdf.format(new Date()));
-			countSleep = (CountView) getActivity().findViewById(R.id.count_sleep);
-//			textViewSyncSleep = (TextView) getActivity().findViewById(R.id.tv_sync_sleep);
+			tvSleepDeep = (TextView) getActivity().findViewById(R.id.tv_count_sleep_deep_value);
+			tvSleepLight = (TextView) getActivity().findViewById(R.id.tv_count_sleep_light_value);
+			tvSleepAwak = (TextView) getActivity().findViewById(R.id.tv_count_sleep_awak_value);
+		
+			sleepCountView = (SleepCountView) getActivity().findViewById(R.id.count_sleep);
 			// getActivity().registerForContextMenu(textViewSyncSleep);
 			// //为按钮注册上下文菜单
 			setLinstener(2);
-
+			int[] dataForSleep = getDataForSleep(tvDateSleep.getText().toString().trim());
+			if (dataForSleep != null) {
+				sleepCountView.setSleeps(dataForSleep);
+			}
+			updateSleepInfo(deepTotal, lightTotal, awakTotal);
 			// 当是运动画面时
 		} else if (flag == R.layout.fragment_record_sport) {
 			reduce = (ImageView) getActivity().findViewById(R.id.reduce);
 			inrease = (ImageView) getActivity().findViewById(R.id.increase);
 			tvDate = (TextView) getActivity().findViewById(R.id.date);
-			tvCountSportInfo = (TextView) getActivity().findViewById(R.id.count_sport_info);
 			tvDate.setText(sdf.format(new Date()));
-			countSport = (CountView) getActivity().findViewById(R.id.count_sport);
-//			textViewSyncSport = (TextView) getActivity().findViewById(R.id.tv_sync_sport);
+			sportCountView = (SportCountView) getActivity().findViewById(R.id.count_sport);
+			tvSportCal = (TextView) getActivity().findViewById(R.id.tv_count_sport_cal_value);
+			tvSportTime = (TextView) getActivity().findViewById(R.id.tv_count_sport_time_value);
+			tvSportDistance = (TextView) getActivity().findViewById(R.id.tv_count_sport_distance_value);
+			int[] dataForSport = getDataForSport(tvDate.getText().toString().trim());
+			if (dataForSport != null) {
+				sportCountView.setSteps(dataForSport);
+			}
+			updateSportInfo(stepTotal, timeTotal);
 			setLinstener(1);
 		}
 		super.onActivityCreated(savedInstanceState);
-
 	}
 
+	/**
+	 * 更新运动信息
+	 * 
+	 * @param step
+	 * @param time
+	 */
+	private void updateSportInfo(int step, int time) {
+		tvSportCal.setText(DataUtil.getKal(step));
+		tvSportTime.setText(DataUtil.format(time / 60f));
+		tvSportDistance.setText(DataUtil.getDistance(step));
+	}
+
+	/**
+	 * 更新运动信息
+	 * 
+	 * @param stepTotal
+	 * @param time
+	 */
+	private void updateSleepInfo(int deep, int light, int awak) {
+		tvSleepDeep.setText(DataUtil.format(deep / 60f));
+		tvSleepLight.setText(DataUtil.format(light / 60f));
+		tvSleepAwak.setText(DataUtil.format(awak / 60f));
+	}
 
 	/**
 	 * 设置监听
@@ -161,90 +222,34 @@ public class RecordFragment extends Fragment {
 		if (id == 1) {
 			reduce.setOnClickListener(sportOnClickListener);
 			inrease.setOnClickListener(sportOnClickListener);
-			countSport.setOnDataChange(new OnDataChange() {
-				@Override
-				public void onChange() {
-//					tvCountSportInfo.setText("数据改变了");
-				}
-			});
-			countSport.setOnSrollChange(new OnSrollChange() {
-				@Override
-				public void onNext() {
-					textViewDateChange(tvDate, 1);
-					tvCountSportInfo.setText("下一天数据");
-					countSport.setHours(getRandomData());
-				}
+			sportCountView.setOnStepsChangeListener(new OnStepsChangeListener() {
 
 				@Override
-				public void onPrevious() {
-					textViewDateChange(tvDate, -1);
-					tvCountSportInfo.setText("前一天数据");
-					countSport.setHours(getRandomData());
+				public void onChange(int[] steps) {
+
 				}
 			});
 
 		} else if (id == 2) {
 			reduceSleep.setOnClickListener(sleepOnClickListener);
 			inreaseSleep.setOnClickListener(sleepOnClickListener);
-			countSleep.setOnSrollChange(new OnSrollChange() {
-
-				@Override
-				public void onPrevious() {
-					Log.e("RecordFragment", "上一天");
-					textViewDateChange(tvDateSleep, -1);
-					countSleep.setHours(getRandomData());
-				}
-
-				@Override
-				public void onNext() {
-					Log.e("RecordFragment", "下一天");
-					textViewDateChange(tvDateSleep, 1);
-					countSleep.setHours(getRandomData());
-				}
-			});
+			// countSleep.setOnSrollChange(new OnSrollChange() {
+			//
+			// @Override
+			// public void onPrevious() {
+			// Log.e("RecordFragment", "上一天");
+			// textViewDateChange(tvDateSleep, -1);
+			// countSleep.setHours(getRandomData());
+			// }
+			//
+			// @Override
+			// public void onNext() {
+			// Log.e("RecordFragment", "下一天");
+			// textViewDateChange(tvDateSleep, 1);
+			// countSleep.setHours(getRandomData());
+			// }
+			// });
 		}
-	}
-
-	/**
-	 * 从数据库获取1-60分钟数据
-	 * 
-	 * @param date
-	 *            日期
-	 * @param type
-	 *            运动0/睡眠1
-	 * @return
-	 */
-	private int getDataFromDb(String date, int type) {
-//		String conditions[] = new String[] { "timeIndex>=1 and timeIndex<60 and historyDate = ? and type= ?", date,
-//				String.valueOf(type) };
-//		int i0 = DataSupport.where(conditions).sum(History.class, "historyValue", int.class);
-//		Log.e("", "i0 : " + i0);
-		return 0;
-	}
-
-	/**
-	 * 插入数据
-	 */
-	private void add() {
-//		// 测试历史数据
-//		// 模拟手环收据
-//		int[] date = new int[] { 0x00017001, 0x00027002, 0x00037003, 0x00047004, 0x00057005, 0x00067006, 0x00077007,
-//				0x00087008, 0x00097009, 0x00107010, 0x00117011, 0x00127012, 0xFF007012 };
-//
-//		List<History> list = new ArrayList<>();
-//		for (int i = 0; i < date.length; i++) {
-//			History h = new History(date[i], 3);
-//			list.add(h);
-//			// //存数据
-//			// if (h.save()) {
-//			// Toast.makeText(getActivity(), "存贮成功！！",
-//			// Toast.LENGTH_LONG).show();
-//			// } else {
-//			// Toast.makeText(getActivity(), "存贮失败！！",
-//			// Toast.LENGTH_LONG).show();
-//			// }
-//		}
-//		DataSupport.saveAll(list);
 	}
 
 	/**
@@ -252,13 +257,94 @@ public class RecordFragment extends Fragment {
 	 */
 	private int[] getRandomData() {
 
-		int hours[] = new int[24];
+		int hours[] = new int[72];
 		for (int i = 0; i < hours.length; i++) {
 			Random random = new Random();
 			hours[i] = random.nextInt(200) + 1; // 随机获取[0-200]
 		}
 		Log.d("RecordFragment", "hours : " + hours);
 		return hours;
+	}
+
+	private int[] getDataForSport(String date) {
+		String[] split = date.split("-");
+		String year = split[0];
+		String month = split[1];
+		String day = split[2];
+		int steps[] = new int[72];
+		for (int i = 0; i < 24; i++) {
+			String hour = String.valueOf(i).trim();
+			List<HistorySport> sports = DataSupport.where("year=? and month =? and day = ? and hour = ? ", year, month, day, hour).find(HistorySport.class);
+			if (sports != null && sports.size() > 0) {
+				HistorySport sport = sports.get(0);
+				steps[3 * i] = sport.getSportStep_1();
+				steps[3 * i + 1] = sport.getSportStep_2();
+				steps[3 * i + 2] = sport.getSportStep_3();
+
+				stepTotal += (steps[3 * i] + steps[3 * i + 1] + steps[3 * i + 2]);
+				timeTotal += (sport.getSportTime_1() + sport.getSportTime_2() + sport.getSportTime_3());
+			} else {
+				L.e("数据库无运动数据");
+			}
+		}
+		return steps;
+	}
+
+	private int[] getDataForSleep(String date) {
+		String[] split = date.split("-");
+		String year = split[0];
+		String month = split[1];
+		String day = split[2];
+		L.i(year);
+		L.i(month);
+		L.i(day);
+		int sleeps[] = new int[72];
+		for (int i = 0; i < 24; i++) {
+			String hour = String.valueOf(i).trim();
+			List<HistorySleep> sleepList = DataSupport.where("year=? and month =? and day = ? and hour = ? ", year, month, day, hour).find(HistorySleep.class);
+			if (sleepList != null && sleepList.size() > 0) {
+				// 获得每个小时的数据
+				HistorySleep sleep = sleepList.get(0);
+				// 0-20分钟
+				int sleepDeep_1 = sleep.getSleepDeep_1();
+				int sleepLight_1 = sleep.getSleepLight_1();
+				int sleepAwak_1 = sleep.getSleepAwak_1();
+				sleeps[3 * i] = getValue(sleepDeep_1, sleepLight_1, sleepAwak_1);
+				// 20-40分钟
+				int sleepDeep_2 = sleep.getSleepDeep_2();
+				int sleepLight_2 = sleep.getSleepLight_2();
+				int sleepAwak_2 = sleep.getSleepAwak_2();
+				sleeps[3 * i + 1] = getValue(sleepDeep_2, sleepLight_2, sleepAwak_2);
+				// 40-60分钟
+				int sleepDeep_3 = sleep.getSleepDeep_3();
+				int sleepLight_3 = sleep.getSleepLight_3();
+				int sleepAwak_3 = sleep.getSleepAwak_3();
+				sleeps[3 * i + 2] = getValue(sleepDeep_3, sleepLight_3, sleepAwak_3);
+				// 统计数据
+				deepTotal += (sleepDeep_1 + sleepDeep_2 + sleepDeep_3);
+				lightTotal += (sleepLight_1 + sleepLight_2 + sleepLight_3);
+				awakTotal += (sleepAwak_1 + sleepAwak_2 + sleepAwak_3);
+			} else {
+				L.e("数据库无睡眠数据");
+			}
+		}
+		return sleeps;
+	}
+
+	/**
+	 * 0--深睡 1--浅睡 2--清醒 默认0
+	 */
+	private int getValue(int deep, int light, int awak) {
+		// 比较3个点确定显示的值
+		int value = 0;
+		if (deep >= light && deep >= awak) {// 深睡
+			value = 0;
+		} else if (light > deep && light >= awak) {// 浅睡
+			value = 1;
+		} else if (awak > light && awak > deep) {// 清醒
+			value = 2;
+		}
+		return value;
 	}
 
 	/**
@@ -303,33 +389,5 @@ public class RecordFragment extends Fragment {
 			e.printStackTrace();
 		}
 		return "";
-	}
-	
-	private Thread logHistoryThread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-			logHistory();
-		}
-	});
-	/**
-	 * 打印所有的History
-	 */
-	private void logHistory() {
-//		List<History> histories = DataSupport.findAll(History.class);
-//		if (histories == null) {
-//			return;
-//		}
-//		if (histories.size() == 0) {
-//			return;
-//		}
-//		Log.v("RF", "List<History> -- size : " + histories.size());
-//		for (History h : histories) {
-//			Log.v("RF", "history -- id : " + h.getId());
-//			Log.v("RF", "history -- type : " + h.getType());
-//			Log.v("RF", "history -- index : " + h.getTimeIndex());
-//			Log.v("RF", "history -- date : " + h.getHistoryDate());
-//			Log.v("RF", "history -- value : " + h.getHistoryValue());
-//			Log.v("RF", "----------------------------------------");
-//		}
 	}
 }

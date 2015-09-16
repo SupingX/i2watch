@@ -32,5 +32,14 @@
         <color name="grey_text">#818186</color>
         <color name="green_text">#42C251</color>
         <color name="blue_text">#006FE8</color>
+ 
+        
+        <color name="orange_awak">#CF6222</color>
+        <color name="blue_light">#2783DD</color>
+        <color name="purple_deep">#6F2787</color>
+        
+        
+        
+        
         
 </resources>

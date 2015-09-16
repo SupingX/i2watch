@@ -57,7 +57,7 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 	
 	private void doWriteToWatch() {
 		if (isConnected()) {
-			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForClockSync(this).toByte());
+			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForSleepPeriodSync(this).toByte());
 		}else{
 			showShortToast("手环未连接");
 		}

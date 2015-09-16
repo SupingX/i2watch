@@ -1,9 +1,13 @@
 package com.suping.i2_watch.entity;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import android.content.Context;
 import android.util.Log;
 
 import com.suping.i2_watch.util.DataUtil;
+import com.suping.i2_watch.util.DateUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class I2WatchProtocolDataForWrite {
@@ -159,17 +163,17 @@ public class I2WatchProtocolDataForWrite {
 		// 初始化SportProtocol
 		ClockSetProtocol sp = new ClockSetProtocol();
 		sp.setOnoffFirst(onoffFirst ? "01" : "00");
-		sp.setRepeatFirst(getRepeatValue(repeatFirst));
+		sp.setRepeatFirst("7F");
 		sp.setHourFirst(DataUtil.getStringByString(hourFirst));
 		sp.setMinFirst(DataUtil.getStringByString(minFirst));
 
 		sp.setOnoffSecond(onoffSecond ? "01" : "00");
-		sp.setRepeatSecond(getRepeatValue(repeatSecond));
+		sp.setRepeatSecond("7F");
 		sp.setHourSecond(DataUtil.getStringByString(hourSecond));
 		sp.setMinSecond(DataUtil.getStringByString(minSecond));
 
 		sp.setOnoffThrid(onoffThrid ? "01" : "00");
-		sp.setRepeatThrid(getRepeatValue(repeatThrid));
+		sp.setRepeatThrid("7F");
 		sp.setHourThrid(DataUtil.getStringByString(hourThrid));
 		sp.setMinThrid(DataUtil.getStringByString(minThrid));
 
@@ -367,11 +371,11 @@ public class I2WatchProtocolDataForWrite {
 		
 		String index = Integer.toHexString(startIndex);
 		if(index.length()==1){
-			index = "000"+index;
+			index = index+"000";
 		}else if(index.length()==2){
-			index = "00"+index;
+			index = index+"00";
 		}else if(index.length()==3){
-			index = "0"+index;
+			index = index+"0";
 		}
 		
 		hex = protocol + type + index ;
@@ -404,9 +408,56 @@ public class I2WatchProtocolDataForWrite {
 	 * 
 	 * @return
 	 */
-	public static byte[] hexDataForTimeSync() {
+	public static byte[] hexDataForTimeSync(Date date,Context context) {
+		StringBuffer sb = new StringBuffer();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int hour = 0;
+		int type = DateUtil.getTimeFormat(context);
+		String typeStr;
+		if (type == 0) {
+			typeStr = "00";
+			hour = c.get(Calendar.HOUR_OF_DAY);// 24小时制
+		} else {
+			hour = c.get(Calendar.HOUR);// 12小时制
+			typeStr = "01";
+		}
+		int minute = c.get(Calendar.MINUTE);
+		int second = c.get(Calendar.SECOND);
+		
+		String yearStr = toHexStringForUpdateTime(year);
+		yearStr = yearStr.substring(2, 4)+yearStr.substring(0, 2);
+		
+		String yearHighStr = yearStr.substring(0, 2);
+		String yearLowStr = yearStr.substring(2, 4);
+		Log.v("", "yearStr : " + yearStr);
+		Log.v("", "yearHighStr : " + yearHighStr);
+		Log.v("", "yearLowStr : " + yearLowStr);
+		
+		String monthStr = DataUtil.toHexString(month);
+		String dayStr = DataUtil.toHexString(day);
+		String hourStr = DataUtil.toHexString(hour);
+		String minuteStr = DataUtil.toHexString(minute);
+		String secondStr = DataUtil.toHexString(second);
 
-		return null;
+		Log.v("DataUtilForProject", year + "-" + month + "-" + day + "  " + hour + ":" + minute + ":" + second);
+		
+		String hex = "11";
+		sb.append(hex);
+		sb.append(typeStr);
+		sb.append(yearHighStr);
+		sb.append(yearLowStr);
+		sb.append(monthStr);
+		sb.append(dayStr);
+		sb.append(hourStr);
+		sb.append(minuteStr);
+		sb.append(secondStr);
+		Log.v("", "同步日期协议 : " + sb.toString());
+		
+		return DataUtil.getBytesByString(sb.toString());
 	}
 
 	/**
@@ -415,9 +466,10 @@ public class I2WatchProtocolDataForWrite {
 	 * @param state
 	 * @return
 	 */
-	public static byte[] hexDataForGetTodayTotalStepAndCal(int state) {
-
-		return null;
+	public static byte[] hexDataForGetTodayTotalStepAndCal() {
+		
+		Log.v("", "当天计步卡路里");
+		return DataUtil.getBytesByString("7100");
 	}
 
 	/**
@@ -427,10 +479,31 @@ public class I2WatchProtocolDataForWrite {
 	 * @return
 	 */
 	public static byte[] hexDataForHasCallingCount(int count) {
-
-		return null;
+		String index = Integer.toHexString(count);
+		
+		if (index.length()==1) {
+			index="0"+index;
+		}
+		Log.v("", "通知来电 : " + 81+index);
+		return DataUtil.getBytesByString("81"+index);
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private static String toHexStringForUpdateTime(int value) {
+		String result = Integer.toHexString(value);
+		if (result.length() == 1) {
+			result = "000" + result;
+		} else if (result.length() == 2) {
+			result = "00" + result;
+		} else if (result.length() == 3) {
+			result = "0" + result;
+		} 
+		return result;
+	}
 	/**
 	 * 从本地取得个性签名并转换成协议需要的hexData
 	 * 
@@ -440,7 +513,10 @@ public class I2WatchProtocolDataForWrite {
 		String hex = "91";
 		String signSet = (String) SharedPreferenceUtil.get(context, SHARE_SIGN_SET, "");
 		if (signSet!=null) {
-			hex+= toHexString(signSet);
+			String syncSigetHexString = toSyncSigetHexString(signSet);
+			if (syncSigetHexString!=null) {
+				hex+= syncSigetHexString;
+			}
 		}
 		byte[] hexDate = DataUtil.getBytesByString(hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
@@ -451,25 +527,38 @@ public class I2WatchProtocolDataForWrite {
 
 	
 	
-	private static String toHexString(String str){
+	private static String toSyncSigetHexString(String str){
 		StringBuffer sb = new StringBuffer();
 		if (str!=null) {
 			if (str.length()>0) {
-				for (int i = str.length(); i >0 ; i--) {
-					char c = str.charAt(i-1);
+				for (int i = 0; i <str.length() ; i++) {
+					char c = str.charAt(i);
 					Log.v("I2WatchProtocol", String.valueOf(c));
 					String hex = Integer.toHexString(Integer.valueOf(c));
 					sb.append(hex);
 				}
-				return sb.toString();
+				
+				String result = sb.toString();
+				int diff = 16 - result.length();
+				if (diff<0) {
+					return null;
+				}else{
+					for (int i = 0; i < diff; i++) {
+						result+="0";
+					}
+					return result;
+				}
 			}else{
-				return "0000000000000000";
+				return null;
 			}
 		}else{
 			return null;
 		}
-		
 	}
+	
+	
+	
+	
 	
 	/**
 	 * 获取星期重复 十进制int类型 --> 二进制字符串

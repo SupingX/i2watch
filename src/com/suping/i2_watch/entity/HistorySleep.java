@@ -25,15 +25,29 @@ public class HistorySleep extends DataSupport {
 	
 	private int id;
 	/** 记录日期 **/
-	private String historyDate;
-	public HistorySleep(String historyDate, int sleepShake, int sleepAwak, int sleepLight, int sleepDeep) {
-		super();
-		this.historyDate = historyDate;
-		this.sleepShake = sleepShake;
-		this.sleepAwak = sleepAwak;
-		this.sleepLight = sleepLight;
-		this.sleepDeep = sleepDeep;
-	}
+	private String year;
+	private String month;
+	private String day;
+	/**0~23**/
+	private String hour;
+	/** 1个小时内3个值  翻身次数**/
+	private int sleepOneself_1;
+	private int sleepOneself_2;
+	private int sleepOneself_3;
+	/** 1个小时内3个值  清醒时间　**/
+	private int sleepAwak_1;
+	private int sleepAwak_2;
+	private int sleepAwak_3;
+	/** 1个小时内3个值  浅水时间　**/
+	private int sleepLight_1;
+	private int sleepLight_2;
+	private int sleepLight_3;
+	/** 1个小时内3个值  深睡时间　**/
+	private int sleepDeep_1;
+	private int sleepDeep_2;
+	private int sleepDeep_3;
+	
+	
 
 
 	public int getId() {
@@ -46,72 +60,170 @@ public class HistorySleep extends DataSupport {
 	}
 
 
-	public String getHistoryDate() {
-		return historyDate;
+
+
+	public String getYear() {
+		return year;
 	}
 
 
-	public void setHistoryDate(String historyDate) {
-		this.historyDate = historyDate;
+	public void setYear(String year) {
+		this.year = year;
 	}
 
 
-	public int getSleepShake() {
-		return sleepShake;
+	public String getMonth() {
+		return month;
 	}
 
 
-	public void setSleepShake(int sleepShake) {
-		this.sleepShake = sleepShake;
+	public void setMonth(String month) {
+		this.month = month;
 	}
 
 
-	public int getSleepAwak() {
-		return sleepAwak;
+	public String getDay() {
+		return day;
 	}
 
 
-	public void setSleepAwak(int sleepAwak) {
-		this.sleepAwak = sleepAwak;
+	public void setDay(String day) {
+		this.day = day;
 	}
 
 
-	public int getSleepLight() {
-		return sleepLight;
+	public String getHour() {
+		return hour;
 	}
 
 
-	public void setSleepLight(int sleepLight) {
-		this.sleepLight = sleepLight;
+	public void setHour(String hour) {
+		this.hour = hour;
 	}
 
 
-	public int getSleepDeep() {
-		return sleepDeep;
+	public int getSleepOneself_1() {
+		return sleepOneself_1;
 	}
 
 
-	public void setSleepDeep(int sleepDeep) {
-		this.sleepDeep = sleepDeep;
+	public void setSleepOneself_1(int sleepOneself_1) {
+		this.sleepOneself_1 = sleepOneself_1;
 	}
 
 
-	/**
-	 * 睡眠翻身次数
-	 */
-	private int sleepShake;
-	/**
-	 * 睡眠清醒时间
-	 */
-	private int sleepAwak;
-	/**
-	 * 睡眠浅睡时间
-	 */
-	private int sleepLight;
-	/**
-	 * 睡眠深睡时间
-	 */
-	private int sleepDeep;
+	public int getSleepOneself_2() {
+		return sleepOneself_2;
+	}
+
+
+	public void setSleepOneself_2(int sleepOneself_2) {
+		this.sleepOneself_2 = sleepOneself_2;
+	}
+
+
+	public int getSleepOneself_3() {
+		return sleepOneself_3;
+	}
+
+
+	public void setSleepOneself_3(int sleepOneself_3) {
+		this.sleepOneself_3 = sleepOneself_3;
+	}
+
+
+	public int getSleepAwak_1() {
+		return sleepAwak_1;
+	}
+
+
+	public void setSleepAwak_1(int sleepAwak_1) {
+		this.sleepAwak_1 = sleepAwak_1;
+	}
+
+
+	public int getSleepAwak_2() {
+		return sleepAwak_2;
+	}
+
+
+	public void setSleepAwak_2(int sleepAwak_2) {
+		this.sleepAwak_2 = sleepAwak_2;
+	}
+
+
+	public int getSleepAwak_3() {
+		return sleepAwak_3;
+	}
+
+
+	public void setSleepAwak_3(int sleepAwak_3) {
+		this.sleepAwak_3 = sleepAwak_3;
+	}
+
+
+	public int getSleepLight_1() {
+		return sleepLight_1;
+	}
+
+
+	public void setSleepLight_1(int sleepLight_1) {
+		this.sleepLight_1 = sleepLight_1;
+	}
+
+
+	public int getSleepLight_2() {
+		return sleepLight_2;
+	}
+
+
+	public void setSleepLight_2(int sleepLight_2) {
+		this.sleepLight_2 = sleepLight_2;
+	}
+
+
+	public int getSleepLight_3() {
+		return sleepLight_3;
+	}
+
+
+	public void setSleepLight_3(int sleepLight_3) {
+		this.sleepLight_3 = sleepLight_3;
+	}
+
+
+	public int getSleepDeep_1() {
+		return sleepDeep_1;
+	}
+
+
+	public void setSleepDeep_1(int sleepDeep_1) {
+		this.sleepDeep_1 = sleepDeep_1;
+	}
+
+
+	public int getSleepDeep_2() {
+		return sleepDeep_2;
+	}
+
+
+	public void setSleepDeep_2(int sleepDeep_2) {
+		this.sleepDeep_2 = sleepDeep_2;
+	}
+
+
+	public int getSleepDeep_3() {
+		return sleepDeep_3;
+	}
+
+
+	public void setSleepDeep_3(int sleepDeep_3) {
+		this.sleepDeep_3 = sleepDeep_3;
+	}
+
+
+
+
 
 	public HistorySleep() {
 	}
@@ -143,5 +255,25 @@ public class HistorySleep extends DataSupport {
 //		Log.v("History", "historyValue : " + historyValue);
 	}
 
-
+	
+	@Override
+	public String toString() {
+		return "["+this.year
+				+"/"  + month
+				+"/"  + day
+				+"/"  + hour
+				+"/"  + sleepOneself_1
+				+"/"  + sleepOneself_2
+				+"/"  + sleepOneself_3
+				+"/"  + sleepAwak_1
+				+"/"  + sleepAwak_2
+				+"/"  + sleepAwak_3
+				+"/"  + sleepLight_1
+				+"/"  + sleepLight_2
+				+"/"  + sleepLight_3
+				+"/"  + sleepDeep_1
+				+"/"  + sleepDeep_2
+				+"/"  + sleepDeep_3 +"]"
+				;
+	}
 }

@@ -134,5 +134,13 @@
     <string name="search_unconnected">蓝牙未连接...</string>
     <string name="title_activity_record_menu">RecordMenuActivity</string>
     <string name="title_activity_device">DeviceActivity</string>
+    <string name="title_activity_virtual">VirtualActivity</string>
+    
+        <string name="virtual_call_hands_free">Hands-free</string>
+            <string name="virtual_call_contacts">Contacts</string>
+                <string name="virtual_call_add_call">Add call</string>
+                    <string name="virtual_call_dialpad">Dial pad</string>
+                    	<string name="virtual_call_record">Record</string>
+    <string name="virtual_call_maintain">Maintain</string>
 
 </resources>

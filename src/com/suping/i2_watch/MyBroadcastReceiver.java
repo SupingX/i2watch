@@ -52,6 +52,22 @@ public  class MyBroadcastReceiver extends AbstractBroadcastReceiver{
 		
 	}
 	
+	/**
+	 * 拍照
+	 */
+	@Override
+	public void doCamera() {
+		
+	}
+	
+	/**
+	 * 计步 0卡路里1 时间2	 
+	 */
+	@Override
+	public void doStepAndCalReceiver(long[] data) {
+		
+	}
+	
 	
 
 }

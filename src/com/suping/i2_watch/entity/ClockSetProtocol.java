@@ -155,7 +155,7 @@ public class ClockSetProtocol extends AbstractProtocolWrite {
 	@Override
 	public byte[] toByte() {
 		// TODO Auto-generated method stub
-		return DataUtil.getBytesByString(toString());
+		return DataUtil.getBytesByString(this.toString());
 	}
 
 }

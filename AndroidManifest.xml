@@ -8,6 +8,13 @@
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="19" />
+    
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />    
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />    
+    <uses-permission android:name="android.permission.CALL_PHONE"/>  
+    <uses-permission android:name="android.permission.SEND_SMS"/> 
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/> 
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/> 
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -23,7 +30,7 @@
 
     <!--
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     -->
 
     <uses-feature
@@ -47,7 +54,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
+        </receiver>
         -->
         <activity
             android:name=".Main"
@@ -187,8 +194,8 @@
         </activity>
         <activity
             android:name=".menu.CameraActivity"
-                   android:screenOrientation="portrait"
-            android:label="@string/title_activity_camera" >
+            android:label="@string/title_activity_camera"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".setting.InformationActivity"
@@ -284,8 +291,12 @@
             android:label="@string/title_activity_record" >
         </activity>
         <activity
-            android:name="com.suping.i2_watch.setting.DeviceActivity"
+            android:name=".setting.DeviceActivity"
             android:label="@string/title_activity_device" >
+        </activity>
+        <activity
+            android:name=".VirtualActivity"
+            android:label="@string/title_activity_virtual" >
         </activity>
     </application>
 

@@ -10,12 +10,13 @@
         android:layout_width="fill_parent"
         android:layout_height="60dp" 
         android:paddingBottom="8dp"
-        android:gravity="center_horizontal">
+    >
 
         <RelativeLayout
             android:id="@+id/pull_to_refresh_header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_centerInParent="true">
             <TextView
                 android:visibility="invisible"
@@ -53,21 +54,17 @@
             android:id="@+id/pull_to_refresh_header_arrow"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_toLeftOf="@id/pull_to_refresh_header_text"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
             android:contentDescription="@string/app_name"
+            android:layout_centerInParent="true"
             android:src="@drawable/xsearch_msg_pull_arrow_down" />
         
         <ProgressBar
+            android:layout_centerInParent="true"
             android:id="@+id/pull_to_refresh_header_progressbar"
             android:layout_width="28dip"
             android:layout_height="28dip"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_toLeftOf="@id/pull_to_refresh_header_text"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
             android:indeterminateDrawable="@anim/update_loading_progressbar_anim"
             android:visibility="invisible"/>
     </RelativeLayout>

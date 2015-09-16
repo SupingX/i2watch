@@ -97,7 +97,7 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	
 	private void doWriteToWatch() {
 		if (isConnected()) {
-			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(this));
+			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForClockSync(this));
 		}else{
 			showShortToast("手环未连接");
 		}

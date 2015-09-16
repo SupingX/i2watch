@@ -224,7 +224,7 @@ public class ColorsCircle extends View {
 		mArcRectF = new RectF();
 	}
 
-	public int getmProgressMax() {
+	public int getProgressMax() {
 		return mProgressMax;
 	}
 

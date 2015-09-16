@@ -1,17 +1,13 @@
 package com.suping.i2_watch.entity;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.litepal.crud.DataSupport;
 
-import android.util.Log;
 
 /**
- * * 协议［30位］ ：0x 25 xx xx xxxxxxxx xxxxxxxx xxxxxxxx 　
- * * 表示:0x [协议头]　[历史天数0~4]
- * * [小时0~23] [dat0-19] [dat20-39] [dat40-59] 　
+ * * 协议［30位］ ： 0x  25       xx           xx         xxxxxxxx  xxxxxxxx   xxxxxxxx 　
+ * * 表示:         0x  [协议头]　[历史天数0~4] [小时0~23] [dat0-19] [dat20-39] [dat40-59] 　
+ * * 
  * * 其中每个时段dat包含32位 　
  * * [bit0-bit15]   [翻身次数|运动步数] 　
  * * [bit16-bit20] 　[清醒时间|运动时间] 　
@@ -27,25 +23,126 @@ public class HistorySport extends DataSupport {
 
 	private int id;
 	/** 记录日期 **/
-	private String historyDate;
-	/**
-	 * 运动步数
-	 */
-	private int sportStep;
-	/**
-	 * 运动时间
-	 */
-	private int sportTime;
+	private String year;
+	private String month;
+	private String day;
+	/**0~23**/
+	private String hour;
+	/** 1个小时内3个值  运动步数**/
+	private int sportStep_1;
+	private int sportStep_2;
+	private int sportStep_3;
+	/** 1个小时内3个值  运动时间　**/
+	private int sportTime_1;
+	private int sportTime_2;
+	private int sportTime_3;
+	
+	
+	
+	public HistorySport(String year, String month, String day, String hour, int sportStep_1, int sportStep_2, int sportStep_3, int sportTime_1, int sportTime_2, int sportTime_3) {
+		super();
+		this.year = year;
+		this.month = month;
+		this.day = day;
+		this.hour = hour;
+		this.sportStep_1 = sportStep_1;
+		this.sportStep_2 = sportStep_2;
+		this.sportStep_3 = sportStep_3;
+		this.sportTime_1 = sportTime_1;
+		this.sportTime_2 = sportTime_2;
+		this.sportTime_3 = sportTime_3;
+	}
+
+	public int getSportTime_1() {
+		return sportTime_1;
+	}
+
+	public void setSportTime_1(int sportTime_1) {
+		this.sportTime_1 = sportTime_1;
+	}
+
+	public int getSportTime_2() {
+		return sportTime_2;
+	}
+
+	public void setSportTime_2(int sportTime_2) {
+		this.sportTime_2 = sportTime_2;
+	}
+
+	public int getSportTime_3() {
+		return sportTime_3;
+	}
+
+	public void setSportTime_3(int sportTime_3) {
+		this.sportTime_3 = sportTime_3;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public String getHour() {
+		return hour;
+	}
+
+	public void setHour(String hour) {
+		this.hour = hour;
+	}
+
+	public int getSportStep_1() {
+		return sportStep_1;
+	}
+
+	public void setSportStep_1(int sportStep_1) {
+		this.sportStep_1 = sportStep_1;
+	}
+
+	public int getSportStep_2() {
+		return sportStep_2;
+	}
+
+	public void setSportStep_2(int sportStep_2) {
+		this.sportStep_2 = sportStep_2;
+	}
+
+	public int getSportStep_3() {
+		return sportStep_3;
+	}
+
+	public void setSportStep_3(int sportStep_3) {
+		this.sportStep_3 = sportStep_3;
+	}
+	
+	
+	
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+
+	public String getMonth() {
+		return month;
+	}
+
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+
+	public String getDay() {
+		return day;
+	}
+
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+
 
 	public HistorySport() {
 	}
 
-	public HistorySport(String historyDate, int sportStep, int sportTime) {
-		super();
-		this.historyDate = historyDate;
-		this.sportStep = sportStep;
-		this.sportTime = sportTime;
-	}
 
 	public int getId() {
 		return id;
@@ -54,31 +151,22 @@ public class HistorySport extends DataSupport {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public String getHistoryDate() {
-		return historyDate;
+	
+	@Override
+	public String toString() {
+		return "["+this.year+
+				"/"+this.month
+				+"/"+this.day
+				+"/"+this.hour
+				+"/"+this.sportStep_1
+				+"/"+this.sportStep_2
+				+"/"+this.sportStep_3
+				+"/"+this.sportTime_1
+				+"/"+this.sportTime_2
+				+"/"+this.sportTime_3 +"]"
+				;
 	}
-
-	public void setHistoryDate(String historyDate) {
-		this.historyDate = historyDate;
-	}
-
-	public int getSportStep() {
-		return sportStep;
-	}
-
-	public void setSportStep(int sportStep) {
-		this.sportStep = sportStep;
-	}
-
-	public int getSportTime() {
-		return sportTime;
-	}
-
-	public void setSportTime(int sportTime) {
-		this.sportTime = sportTime;
-	}
-
+	
 //	public HistorySport(int value, int tag) {
 //		super();
 //		 //数据 ：0x0001 8 001,

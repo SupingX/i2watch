@@ -90,7 +90,6 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 			super.doDiscoveredWriteService();
 			runOnUiThread(new Runnable() {
 				public void run() {
-					showShortToast("连接成功");
 					returnToMain();
 				}
 			});
@@ -222,6 +221,7 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 				final BluetoothDevice device = devices.get(position);
+				mSimpleBlueService.scanDevice(false);
 				if (mSimpleBlueService.getConnectState() == BluetoothProfile.STATE_CONNECTED) {
 					mSimpleBlueService.close();
 				}
@@ -327,8 +327,8 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * @param address
 	 */
 	private void returnToMain() {
-		Intent intent = new Intent(this, SettingActivity.class);
-		startActivity(intent);
+//		Intent intent = new Intent(this, SettingActivity.class);
+//		startActivity(intent);
 		finish();
 	}
 
