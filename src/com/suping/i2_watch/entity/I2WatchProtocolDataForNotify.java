@@ -191,6 +191,11 @@ public class I2WatchProtocolDataForNotify {
 
 	}
 	
+	/**
+	 * 同步开始和结束 1 开始  0结束
+	 * @param data
+	 * @return
+	 */
 	public int notifySyncState(byte[] data){
 		if (getTypeFromData(data)==NOTIFY_SYNC_HISTORY) {
 			String dataStr = DataUtil.byteToHexString(data);

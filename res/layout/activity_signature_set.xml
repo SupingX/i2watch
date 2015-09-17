@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:digits="1234567890abcdefghijklmnopqrstuvwxyz"
             android:hint="@string/can_not_be_empty"
-            android:maxLength="16"
+            android:maxLength="14"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:width="220dp" >

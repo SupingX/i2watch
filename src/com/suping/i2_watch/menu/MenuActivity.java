@@ -47,7 +47,6 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 
 	};
 	// 连续按退出间隔时间
-	private long exitTime = 0;
 	private TextView tvClock1;
 	private TextView tvClock2;
 	private TextView tvClock3;

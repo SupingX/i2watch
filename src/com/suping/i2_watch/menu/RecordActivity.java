@@ -3,9 +3,10 @@ package com.suping.i2_watch.menu;
 
 
 
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.view.ActionSheetDialog;
 import com.suping.i2_watch.view.ActionSheetDialog.OnSheetItemClickListener;
@@ -40,6 +43,17 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 	};
 	private ActionSheetDialog dialogSync;
 	private TextView tvSync;
+	private Handler mHandler = new Handler(){
+	};
+	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver(){
+		public void doSyncEnd() {
+			
+		};
+		
+		public void doSyncStart() {
+			
+		};
+	};
 	
 	@Override
 	protected void onCreate(Bundle fragments) {
@@ -152,10 +166,28 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 		dialogSync = new ActionSheetDialog(this).builder().setCancelable(false).setCanceledOnTouchOutside(false)
 			.addSheetItem("同步所有历史记录", SheetItemColor.Blue, new OnSheetItemClickListener() {
 				
+				private ProgressDialog dialogSyncHistory;
+
 				@Override
 				public void onClick(int which) {
+					dialogSyncHistory = new ProgressDialog(getApplicationContext());
+					dialogSyncHistory.setCancelable(false);
+					dialogSyncHistory.setMessage("同步手环数据 ...");
+					dialogSyncHistory.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					dialogSyncHistory.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+					dialogSyncHistory.show();
 					Log.e("RecordFragment", "同步所有历史数据");
 					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(2, 0);
+					mHandler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							if (dialogSyncHistory!=null &&dialogSyncHistory.isShowing()) {
+								dialogSyncHistory.dismiss();
+							}
+						}
+					}, 30*1000);
+					
 				}
 			})
 			.addSheetItem("同步今天记录", SheetItemColor.Blue, new OnSheetItemClickListener() {

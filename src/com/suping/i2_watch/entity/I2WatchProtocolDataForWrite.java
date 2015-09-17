@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.DateUtil;
+import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class I2WatchProtocolDataForWrite {
@@ -64,12 +65,12 @@ public class I2WatchProtocolDataForWrite {
 	public static final String SHARE_BRIGHT = "share_bright";
 
 	/** 默认间隔 **/
-	public static final String DEFAULT_INTERVAL = "100";
-	public static final String DEFAULT_START_HOUR = "07";
+	public static final String DEFAULT_INTERVAL = "12";
+	public static final String DEFAULT_START_HOUR = "00";
 	public static final String DEFAULT_START_MIN = "00";
-	public static final String DEFAULT_END_HOUR = "22";
+	public static final String DEFAULT_END_HOUR = "12";
 	public static final String DEFAULT_END_MIN = "00";
-	public static final int DEFAULT_REPEAT = 0b00000000;
+	public static final int DEFAULT_REPEAT = 0b1111111;
 
 	/**
 	 * 取出存在本地的运动提醒数据, 转换成发送协议的 Protocol
@@ -514,10 +515,22 @@ public class I2WatchProtocolDataForWrite {
 		String signSet = (String) SharedPreferenceUtil.get(context, SHARE_SIGN_SET, "");
 		if (signSet!=null) {
 			String syncSigetHexString = toSyncSigetHexString(signSet);
-			if (syncSigetHexString!=null) {
-				hex+= syncSigetHexString;
+			if (syncSigetHexString==null) {
+				return null ;
 			}
+			L.i(syncSigetHexString);
+			hex+=DataUtil.getStringByString(String.valueOf(syncSigetHexString.length()));
+//			int diff = 14 - syncSigetHexString.length();
+//			if (diff<=0) {
+//				//不需要添加0
+//			}else{
+//				for (int i = 0; i < diff; i++) {
+//					hex+="0";
+//				}
+//			}
+			hex+=syncSigetHexString;
 		}
+		
 		byte[] hexDate = DataUtil.getBytesByString(hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
 		Log.v("I2WatchProtocol", "hexDataForUpdateBrightness : 个性签名 ：" + hex);
@@ -539,15 +552,8 @@ public class I2WatchProtocolDataForWrite {
 				}
 				
 				String result = sb.toString();
-				int diff = 16 - result.length();
-				if (diff<0) {
-					return null;
-				}else{
-					for (int i = 0; i < diff; i++) {
-						result+="0";
-					}
-					return result;
-				}
+		return result;
+			
 			}else{
 				return null;
 			}

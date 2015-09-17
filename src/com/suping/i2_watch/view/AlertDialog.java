@@ -8,6 +8,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -37,6 +38,10 @@ public class AlertDialog {
 		WindowManager windowManager = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		display = windowManager.getDefaultDisplay();
+	}
+	
+	public Window getWindow(){
+		return dialog.getWindow();
 	}
 
 	public AlertDialog builder() {

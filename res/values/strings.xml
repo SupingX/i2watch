@@ -97,7 +97,7 @@
     <string name="sleep_record">Sleep</string>
     <string name="signature_setting">Signature setting</string>
     <string name="can_not_be_empty">Can not be empty</string>
-    <string name="maximun_16_characters">Maximun 16 characters</string>
+    <string name="maximun_16_characters">Maximun 14 characters</string>
     <string name="supports_only_letters_and_numbers">Supports only letters and numbers</string>
     <string name="name">Name :</string>
     <string name="please_write_name">please write name</string>

@@ -1,15 +1,17 @@
-package com.suping.i2_watch;
+package com.suping.i2_watch.broadcastreceiver;
 
 import com.suping.i2_watch.service.SimpleBlueService;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.widget.Toast;
 
-public abstract class AbstractBroadcastReceiver extends BroadcastReceiver {
+public abstract class AbstractSimpleBluetoothBroadcastReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -42,6 +44,10 @@ public abstract class AbstractBroadcastReceiver extends BroadcastReceiver {
 			long[] data = intent.getExtras().getLongArray(SimpleBlueService.EXTRA_STEP_AND_CAL);
 			doStepAndCalReceiver(data);
 
+		} else if (action.equals(SimpleBlueService.ACTION_SYNC_START)) {
+			doSyncStart();
+		}else if (action.equals(SimpleBlueService.ACTION_SYNC_END)) {
+			doSyncEnd();
 		}
 	}
 
@@ -82,5 +88,8 @@ public abstract class AbstractBroadcastReceiver extends BroadcastReceiver {
 	 * @param device
 	 */
 	public abstract void doDeviceFound(BluetoothDevice device);
+	public abstract void doSyncStart();
+	public abstract void doSyncEnd();
+	
 
 }

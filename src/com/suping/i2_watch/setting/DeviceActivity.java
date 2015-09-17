@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 import com.suping.i2_watch.BaseActivity;
-import com.suping.i2_watch.MyBroadcastReceiver;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.R.id;
 import com.suping.i2_watch.R.layout;
+import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.service.SimpleBlueService;
 import com.suping.i2_watch.view.ActionSheetDialog;
@@ -62,7 +62,7 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		}
 	};
 
-	private MyBroadcastReceiver mReceiver = new MyBroadcastReceiver() {
+	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		@Override
 		public void doBlueDisconnect(int state) {
 			super.doBlueDisconnect(state);
@@ -346,7 +346,8 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 					if (!mSimpleBlueService.isEnable()) {
 						if (onceEnter) {
 							Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-							startActivityForResult(enableBtIntent, 1);
+//							startActivityForResult(enableBtIntent, 1);
+							startActivity(enableBtIntent);
 							// showIosDialog();
 							onceEnter = false;
 						}

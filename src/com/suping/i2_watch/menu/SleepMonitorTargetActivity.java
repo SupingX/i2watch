@@ -22,7 +22,7 @@ public class SleepMonitorTargetActivity extends AbstractSetTimeActivity{
 	@Override
 	public void initValue() {
 		String hour = (String) SharedPreferenceUtil.get(SleepMonitorTargetActivity.this, I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR,
-				"07");
+				"12");
 		npHour.setValue(Integer.valueOf(hour));
 
 		String min = (String) SharedPreferenceUtil.get(SleepMonitorTargetActivity.this, I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN,

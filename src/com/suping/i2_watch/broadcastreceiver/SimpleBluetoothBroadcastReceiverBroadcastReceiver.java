@@ -1,14 +1,9 @@
-package com.suping.i2_watch;
+package com.suping.i2_watch.broadcastreceiver;
 
-import com.suping.i2_watch.service.SimpleBlueService;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 
-public  class MyBroadcastReceiver extends AbstractBroadcastReceiver{
+public  class SimpleBluetoothBroadcastReceiverBroadcastReceiver extends AbstractSimpleBluetoothBroadcastReceiver{
 	/**
 	 * 蓝牙连接
 	 * @param state
@@ -65,6 +60,24 @@ public  class MyBroadcastReceiver extends AbstractBroadcastReceiver{
 	 */
 	@Override
 	public void doStepAndCalReceiver(long[] data) {
+		
+	}
+
+	/**
+	 * 同步开始
+	 */
+	@Override
+	public void doSyncStart() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * 同步结束
+	 */
+	@Override
+	public void doSyncEnd() {
+		// TODO Auto-generated method stub
 		
 	}
 	

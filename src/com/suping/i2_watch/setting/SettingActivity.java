@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.Main;
-import com.suping.i2_watch.MyBroadcastReceiver;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.service.SimpleBlueService;
 
@@ -27,7 +27,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 	private RelativeLayout relativePedo;
 	private RelativeLayout relativeAbout;
 	private AbstractSimpleBlueService mSimpleBlueService;
-	private MyBroadcastReceiver mReceiver = new MyBroadcastReceiver() {
+	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		@Override
 		public void doBlueDisconnect(int state) {
 			super.doBlueDisconnect(state);

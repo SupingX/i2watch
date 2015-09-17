@@ -12,6 +12,15 @@ import java.util.List;
 
 
 
+
+
+
+
+
+
+
+
+
 import org.litepal.crud.DataSupport;
 
 import android.bluetooth.BluetoothAdapter;
@@ -41,6 +50,7 @@ import android.widget.Toast;
 import com.lee.pullrefresh.ui.PullToRefreshBase;
 import com.lee.pullrefresh.ui.PullToRefreshBase.OnRefreshListener;
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
+import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.entity.HistorySleep;
 import com.suping.i2_watch.entity.HistorySport;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForNotify;
@@ -53,6 +63,7 @@ import com.suping.i2_watch.setting.PedometerActivity;
 import com.suping.i2_watch.setting.SettingActivity;
 import com.suping.i2_watch.test.Test;
 import com.suping.i2_watch.util.DataUtil;
+import com.suping.i2_watch.util.DateUtil;
 import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.util.MessageUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
@@ -114,7 +125,7 @@ public class Main extends BaseActivity implements OnClickListener {
 	private Handler mHandler = new Handler() {
 
 	};
-	private MyBroadcastReceiver mReceiver = new MyBroadcastReceiver() {
+	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		public void doDiscoveredWriteService() {
 //			doUpdateSetting();
 		};
@@ -137,62 +148,10 @@ public class Main extends BaseActivity implements OnClickListener {
 		initViews();
 		initViewPager();
 		setListener();
-
 		intiSportValue(0, 0, 0);
-		intiSleepValue();
+		intiSleepValue(0,0,0);
 	}
 
-	private void doUpdateSetting() {
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (isConnected()) {
-					// 1.运动提醒
-					byte[] byteActivityRemindSync = I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(getApplicationContext()).toByte();
-					 mSimpleBlueService.writeCharacteristic(byteActivityRemindSync);
-
-					// 2.来电提醒
-					byte[] protocolForCallingAlarmPeriodSync = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(getApplicationContext()).toByte();
-					 mSimpleBlueService.writeCharacteristic(protocolForCallingAlarmPeriodSync);
-
-					// 3.防丢提醒
-					byte[] hexDataForLostOnoffI2Watch = I2WatchProtocolDataForWrite.hexDataForLostOnoffI2Watch(getApplicationContext());
-					 mSimpleBlueService.writeCharacteristic(hexDataForLostOnoffI2Watch);
-
-					// 4.睡眠时间
-					byte[] protocolDataForClockSync = I2WatchProtocolDataForWrite.protocolDataForClockSync(getApplicationContext()).toByte();
-					 mSimpleBlueService.writeCharacteristic(protocolDataForClockSync);
-
-					// 5.闹钟
-					byte[] hexDataForSleepPeriodSync = I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(getApplicationContext());
-					 mSimpleBlueService.writeCharacteristic(hexDataForSleepPeriodSync);
-
-					// 6.亮度
-					byte[] hexDataDecrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(getApplicationContext());
-					 mSimpleBlueService.writeCharacteristic(hexDataDecrease);
-
-					// 7.个性签名
-					byte[] hexDataForSignatureSync = I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext());
-					 mSimpleBlueService.writeCharacteristic(hexDataForSignatureSync);
-
-					// 8.时间同步
-					byte[] hexDataForTimeSync = I2WatchProtocolDataForWrite.hexDataForTimeSync(new Date(), Main.this);
-					 mSimpleBlueService.writeCharacteristic(hexDataForTimeSync);
-
-//					List<byte[]> values = new ArrayList<>();
-//					values.add(byteActivityRemindSync);
-//					values.add(protocolForCallingAlarmPeriodSync);
-//					values.add(hexDataForLostOnoffI2Watch);
-//					values.add(protocolDataForClockSync);
-//					values.add(hexDataForSleepPeriodSync);
-//					values.add(hexDataDecrease);
-//					values.add(hexDataForSignatureSync);
-//					values.add(hexDataForTimeSync);
-//					mSimpleBlueService.writeValueToDevice(values);
-				}
-			}
-		});
-	}
 
 	@Override
 	protected void onStart() {
@@ -209,6 +168,15 @@ public class Main extends BaseActivity implements OnClickListener {
 		tvSportGoal.setText(goalStep + "");
 		// 设置最大值
 		ccSport.setmProgressMax(goalStep);
+		
+		//目标睡眠
+		String hour = (String) SharedPreferenceUtil.get(this,I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR ,"12");
+		String min = (String) SharedPreferenceUtil.get(this,I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN ,"0");
+		int goalSleep  = (int) (Integer.valueOf(hour) +Integer.valueOf(min)/60f);
+		String target = DataUtil.format(goalSleep);
+		tvSleepGoal.setText(target);
+		//设置最大值
+		ccSleep.setmProgressMax(goalSleep);
 	}
 
 	@Override
@@ -217,7 +185,6 @@ public class Main extends BaseActivity implements OnClickListener {
 		checkBlue();
 
 		mHandler.postDelayed(new Runnable() {
-
 			@Override
 			public void run() {
 				if (isConnected()) {
@@ -420,18 +387,35 @@ public class Main extends BaseActivity implements OnClickListener {
 		tvSportTips.setText(start + DataUtil.getPercent(step, ccSport.getProgressMax()) + end);
 	}
 
+	
+	
 	/**
 	 * 初始化睡眠数据
 	 */
-	private void intiSleepValue() {
-		tvSleepComplete.setText("9.0");
-		tvSleepGoal.setText("12.0");
-		tvSleepDeep.setText("12.0");
-		tvSleepLight.setText("12.0");
-		tvAwak.setText("1.2");
-		tvSleepTips.setText("睡眠质量 : 优");
-
+	private void intiSleepValue(int deep ,int light,int awak) {
+		
+		//完成睡眠
+		tvSleepComplete.setText(deep+light+"");
+		ccSleep.setmProgress(light+deep);
+	
+		//深睡、浅睡、清醒
+		tvSleepDeep.setText(deep+"");
+		tvSleepLight.setText(light+"");
+		tvAwak.setText(awak+"");
+		//睡眠质量
+//		tvSleepTips.setText("睡眠质量 : 优");
+		tvSleepTips.setText(getSleepAdvise(deep, light, awak));
+		
 	}
+
+	private String getSleepAdvise(int deep ,int light,int awak) {
+		String advise = "--";
+		
+		//计算
+		advise = "睡眠质量 : 优";
+		return advise;
+	}
+
 
 	/**
 	 * 设置各view的listener事件
@@ -458,7 +442,6 @@ public class Main extends BaseActivity implements OnClickListener {
 					public void run() {
 						Toast.makeText(Main.this, "运动信息已刷新...", Toast.LENGTH_SHORT).show();
 						// ccSport.setmProgress(mProgress);
-
 						sportPull.onPullDownRefreshComplete();
 						// DataUtil.setLastUpdateTime(sportPull);
 					}
@@ -478,13 +461,17 @@ public class Main extends BaseActivity implements OnClickListener {
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				if (isConnected()) {
-					mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForGetTodayTotalStepAndCal());
+					//刷新今天的睡眠信息
+					int[] dataSleeps = getDataForSport(new Date());
+					intiSleepValue(dataSleeps[0], dataSleeps[1], dataSleeps[2]);
+					
 				}
 
 				mHandler.postDelayed(new Runnable() {
 
 					@Override
 					public void run() {
+						
 						Toast.makeText(Main.this, "睡眠信息已刷新...", Toast.LENGTH_SHORT).show();
 						sleepPull.onPullDownRefreshComplete();
 						// DataUtil.setLastUpdateTime(sleepPull);
@@ -501,7 +488,52 @@ public class Main extends BaseActivity implements OnClickListener {
 		});
 
 	}
-
+	
+	
+	
+	
+	private int[] getDataForSport(Date date) {
+		 int dataSleep[] = new int[3];
+		String dateToString = DateUtil.dateToString(date, "yyyy-MM-dd");
+		String[] split = dateToString.split("-");
+		String year = split[0];
+		String month = split[1];
+		String day = split[2];
+		L.i(year);
+		L.i(month);
+		L.i(day);
+		for (int i = 0; i < 24; i++) {
+			String hour = String.valueOf(i).trim();
+			List<HistorySleep> sleepList = DataSupport.where("year=? and month =? and day = ? and hour = ? ", year, month, day, hour).find(HistorySleep.class);
+			if (sleepList != null && sleepList.size() > 0) {
+				// 获得每个小时的数据
+				HistorySleep sleep = sleepList.get(0);
+				// 0-20分钟
+				int sleepDeep_1 = sleep.getSleepDeep_1();
+				int sleepLight_1 = sleep.getSleepLight_1();
+				int sleepAwak_1 = sleep.getSleepAwak_1();
+				// 20-40分钟
+				int sleepDeep_2 = sleep.getSleepDeep_2();
+				int sleepLight_2 = sleep.getSleepLight_2();
+				int sleepAwak_2 = sleep.getSleepAwak_2();
+				// 40-60分钟
+				int sleepDeep_3 = sleep.getSleepDeep_3();
+				int sleepLight_3 = sleep.getSleepLight_3();
+				int sleepAwak_3 = sleep.getSleepAwak_3();
+				// 统计数据
+				
+				dataSleep[0] += (sleepDeep_1 + sleepDeep_2 + sleepDeep_3);
+				dataSleep[1] += (sleepLight_1 + sleepLight_2 + sleepLight_3);
+				dataSleep[2] += (sleepAwak_1 + sleepAwak_2 + sleepAwak_3);
+			} else {
+				L.e("数据库无睡眠数据");
+			}
+		}
+		return dataSleep;
+	}
+	
+	
+	
 	/**
 	 * 检查蓝牙
 	 */
@@ -514,12 +546,12 @@ public class Main extends BaseActivity implements OnClickListener {
 					// 确认蓝牙
 
 					if (!mSimpleBlueService.isEnable()) {
-						if (onceEnter) {
-							Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-							startActivityForResult(enableBtIntent, 1);
-							// showIosDialog();
-							onceEnter = false;
-						}
+//						if (onceEnter) {
+//							Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//							startActivityForResult(enableBtIntent, 1);
+//							// showIosDialog();
+//							onceEnter = false;
+//						}
 					} else {
 						if (null != mSimpleBlueService && mSimpleBlueService.isBinded() && mSimpleBlueService.getConnectState() != BluetoothProfile.STATE_CONNECTED) {
 							if (mSimpleBlueService.isScanning()) {
@@ -539,7 +571,10 @@ public class Main extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-
+		
+//		mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25010000"));
+		mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25020000"));
+		
 		ActionSheetDialog exitDialog = new ActionSheetDialog(this).builder();
 		exitDialog.setTitle("退出程序？");
 		exitDialog.addSheetItem("确定", SheetItemColor.Red, new OnSheetItemClickListener() {
@@ -603,9 +638,9 @@ public class Main extends BaseActivity implements OnClickListener {
 			((ViewPager) container).removeView(listVs.get(position));
 		}
 	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// 0 10001 00001 10011 0010 0010 0001 0001
 
 		// 0 00100 01001 00010 0011 0011 0100 0100
@@ -661,19 +696,19 @@ public class Main extends BaseActivity implements OnClickListener {
 //		byte[] protocolDataForClockSync = I2WatchProtocolDataForWrite.protocolDataForClockSync(getApplicationContext()).toByte();
 //		mSimpleBlueService.writeCharacteristic((protocolDataForClockSync));
 		
-		
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-			} else {
-				finish();
-				System.exit(0);
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//		
+//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//				exitTime = System.currentTimeMillis();
+//			} else {
+//				finish();
+//				System.exit(0);
+//			}
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	
 }

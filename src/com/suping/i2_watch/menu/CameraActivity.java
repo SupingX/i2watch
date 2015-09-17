@@ -1,8 +1,8 @@
 package com.suping.i2_watch.menu;
 
 import com.suping.i2_watch.BaseActivity;
-import com.suping.i2_watch.MyBroadcastReceiver;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.service.SimpleBlueService;
@@ -26,7 +26,7 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 	/** ImageView ： 返回、拍照 **/
 	private ImageView imgBack, imgCamera;
 	private AbstractSimpleBlueService mSimpleBlueService;
-		private MyBroadcastReceiver mReceiver = new MyBroadcastReceiver(){
+		private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver(){
 		public void doCamera() {
 			CameraInterface.getInstance().doTakePicture();
 		};

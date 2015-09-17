@@ -55,6 +55,8 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 	public final static String ACTION_DATA_HISTORY_CAL = "lite_data_history_cal";
 	public final static String ACTION_DATA_HISTORY_SPORT_TIME = "lite_data_history_sport_time";
 	public final static String ACTION_DATA_HISTORY_SLEEP_FOR_TODAY = "lite_data_history_sleep_for_today";
+	public final static String ACTION_SYNC_START = "ACTION_SYNC_START";
+	public final static String ACTION_SYNC_END = "ACTION_SYNC_END";
 
 	public final static String EXTRA_STEP_AND_CAL = "extra_step";
 	public final static String EXTRA_SLEEP = "extra_sleep";
@@ -78,6 +80,8 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 		intentFilter.addAction(ACTION_DATA_HISTORY_CAL);
 		intentFilter.addAction(ACTION_DATA_HISTORY_SPORT_TIME);
 		intentFilter.addAction(ACTION_DATA_HISTORY_SLEEP_FOR_TODAY);
+		intentFilter.addAction(ACTION_SYNC_START);
+		intentFilter.addAction(ACTION_SYNC_END);
 		return intentFilter;
 	}
 
@@ -161,6 +165,16 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			L.i("已接来电");
 			// 已接来电
 			break;
+		case I2WatchProtocolDataForNotify.NOTIFY_SYNC_HISTORY:
+			//同步开始 同步结束
+			int notifySyncState = notify.notifySyncState(data);
+			if (notifySyncState==1) {
+				L.i("开始同步");
+			}else if (notifySyncState==0) {
+				L.i("同步结束");
+			}
+		
+			break;
 
 		default:
 			break;
@@ -228,6 +242,15 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 
 	private void sendBroadcastForPhoto() {
 		Intent intent = new Intent(ACTION_CAMERA);
+		sendBroadcast(intent);
+	}
+	
+	private void sendBroadcastForSyncStart() {
+		Intent intent = new Intent(ACTION_SYNC_START);
+		sendBroadcast(intent);
+	}
+	private void sendBroadcastForSyncOver() {
+		Intent intent = new Intent(ACTION_SYNC_END);
 		sendBroadcast(intent);
 	}
 
@@ -333,8 +356,10 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			// 8.时间同步
 			byte[] hexDataForTimeSync = I2WatchProtocolDataForWrite.hexDataForTimeSync(new Date(), getApplicationContext());
 			// writeCharacteristic(hexDataForTimeSync);
-
+			//9 .今天的数据
+			byte[] hexDataForGetHistoryType = I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
 			List<byte[]> values = new ArrayList<>();
+			values.add(hexDataForTimeSync);
 			 values.add(byteActivityRemindSync);
 			 values.add(protocolForCallingAlarmPeriodSync);
 			 values.add(hexDataForLostOnoffI2Watch);
@@ -342,12 +367,21 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			 values.add(hexDataForSleepPeriodSync);
 			values.add(hexDataDecrease);
 			values.add(hexDataForSignatureSync);
-			values.add(hexDataForTimeSync);
+			values.add(hexDataForGetHistoryType);
+			
 			writeValueToDevice(values);
 			L.e("同步设置结束");
 		}
 		
-		
+		mHander.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (dialogSyncSetting!=null && dialogSyncSetting.isShowing()) {
+					dialogSyncSetting.dismiss();
+				}
+			}
+		}, 30*1000);
 	}
 
 	@Override

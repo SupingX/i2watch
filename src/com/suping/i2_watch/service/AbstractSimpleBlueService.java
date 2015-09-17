@@ -61,10 +61,11 @@ public abstract class AbstractSimpleBlueService extends Service {
 			switch (msg.what) {
 			case 0xabc:
 				index++;
-				if (index<values.size()) {
-					mHander.postDelayed(runWrite, 3000);
-				}else{
+				if (index>=values.size()) {
 					doWriteOver();
+					index=0;
+				}else{
+					mHander.postDelayed(runWrite, 3000);
 				}
 				break;
 
@@ -129,9 +130,6 @@ public abstract class AbstractSimpleBlueService extends Service {
 		}
 	}
 	
-	private int writeCount = 0;
-	private int writeInterval = 200;
-	private Handler mHandler = new Handler(){};
 	
 	
 	private int index = 0;
@@ -160,9 +158,9 @@ public abstract class AbstractSimpleBlueService extends Service {
 		if (values.size()<=0) {
 			return;
 		}
-		//清空数据 
-		index = 0;
-		this.values.clear();
+//		//清空数据 
+//		index = 0;
+//		this.values.clear();
 		//获取数据 
 		this.values = values;
 		mHander.post(runWrite);
