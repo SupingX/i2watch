@@ -115,15 +115,15 @@ public class XtremApplication extends Application {
 //	}
 //	
 
-	private void sendMes() {
-	    //直接调用短信接口发短信  
-//        SmsManager smsManager = SmsManager.getDefault();  
-//        List<String> divideContents = smsManager.divideMessage("正在有事，稍后");   
-//        for (String text : divideContents) {      
-//            smsManager.sendTextMessage(num, null, text, null, null);    
-//        }  
-		
-	}
+//	private void sendMes() {
+//	    //直接调用短信接口发短信  
+////        SmsManager smsManager = SmsManager.getDefault();  
+////        List<String> divideContents = smsManager.divideMessage("正在有事，稍后");   
+////        for (String text : divideContents) {      
+////            smsManager.sendTextMessage(num, null, text, null, null);    
+////        }  
+//		
+//	}
 	
 	@Override
 	public void onTerminate() {

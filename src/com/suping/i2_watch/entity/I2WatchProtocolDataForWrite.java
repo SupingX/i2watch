@@ -3,6 +3,9 @@ package com.suping.i2_watch.entity;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.http.util.EncodingUtils;
+
+import android.R.layout;
 import android.content.Context;
 import android.util.Log;
 
@@ -45,13 +48,13 @@ public class I2WatchProtocolDataForWrite {
 	public final static String SHARE_CLOCK_CHECKBOX_1 = "share_clock_cb_item_1";
 	public final static String SHARE_CLOCK_CHECKBOX_2 = "share_clock_cb_item_2";
 	public final static String SHARE_CLOCK_CHECKBOX_3 = "share_clock_cb_item_3";
-	
-	//来电提醒设置
+
+	// 来电提醒设置
 	public final static String SHARE_INCOMING_START_HOUR = "incoming_start_hour";
 	public final static String SHARE_INCOMING_START_MIN = "incoming_start_min";
 	public final static String SHARE_INCOMING_END_HOUR = "incoming_end_hour";
 	public final static String SHARE_INCOMING_END_MIN = "incoming_end_min";
-	
+
 	// 存贮地址
 	/** 运动提醒开关 **/
 	public static final String SHARE_ACTIVITY = "share_activity";
@@ -210,34 +213,34 @@ public class I2WatchProtocolDataForWrite {
 		String endMin = (String) SharedPreferenceUtil.get(context, SHARE_INCOMING_END_MIN, DEFAULT_END_MIN);
 		String onoff = (boolean) SharedPreferenceUtil.get(context, SHARE_INCOMING, false) ? "01" : "00";
 		// 初始化IncomingProtocol
-				IncomingRemindProtocol sp = new IncomingRemindProtocol();
-				sp.setEndHour(DataUtil.getStringByString(endHour));
-				sp.setEndMin(DataUtil.getStringByString(endMin));
-				sp.setOnoff(onoff);
-				sp.setStartHour(DataUtil.getStringByString(startHour));
-				sp.setStartMin(DataUtil.getStringByString(startMin));
-				// log
-				Log.i("I2WatchProtocol", "----------------------------------------------------------");
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.protocol 	   ：" + IncomingRemindProtocol.protocol);
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getOnoff 	   ：" + sp.getOnoff());
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartHour ：" + sp.getStartHour());
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartMin  ：" + sp.getStartMin());
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndHour   ：" + sp.getEndHour());
-				Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndMin    ：" + sp.getEndMin());
-				Log.v("I2WatchProtocol", "hexDataForCallingAlarmPeriodSync : 来电提醒数据 ：" + sp.toString());
-				Log.i("I2WatchProtocol", "----------------------------------------------------------");
-				return sp;
+		IncomingRemindProtocol sp = new IncomingRemindProtocol();
+		sp.setEndHour(DataUtil.getStringByString(endHour));
+		sp.setEndMin(DataUtil.getStringByString(endMin));
+		sp.setOnoff(onoff);
+		sp.setStartHour(DataUtil.getStringByString(startHour));
+		sp.setStartMin(DataUtil.getStringByString(startMin));
+		// log
+		Log.i("I2WatchProtocol", "----------------------------------------------------------");
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.protocol 	   ：" + IncomingRemindProtocol.protocol);
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.getOnoff 	   ：" + sp.getOnoff());
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartHour ：" + sp.getStartHour());
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.getStartMin  ：" + sp.getStartMin());
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndHour   ：" + sp.getEndHour());
+		Log.i("I2WatchProtocol", "IncomingRemindProtocol.getEndMin    ：" + sp.getEndMin());
+		Log.v("I2WatchProtocol", "hexDataForCallingAlarmPeriodSync : 来电提醒数据 ：" + sp.toString());
+		Log.i("I2WatchProtocol", "----------------------------------------------------------");
+		return sp;
 	}
-	
+
 	/**
 	 * 来电提醒时段设置协议的 hexData
 	 * 
 	 * @return
 	 */
 	public static byte[] hexDataForCallingAlarmPeriodSync(Context context) {
-		return  protocolForCallingAlarmPeriodSync(context).toByte();
-	}	
-	
+		return protocolForCallingAlarmPeriodSync(context).toByte();
+	}
+
 	/**
 	 * 取出存在本地的运动提醒数据, 转换成发送协议的 hexData
 	 * 
@@ -332,7 +335,7 @@ public class I2WatchProtocolDataForWrite {
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
 		Log.v("I2WatchProtocol", "hexDataForSearchI2Watch : 开始查找手环数据 ：" + hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		return  hexDate;
+		return hexDate;
 	}
 
 	/**
@@ -344,23 +347,20 @@ public class I2WatchProtocolDataForWrite {
 		String hex = "61";
 		String bright = (String) SharedPreferenceUtil.get(context, SHARE_BRIGHT, "01");
 		hex += DataUtil.getStringByString(bright);
-		
+
 		byte[] hexDate = DataUtil.getBytesByString(hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
 		Log.v("I2WatchProtocol", "hexDataForUpdateBrightness : 改变亮度数据 ：" + hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		return  hexDate;
+		return hexDate;
 	}
 
 	/**
 	 * 取历史数据的 hexData
 	 * 
 	 * @param historyType
-	 *            历史记录类型, 分为 GetHistoryTypeToday 和 GetHistoryTypeAll 
-	 *           	0	取消读取历史数据
-					1	读取当天历史数据
-					2	读取所有历史数据
-					0x5a	删除所有历史数据
+	 *            历史记录类型, 分为 GetHistoryTypeToday 和 GetHistoryTypeAll 0 取消读取历史数据
+	 *            1 读取当天历史数据 2 读取所有历史数据 0x5a 删除所有历史数据
 	 * @param startIndex
 	 *            (仅用于 GetHistoryTypeToday) 历史记录开始时间点的 index, 0 ~ 359 之间
 	 * @return
@@ -369,17 +369,17 @@ public class I2WatchProtocolDataForWrite {
 		String hex = "";
 		String protocol = "25";
 		String type = DataUtil.getStringByString(String.valueOf(historyType));
-		
+
 		String index = Integer.toHexString(startIndex);
-		if(index.length()==1){
-			index = index+"000";
-		}else if(index.length()==2){
-			index = index+"00";
-		}else if(index.length()==3){
-			index = index+"0";
+		if (index.length() == 1) {
+			index = index + "000";
+		} else if (index.length() == 2) {
+			index = index + "00";
+		} else if (index.length() == 3) {
+			index = index + "0";
 		}
-		
-		hex = protocol + type + index ;
+
+		hex = protocol + type + index;
 		byte[] hexDate = DataUtil.getBytesByString(hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
 		Log.v("I2WatchProtocol", "hexDataForCloseI2Watch : 同步历史数据  : " + hex);
@@ -387,7 +387,7 @@ public class I2WatchProtocolDataForWrite {
 		Log.v("I2WatchProtocol", "hexDataForCloseI2Watch : type : " + type);
 		Log.v("I2WatchProtocol", "hexDataForCloseI2Watch : index : " + index);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		return  hexDate;
+		return hexDate;
 	}
 
 	/**
@@ -401,7 +401,7 @@ public class I2WatchProtocolDataForWrite {
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
 		Log.v("I2WatchProtocol", "hexDataForCloseI2Watch : 关闭手环数据 ：" + hex);
 		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		return  hexDate;
+		return hexDate;
 	}
 
 	/**
@@ -409,7 +409,7 @@ public class I2WatchProtocolDataForWrite {
 	 * 
 	 * @return
 	 */
-	public static byte[] hexDataForTimeSync(Date date,Context context) {
+	public static byte[] hexDataForTimeSync(Date date, Context context) {
 		StringBuffer sb = new StringBuffer();
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
@@ -428,16 +428,16 @@ public class I2WatchProtocolDataForWrite {
 		}
 		int minute = c.get(Calendar.MINUTE);
 		int second = c.get(Calendar.SECOND);
-		
+
 		String yearStr = toHexStringForUpdateTime(year);
-		yearStr = yearStr.substring(2, 4)+yearStr.substring(0, 2);
-		
+		yearStr = yearStr.substring(2, 4) + yearStr.substring(0, 2);
+
 		String yearHighStr = yearStr.substring(0, 2);
 		String yearLowStr = yearStr.substring(2, 4);
 		Log.v("", "yearStr : " + yearStr);
 		Log.v("", "yearHighStr : " + yearHighStr);
 		Log.v("", "yearLowStr : " + yearLowStr);
-		
+
 		String monthStr = DataUtil.toHexString(month);
 		String dayStr = DataUtil.toHexString(day);
 		String hourStr = DataUtil.toHexString(hour);
@@ -445,7 +445,7 @@ public class I2WatchProtocolDataForWrite {
 		String secondStr = DataUtil.toHexString(second);
 
 		Log.v("DataUtilForProject", year + "-" + month + "-" + day + "  " + hour + ":" + minute + ":" + second);
-		
+
 		String hex = "11";
 		sb.append(hex);
 		sb.append(typeStr);
@@ -457,7 +457,7 @@ public class I2WatchProtocolDataForWrite {
 		sb.append(minuteStr);
 		sb.append(secondStr);
 		Log.v("", "同步日期协议 : " + sb.toString());
-		
+
 		return DataUtil.getBytesByString(sb.toString());
 	}
 
@@ -468,7 +468,7 @@ public class I2WatchProtocolDataForWrite {
 	 * @return
 	 */
 	public static byte[] hexDataForGetTodayTotalStepAndCal() {
-		
+
 		Log.v("", "当天计步卡路里");
 		return DataUtil.getBytesByString("7100");
 	}
@@ -481,12 +481,12 @@ public class I2WatchProtocolDataForWrite {
 	 */
 	public static byte[] hexDataForHasCallingCount(int count) {
 		String index = Integer.toHexString(count);
-		
-		if (index.length()==1) {
-			index="0"+index;
+
+		if (index.length() == 1) {
+			index = "0" + index;
 		}
-		Log.v("", "通知来电 : " + 81+index);
-		return DataUtil.getBytesByString("81"+index);
+		Log.v("", "通知来电 : " + 81 + index);
+		return DataUtil.getBytesByString("81" + index);
 	}
 
 	/**
@@ -502,9 +502,10 @@ public class I2WatchProtocolDataForWrite {
 			result = "00" + result;
 		} else if (result.length() == 3) {
 			result = "0" + result;
-		} 
+		}
 		return result;
 	}
+
 	/**
 	 * 从本地取得个性签名并转换成协议需要的hexData
 	 * 
@@ -512,60 +513,69 @@ public class I2WatchProtocolDataForWrite {
 	 */
 	public static byte[] hexDataForSignatureSync(Context context) {
 		String hex = "91";
-		String signSet = (String) SharedPreferenceUtil.get(context, SHARE_SIGN_SET, "");
-		if (signSet!=null) {
-			String syncSigetHexString = toSyncSigetHexString(signSet);
-			if (syncSigetHexString==null) {
-				return null ;
-			}
-			L.i(syncSigetHexString);
-			hex+=DataUtil.getStringByString(String.valueOf(syncSigetHexString.length()));
-//			int diff = 14 - syncSigetHexString.length();
-//			if (diff<=0) {
-//				//不需要添加0
-//			}else{
+		String signSet = (String) SharedPreferenceUtil.get(context, SHARE_SIGN_SET, "Hello");
+//		byte[] bytes= Encoding.US_ASCII.GetBytes(signSet); 
+		int length = signSet.length();
+		hex+=DataUtil.getStringByString(String.valueOf(length));
+		byte[] asciiBytes = EncodingUtils.getAsciiBytes(signSet);
+		byte[] hexBytes = DataUtil.getBytesByString(hex);
+		byte[] byteMerger = DataUtil.byteMerger(hexBytes, asciiBytes);
+		Log.v("I2WatchProtocol", "hexDataForUpdateBrightness : 个性签名 ：" + byteMerger);
+		return byteMerger;
+		
+		
+//		
+//		L.v(""+asciiBytes);
+//		
+//		if (signSet != null) {
+//			String syncSigetHexString = toSyncSigetHexString(signSet);
+//			if (syncSigetHexString == null) {
+//				return null;
+//			}
+//			L.i(syncSigetHexString);
+//			hex += DataUtil.getStringByString(String.valueOf(syncSigetHexString.length()));
+//			hex += syncSigetHexString;
+//			int diff = 28 - syncSigetHexString.length();
+//			if (diff <= 0) {
+//				// 不需要添加0
+//			} else {
 //				for (int i = 0; i < diff; i++) {
-//					hex+="0";
+//					hex += "0";
 //				}
 //			}
-			hex+=syncSigetHexString;
-		}
+//		}
 		
-		byte[] hexDate = DataUtil.getBytesByString(hex);
-		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		Log.v("I2WatchProtocol", "hexDataForUpdateBrightness : 个性签名 ：" + hex);
-		Log.i("I2WatchProtocol", "----------------------------------------------------------");
-		return  hexDate;
+		
+//
+//		byte[] hexDate = DataUtil.getBytesByString(hex);
+//		Log.i("I2WatchProtocol", "----------------------------------------------------------");
+//		Log.v("I2WatchProtocol", "hexDataForUpdateBrightness : 个性签名 ：" + hex);
+//		Log.i("I2WatchProtocol", "----------------------------------------------------------");
+//		return hexDate;
 	}
 
-	
-	
-	private static String toSyncSigetHexString(String str){
+	private static String toSyncSigetHexString(String str) {
 		StringBuffer sb = new StringBuffer();
-		if (str!=null) {
-			if (str.length()>0) {
-				for (int i = 0; i <str.length() ; i++) {
+		if (str != null) {
+			if (str.length() > 0) {
+				for (int i = 0; i < str.length(); i++) {
 					char c = str.charAt(i);
 					Log.v("I2WatchProtocol", String.valueOf(c));
 					String hex = Integer.toHexString(Integer.valueOf(c));
 					sb.append(hex);
 				}
-				
+
 				String result = sb.toString();
-		return result;
-			
-			}else{
+				return result;
+
+			} else {
 				return null;
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * 获取星期重复 十进制int类型 --> 二进制字符串
 	 * 
@@ -601,5 +611,5 @@ public class I2WatchProtocolDataForWrite {
 		}
 		return value;
 	}
-	
+
 }

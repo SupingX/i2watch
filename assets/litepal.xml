@@ -32,7 +32,6 @@
         </list>
     -->
     <list>
-           <mapping class="com.suping.i2_watch.entity.HistorySport"></mapping>
-           <mapping class="com.suping.i2_watch.entity.HistorySleep"></mapping>
+           <mapping class="com.suping.i2_watch.entity.History"></mapping>
     </list>
 </litepal>

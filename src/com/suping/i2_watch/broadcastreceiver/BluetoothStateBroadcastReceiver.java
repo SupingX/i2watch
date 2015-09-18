@@ -43,10 +43,10 @@ public class BluetoothStateBroadcastReceiver extends AbstractBluetoothStateBroad
 		case BluetoothAdapter.STATE_OFF:
 			Log.i("", "蓝牙已关闭");
 			Toast.makeText(context, "蓝牙已关闭", Toast.LENGTH_SHORT).show();
-			if (mSimpleBlueService.isScanning()) {
-				mSimpleBlueService.scanDevice(false);
-			}
-			mSimpleBlueService.close();
+//			if (mSimpleBlueService.isScanning()) {
+//				mSimpleBlueService.scanDevice(false);
+//			}
+//			mSimpleBlueService.close();
 //			showdialog("蓝牙已关闭");
 			break;
 		default:

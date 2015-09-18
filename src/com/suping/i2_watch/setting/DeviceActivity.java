@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 import com.suping.i2_watch.BaseActivity;
+import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.R.id;
 import com.suping.i2_watch.R.layout;
@@ -327,8 +328,8 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * @param address
 	 */
 	private void returnToMain() {
-//		Intent intent = new Intent(this, SettingActivity.class);
-//		startActivity(intent);
+		Intent intent = new Intent(this, Main.class);
+		startActivity(intent);
 		finish();
 	}
 

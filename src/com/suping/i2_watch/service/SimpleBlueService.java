@@ -13,10 +13,10 @@ import com.android.internal.telephony.ITelephony;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.AbstractProtocolWrite;
-import com.suping.i2_watch.entity.HistorySleep;
-import com.suping.i2_watch.entity.HistorySport;
+import com.suping.i2_watch.entity.History;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForNotify;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.entity.LitePalManager;
 import com.suping.i2_watch.entity.SportRemindProtocol;
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.L;
@@ -105,49 +105,12 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			break;
 
 		case I2WatchProtocolDataForNotify.NOTIFY_HISTORY:
-			final Object notifyHistory = notify.notifyHistory(data);
+			final History notifyHistory = notify.notifyHistory(data);
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					if (notifyHistory != null) {
-						if (notifyHistory instanceof HistorySleep) {
-							HistorySport sport = isExitSportHistory((HistorySport) notifyHistory);// 数据库有
-							if (sport != null) {
-								sport.setSportStep_1(((HistorySport) notifyHistory).getSportStep_1());
-								sport.setSportStep_2(((HistorySport) notifyHistory).getSportStep_2());
-								sport.setSportStep_3(((HistorySport) notifyHistory).getSportStep_3());
-								sport.setSportTime_1(((HistorySport) notifyHistory).getSportTime_1());
-								sport.setSportTime_2(((HistorySport) notifyHistory).getSportTime_2());
-								sport.setSportTime_3(((HistorySport) notifyHistory).getSportTime_3());
-								sport.save();
-							} else {
-								((HistorySport) notifyHistory).save();
-							}
-						} else if (notifyHistory instanceof HistorySleep) {
-							HistorySleep sleep = isExitSleepHistory((HistorySleep) notifyHistory);
-							if (sleep != null) {// 数据库有
-								sleep.setSleepOneself_1(((HistorySleep) notifyHistory).getSleepOneself_1());
-								sleep.setSleepOneself_2(((HistorySleep) notifyHistory).getSleepOneself_2());
-								sleep.setSleepOneself_3(((HistorySleep) notifyHistory).getSleepOneself_3());
-								sleep.setSleepAwak_1(((HistorySleep) notifyHistory).getSleepAwak_1());
-								sleep.setSleepAwak_2(((HistorySleep) notifyHistory).getSleepAwak_2());
-								sleep.setSleepAwak_3(((HistorySleep) notifyHistory).getSleepAwak_3());
-								sleep.setSleepLight_1(((HistorySleep) notifyHistory).getSleepLight_1());
-								sleep.setSleepLight_2(((HistorySleep) notifyHistory).getSleepLight_2());
-								sleep.setSleepLight_3(((HistorySleep) notifyHistory).getSleepLight_3());
-								sleep.setSleepDeep_1(((HistorySleep) notifyHistory).getSleepDeep_1());
-								sleep.setSleepDeep_2(((HistorySleep) notifyHistory).getSleepDeep_2());
-								sleep.setSleepDeep_3(((HistorySleep) notifyHistory).getSleepDeep_3());
-								sleep.save();
-							} else {
-								((HistorySleep) notifyHistory).save();
-							}
-						}
-					} else {
-						L.v("数据null");
-					}
-				}
-			});
+					LitePalManager.instance().saveHistory(notifyHistory);
+			}}).start();
 			break;
 		// case I2WatchProtocolDataForNotify.NOTIFY_INCOMING_REJECT:
 		case I2WatchProtocolDataForNotify.NOTIFY_INCOMING:
@@ -169,9 +132,11 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			//同步开始 同步结束
 			int notifySyncState = notify.notifySyncState(data);
 			if (notifySyncState==1) {
-				L.i("开始同步");
+				L.i("开始历史数据同步");
+				sendBroadcastForSyncStart();
 			}else if (notifySyncState==0) {
-				L.i("同步结束");
+				L.i("同步历史数据结束");
+				sendBroadcastForSyncOver();
 			}
 		
 			break;
@@ -182,23 +147,8 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 
 	}
 
-	private HistorySport isExitSportHistory(HistorySport sport) {
-		List<HistorySport> sports = DataSupport.where("year=? and month =? and day = ? and hour = ? ", sport.getYear(), sport.getMonth(), sport.getDay(), sport.getHour()).find(HistorySport.class);
-		if (sports != null && sports.size() > 0) {
-			return sports.get(0);
-		} else {
-			return null;
-		}
-	}
 
-	private HistorySleep isExitSleepHistory(HistorySleep sleep) {
-		List<HistorySleep> sleeps = DataSupport.where("year=? and month =? and day = ? and hour = ? ", sleep.getYear(), sleep.getMonth(), sleep.getDay(), sleep.getHour()).find(HistorySleep.class);
-		if (sleeps != null && sleeps.size() > 0) {
-			return sleeps.get(0);
-		} else {
-			return null;
-		}
-	}
+
 
 	/**
 	 * 挂电话
@@ -244,18 +194,19 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 		Intent intent = new Intent(ACTION_CAMERA);
 		sendBroadcast(intent);
 	}
-	
+
 	private void sendBroadcastForSyncStart() {
 		Intent intent = new Intent(ACTION_SYNC_START);
 		sendBroadcast(intent);
 	}
+
 	private void sendBroadcastForSyncOver() {
 		Intent intent = new Intent(ACTION_SYNC_END);
 		sendBroadcast(intent);
 	}
 
 	@Override
-	public void doSomeThingWhereDisconnected() {
+	public void onReconnectedOverTimeOut() {
 		// 断线提醒
 		prepareRing();
 		mHander.postDelayed(new Runnable() {
@@ -268,8 +219,8 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 				}
 			}
 		}, 5000);
-		
-		if (dialogSyncSetting!=null && dialogSyncSetting.isShowing()) {
+
+		if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
 			dialogSyncSetting.dismiss();
 		}
 	}
@@ -305,24 +256,23 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 	}
 
 	@Override
-	public void doServicediscovered() {
+	public void onServicediscoveredSuccess() {
 		mHander.postDelayed((new Runnable() {
-			
 			@Override
 			public void run() {
 				doUpdateSetting();
 			}
-		}),2000);
+		}), 2000);
 
 	}
 
 	private void doUpdateSetting() {
-			dialogSyncSetting = new ProgressDialog(getApplicationContext());
-			dialogSyncSetting.setCancelable(false);
-			dialogSyncSetting.setMessage("同步手机数据 ...");
-			dialogSyncSetting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			dialogSyncSetting.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-			dialogSyncSetting.show();
+		dialogSyncSetting = new ProgressDialog(getApplicationContext());
+		dialogSyncSetting.setCancelable(false);
+		dialogSyncSetting.setMessage("同步手机设置 ...");
+		dialogSyncSetting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		dialogSyncSetting.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		dialogSyncSetting.show();
 		if (isBinded() && getConnectState() == BluetoothProfile.STATE_CONNECTED) {
 			L.e("开始同步设置");
 			// 1.运动提醒
@@ -356,37 +306,39 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			// 8.时间同步
 			byte[] hexDataForTimeSync = I2WatchProtocolDataForWrite.hexDataForTimeSync(new Date(), getApplicationContext());
 			// writeCharacteristic(hexDataForTimeSync);
-			//9 .今天的数据
-			byte[] hexDataForGetHistoryType = I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
+			// 9 .今天的数据
+			// byte[] hexDataForGetHistoryType =
+			// I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
 			List<byte[]> values = new ArrayList<>();
-			values.add(hexDataForTimeSync);
-			 values.add(byteActivityRemindSync);
-			 values.add(protocolForCallingAlarmPeriodSync);
-			 values.add(hexDataForLostOnoffI2Watch);
-			 values.add(protocolDataForClockSync);
-			 values.add(hexDataForSleepPeriodSync);
+			values.add(byteActivityRemindSync);
+			values.add(protocolForCallingAlarmPeriodSync);
+			values.add(hexDataForLostOnoffI2Watch);
+			values.add(protocolDataForClockSync);
+			values.add(hexDataForSleepPeriodSync);
 			values.add(hexDataDecrease);
 			values.add(hexDataForSignatureSync);
-			values.add(hexDataForGetHistoryType);
-			
+			values.add(hexDataForTimeSync);
+			// values.add(hexDataForGetHistoryType);
+
 			writeValueToDevice(values);
-			L.e("同步设置结束");
+	
 		}
-		
+
 		mHander.postDelayed(new Runnable() {
-			
 			@Override
 			public void run() {
-				if (dialogSyncSetting!=null && dialogSyncSetting.isShowing()) {
+				L.i("同步手机设置超时");
+				if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
 					dialogSyncSetting.dismiss();
 				}
 			}
-		}, 30*1000);
+		}, 30 * 1000);
 	}
 
 	@Override
-	public void doWriteOver() {
-		if (dialogSyncSetting!=null && dialogSyncSetting.isShowing()) {
+	public void onWriteOver() {
+		L.e("同步手机设置结束");
+		if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
 			dialogSyncSetting.dismiss();
 		}
 	}

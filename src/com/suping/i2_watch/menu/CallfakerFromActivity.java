@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class CallfakerFromActivity extends Activity implements OnClickListener {
 	private TextView tvCancel;
@@ -61,11 +62,11 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 				String num = getContactNumberFromCursor(cursor);
 				String name = getContactNameFromCursor(cursor);
 				Log.e("choose", num + " " + name);
-				returnResult(name + " " + num,RESULT_OK);
+				returnResult(name , num,RESULT_OK);
 				finish();
 				break;
 			case RESULT_CANCELED :
-				returnResult(null,RESULT_CANCELED);
+				returnResult(null,null,RESULT_CANCELED);
 				break;
 			default:
 				break;
@@ -82,7 +83,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 	
 	@Override
 	protected void onDestroy() {
-		returnResult(null, RESULT_CANCELED);
+		returnResult(null,null, RESULT_CANCELED);
 		super.onDestroy();
 	}
 	@Override
@@ -95,17 +96,17 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 			if(name==null||name.equals("")){Toast.makeText(CallfakerFromActivity.this, "姓名为空", Toast.LENGTH_SHORT).show();return;}
 			String phone = edPhone.getText().toString().trim();
 			if(phone==null||phone.equals("")){Toast.makeText(CallfakerFromActivity.this, "号码为空", Toast.LENGTH_SHORT).show();return;}
-			returnResult(name + " " + phone,RESULT_OK);
+			returnResult(name ,phone,RESULT_OK);
 			break;
 		case R.id.tv_negative:
-			returnResult(null,RESULT_CANCELED);
+			returnResult(null,null,RESULT_CANCELED);
 			break;
 		case R.id.tv_random:
 			Log.e("listView", "随机--" );
 			update(1);
-			String value = getRandom();
+			String[] random = getRandom();
 			rlOk.setVisibility(View.GONE);
-			returnResult(value,RESULT_OK);
+			returnResult(random[0],random[1],RESULT_OK);
 			break;
 		case R.id.tv_choose:
 			Log.e("listView", "导入--");
@@ -218,7 +219,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 	 * 
 	 * @return
 	 */
-	private String getRandom() {
+	private String[] getRandom() {
 		List<Map<String, String>> list = getCursorList();
 		String name = "";
 		String phone = "";
@@ -238,7 +239,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 		} else {
 			Log.e("listView", "联系人列表为空...");
 		}
-		return name + " " + phone;
+		return new String[]{name,phone};
 	}
 
 	/**
@@ -284,19 +285,24 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 		}
 		return result;
 	}
-
+	
+	public static final String SHARE_PHONE_NAME="SHARE_PHONE_NAME";
+	public static final String SHARE_PHONE_NUMBER="SHARE_PHONE_NUMBER";
+	
 	/**
 	 * 返回联系人
 	 * 
 	 * @author Administrator
 	 * 
 	 */
-	private void returnResult(String value,int result) {
+	private void returnResult(String name,String phone,int result) {
 		Intent intentRandom  = new Intent(CallfakerFromActivity.this, CallfakerActivity.class);
 		Bundle b;
-		if (value!=null) {
+		if (name!=null&&phone!=null) {
+			SharedPreferenceUtil.put(getApplicationContext(),SHARE_PHONE_NAME , name);			
+			SharedPreferenceUtil.put(getApplicationContext(), SHARE_PHONE_NUMBER, phone);			
 			b = new Bundle();
-			b.putString("cursor", value);
+			b.putString("cursor", name+" " +phone);
 			intentRandom.putExtras(b);
 		}
 		setResult(result, intentRandom);

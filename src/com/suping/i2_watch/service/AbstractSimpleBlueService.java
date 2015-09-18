@@ -5,15 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-
-
-
-
-
-
-
-
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
@@ -61,10 +52,10 @@ public abstract class AbstractSimpleBlueService extends Service {
 			switch (msg.what) {
 			case 0xabc:
 				index++;
-				if (index>=values.size()) {
-					doWriteOver();
-					index=0;
-				}else{
+				if (index >= values.size()) {
+					onWriteOver();
+					index = 0;
+				} else {
 					mHander.postDelayed(runWrite, 3000);
 				}
 				break;
@@ -75,8 +66,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 		};
 	};
 	private int connectState;
-	
-	public void setConnectState(int state){
+
+	public void setConnectState(int state) {
 		this.connectState = state;
 	}
 
@@ -97,13 +88,16 @@ public abstract class AbstractSimpleBlueService extends Service {
 
 	public void scanDevice(boolean scan) {
 		if (scan) {
-			// mHander.postDelayed(new Runnable() {
-			// @Override
-			// public void run() {
-			// isScanning = false;
-			// mSimpleBluetooth.stopScan();
-			// }
-			// }, 10 * 1000);
+			mHander.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (isScanning) {
+						isScanning = false;
+						mSimpleBluetooth.stopScan();
+					}
+						
+				}
+			}, 30 * 1000);
 			isScanning = true;
 			mSimpleBluetooth.startScan();
 		} else {
@@ -118,54 +112,58 @@ public abstract class AbstractSimpleBlueService extends Service {
 	private boolean isWrieteServiceFound;
 	private BluetoothGattCharacteristic characteristicWrite;
 
-	public  void writeCharacteristic(byte[] order) {
+	public void writeCharacteristic(byte[] order) {
 		try {
-				logE("写数据");
-				if (characteristicWrite != null) {
-					characteristicWrite.setValue(order);
-					mSimpleBluetooth.write(characteristicWrite);
-				}
+			logE("写数据");
+			if (characteristicWrite != null) {
+				characteristicWrite.setValue(order);
+				mSimpleBluetooth.write(characteristicWrite);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
 	private int index = 0;
-	private List<byte[] > values = new ArrayList<>(); 
+	private List<byte[]> values = new ArrayList<>();
 	/**
 	 * 
 	 * @param value
 	 */
-	private Runnable runWrite =new Runnable() {
+	private Runnable runWrite = new Runnable() {
 		@Override
 		public void run() {
-			writeCharacteristic(values.get(index));
-			long currentTimeMillis = System.currentTimeMillis();
-			L.e("时间点："+currentTimeMillis);
+			if (isBinded() && getConnectState() == BluetoothProfile.STATE_CONNECTED) {
+				writeCharacteristic(values.get(index));
+				L.i("蓝牙连接正常，继续写数据中 序号：" + index);
+			} else {
+				L.i("蓝牙连接失败，跳过 序号：" + index);
+			}
 			mHander.sendEmptyMessage(0xabc);
 		}
 	};
+
 	/**
-	 * 写一串数据 
+	 * 写一串数据
+	 * 
 	 * @param values
 	 */
-	public void writeValueToDevice( final List<byte[]> values) {
-		if (values==null ) {
-			return ;
-		}
-		if (values.size()<=0) {
+	public void writeValueToDevice(final List<byte[]> values) {
+		if (values == null) {
 			return;
 		}
-//		//清空数据 
-//		index = 0;
-//		this.values.clear();
-		//获取数据 
+		if (values.size() <= 0) {
+			return;
+		}
+		L.i("开始写一串数据 ，数据个数：" + values.size());
+		// //清空数据
+		// index = 0;
+		// this.values.clear();
+		// 获取数据
 		this.values = values;
 		mHander.post(runWrite);
 	}
-	
+
 	public int getConnectState() {
 		return connectState;
 	}
@@ -176,6 +174,10 @@ public abstract class AbstractSimpleBlueService extends Service {
 
 	public void close() {
 		mSimpleBluetooth.close();
+	}
+
+	public void disconnect() {
+		mSimpleBluetooth.disconnect();
 	}
 
 	public void connect(BluetoothDevice device) {
@@ -245,7 +247,9 @@ public abstract class AbstractSimpleBlueService extends Service {
 	private void logE(String msg) {
 		Log.e(TAG, "**   " + msg + "  **");
 	};
+
 	private boolean isPrint = false;
+
 	private class SimpleBluetooth extends AbstractSimpleBluetooth {
 
 		public SimpleBluetooth(Context context, BluetoothAdapter mBluetoothAdapter) {
@@ -257,13 +261,12 @@ public abstract class AbstractSimpleBlueService extends Service {
 			sendBroadcastForDeviceFound(device, rssi);
 			String bindedName = getBindedName();
 			String bindedAddress = getBindedAddress();
-			//&& device.getName().equals(bindedName)
-			if (isBinded() && device.getAddress().equals(bindedAddress) ) {
+			// && device.getName().equals(bindedName)
+			if (isBinded() && device.getAddress().equals(bindedAddress)) {
 				Log.e("AbstractSimpleBluetooth", "bindedName,bindedAddress = " + bindedName + "," + bindedAddress);
 				mHander.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						connect(device);
 					}
 				}, 1000);
@@ -273,7 +276,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 
 		@Override
 		public void onServicesDiscoveredCallBack(BluetoothGatt gatt, int status) {
-			
+
 			doPrintDescoveredServices(gatt.getServices());
 			mBluetoothGattService = gatt.getService(UUID.fromString(BLE_SERVICE));
 			// gatt.setCharacteristicNotification(characteristicWrite, true);
@@ -282,17 +285,20 @@ public abstract class AbstractSimpleBlueService extends Service {
 				characteristicWrite = mBluetoothGattService.getCharacteristic(UUID.fromString(BLE_CHARACTERISTIC_WRITE));
 				BluetoothGattCharacteristic characteristicNotify = mBluetoothGattService.getCharacteristic(UUID.fromString(BLE_CHARACTERISTIC_NOTIFY));
 				if (characteristicWrite != null && characteristicNotify != null) {
+					characteristicWrite.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
 					Log.e("", "_______________匹配characteristicWrite_________________________");
 					Log.e("", "_______________匹配characteristicNotify_________________________");
 					gatt.setCharacteristicNotification(characteristicNotify, true);
 					BluetoothGattDescriptor descriptor = characteristicNotify.getDescriptor(UUID.fromString(DESC_CCC));
 					descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+				
+
 					gatt.writeDescriptor(descriptor);
 					sendBroadcastForServiceDiscoveredWriteDevice(gatt, status);
-					doServicediscovered();
+					onServicediscoveredSuccess();
 					saveDevice(gatt.getDevice());// 绑定蓝牙
 					isWrieteServiceFound = true;
-					//停止搜索？
+					// 停止搜索？
 					scanDevice(false);
 				} else {
 					// 没有连接匹配的服务,断开连接.防止连接不匹配的蓝牙?
@@ -300,8 +306,6 @@ public abstract class AbstractSimpleBlueService extends Service {
 				}
 			}
 		}
-
-	
 
 		@Override
 		public void onReadRemoteRssiCallBack(BluetoothGatt gatt, int rssi, int status) {
@@ -352,7 +356,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 									boolean isRemindOpen = (Boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, false);
 									if (isRemindOpen) {
 										sendBroadcastForRemind();
-										doSomeThingWhereDisconnected();
+										onReconnectedOverTimeOut();
 									}
 								}
 
@@ -390,12 +394,12 @@ public abstract class AbstractSimpleBlueService extends Service {
 
 	public void doPrintDescoveredServices(List<BluetoothGattService> services) {
 		if (isPrint) {
-			if (services!=null&&services.size()>0) {
+			if (services != null && services.size() > 0) {
 				Log.i("", "_____________________service________________________");
 				for (BluetoothGattService service : services) {
 					Log.i("", "__service : " + service.getUuid());
 					List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-					if (characteristics!=null&& characteristics.size()>0) {
+					if (characteristics != null && characteristics.size() > 0) {
 						Log.i("", "____________characteristic_____________");
 						for (BluetoothGattCharacteristic characteristic : characteristics) {
 							Log.i("", "_____characteristic : " + characteristic.getUuid());
@@ -405,11 +409,10 @@ public abstract class AbstractSimpleBlueService extends Service {
 			}
 		}
 	}
-	
-	public void setIsPrint(boolean ip){
+
+	public void setIsPrint(boolean ip) {
 		this.isPrint = ip;
 	}
-
 
 	public void sendBroadcastForCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 		byte[] value = characteristic.getValue();
@@ -457,9 +460,13 @@ public abstract class AbstractSimpleBlueService extends Service {
 		sendBroadcast(intent);
 	}
 
+	/** 找到匹配的设备 **/
+	public abstract void onServicediscoveredSuccess();
 
-	public abstract  void doServicediscovered();
-	public abstract void doSomeThingWhereDisconnected();
-	public abstract void 	doWriteOver();
+	/** 重新连接超时 **/
+	public abstract void onReconnectedOverTimeOut();
+
+	/** 写数据结束 **/
+	public abstract void onWriteOver();
 
 }

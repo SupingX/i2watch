@@ -124,10 +124,10 @@ public abstract class AbstractSimpleBluetooth implements IBluetooth {
 	};
 	
 	public String getBindedName(){
-		return (String) SharedPreferenceUtil.get(context, DEVICE_NAME, "");
+		return (String) SharedPreferenceUtil.get(context, DEVICE_NAME, "no_name");
 	};
 	public String getBindedAddress(){
-		return (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "");
+		return (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "no_address");
 	};
 
 	@Override

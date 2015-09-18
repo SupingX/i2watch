@@ -4,42 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import org.litepal.crud.DataSupport;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -51,21 +30,16 @@ import com.lee.pullrefresh.ui.PullToRefreshBase;
 import com.lee.pullrefresh.ui.PullToRefreshBase.OnRefreshListener;
 import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
-import com.suping.i2_watch.entity.HistorySleep;
-import com.suping.i2_watch.entity.HistorySport;
-import com.suping.i2_watch.entity.I2WatchProtocolDataForNotify;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.entity.LitePalManager;
 import com.suping.i2_watch.menu.MenuActivity;
 import com.suping.i2_watch.menu.RecordActivity;
 import com.suping.i2_watch.service.AbstractSimpleBlueService;
 import com.suping.i2_watch.service.SimpleBlueService;
 import com.suping.i2_watch.setting.PedometerActivity;
 import com.suping.i2_watch.setting.SettingActivity;
-import com.suping.i2_watch.test.Test;
 import com.suping.i2_watch.util.DataUtil;
-import com.suping.i2_watch.util.DateUtil;
 import com.suping.i2_watch.util.L;
-import com.suping.i2_watch.util.MessageUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.ActionSheetDialog;
 import com.suping.i2_watch.view.ActionSheetDialog.OnSheetItemClickListener;
@@ -79,7 +53,6 @@ import com.suping.i2_watch.view.ColorsCircle;
  *
  */
 public class Main extends BaseActivity implements OnClickListener {
-	private static final Object HistorySport = null;
 	/** 功能菜单 **/
 	private ImageView imgMenu;
 	/** 设置 **/
@@ -116,20 +89,16 @@ public class Main extends BaseActivity implements OnClickListener {
 	// private RadioGroup rgDot;
 	/** 导航圆点 radioButton : sleep DOT & sport DOT **/
 	private RadioButton rbDotSleep, rbDotSport;
-	/** 双击间隔 退出 **/
-	private long exitTime = 0;
 	/** 蓝牙工具 **/
 	private AbstractSimpleBlueService mSimpleBlueService;
-	private boolean onceEnter = true;
 
 	private Handler mHandler = new Handler() {
 
 	};
 	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		public void doDiscoveredWriteService() {
-//			doUpdateSetting();
+			// doUpdateSetting();
 		};
-
 		public void doStepAndCalReceiver(long[] data) {
 			int step = (int) data[0];
 			int cal = (int) data[1];
@@ -139,19 +108,18 @@ public class Main extends BaseActivity implements OnClickListener {
 
 	};
 
-	/** Runnable ：重新搜索 　 **/
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 拍照过程屏幕一直处于高亮
+		// //设置手机屏幕朝向，一共有7种
 		setContentView(R.layout.activity_main);
 		initViews();
 		initViewPager();
 		setListener();
 		intiSportValue(0, 0, 0);
-		intiSleepValue(0,0,0);
+		intiSleepValue(0, 0, 0);
 	}
-
 
 	@Override
 	protected void onStart() {
@@ -168,14 +136,14 @@ public class Main extends BaseActivity implements OnClickListener {
 		tvSportGoal.setText(goalStep + "");
 		// 设置最大值
 		ccSport.setmProgressMax(goalStep);
-		
-		//目标睡眠
-		String hour = (String) SharedPreferenceUtil.get(this,I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR ,"12");
-		String min = (String) SharedPreferenceUtil.get(this,I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN ,"0");
-		int goalSleep  = (int) (Integer.valueOf(hour) +Integer.valueOf(min)/60f);
+
+		// 目标睡眠
+		String hour = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR, "12");
+		String min = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN, "0");
+		int goalSleep = (int) (Integer.valueOf(hour) + Integer.valueOf(min) / 60f);
 		String target = DataUtil.format(goalSleep);
 		tvSleepGoal.setText(target);
-		//设置最大值
+		// 设置最大值
 		ccSleep.setmProgressMax(goalSleep);
 	}
 
@@ -183,7 +151,6 @@ public class Main extends BaseActivity implements OnClickListener {
 	protected void onResume() {
 		setGoalText();
 		checkBlue();
-
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -192,68 +159,33 @@ public class Main extends BaseActivity implements OnClickListener {
 				}
 			}
 		}, 2000);
-
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
-		// unregisterReceiver(mReceiver);
 		super.onPause();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		unregisterReceiver(mReceiver);
+	
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent arg2) {
-		switch (requestCode) {
-		case 1:
-
-			if (resultCode == RESULT_OK) {
-				mHandler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						if (mSimpleBlueService.isEnable()) {
-							// 蓝牙打开
-							mSimpleBlueService.scanDevice(true);
-						} else {
-							// 未打开
-						}
-					}
-				}, 5000);
-			}
-
-			break;
-
-		default:
-			break;
-		}
-
-		super.onActivityResult(requestCode, resultCode, arg2);
+		unregisterReceiver(mReceiver);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_menu:
-			
 			Intent menu = new Intent(Main.this, MenuActivity.class);
 			startActivity(menu);
 			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
-			
-			DataSupport.deleteAll(HistorySleep.class);
-			DataSupport.deleteAll(HistorySport.class);
-			
-			
 			break;
 		case R.id.img_setting:
 			Intent setting = new Intent(Main.this, SettingActivity.class);
@@ -261,11 +193,9 @@ public class Main extends BaseActivity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 		case R.id.tv_title:
-			Intent intentBluetooth = new Intent(Main.this, ConnectEvolveActivity.class);
+			Intent intentBluetooth = new Intent(Main.this, SinaActivity.class);
 			startActivity(intentBluetooth);
-
 			break;
-
 		case R.id.color_circle_sport:
 			Intent recordIntent1 = new Intent(Main.this, RecordActivity.class);
 			Bundle b1 = new Bundle();
@@ -287,14 +217,12 @@ public class Main extends BaseActivity implements OnClickListener {
 	}
 
 	private void initViews() {
-
 		imgMenu = (ImageView) findViewById(R.id.img_menu);
 		imgSetting = (ImageView) findViewById(R.id.img_setting);
 		tvTitle = (TextView) findViewById(R.id.tv_title);
 		// rgDot = (RadioGroup) findViewById(R.id.rg_dot);
 		rbDotSport = (RadioButton) findViewById(R.id.rb_dot_sport);
 		rbDotSleep = (RadioButton) findViewById(R.id.rb_dot_sleep);
-
 	}
 
 	/**
@@ -349,17 +277,14 @@ public class Main extends BaseActivity implements OnClickListener {
 					rbDotSport.setButtonDrawable(getResources().getDrawable(R.drawable.ic_dot_unselected));
 					rbDotSleep.setButtonDrawable(getResources().getDrawable(R.drawable.ic_dot_selected));
 					break;
-
 				default:
 					break;
 				}
 			}
-
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				// mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
 			}
-
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
 			}
@@ -372,11 +297,11 @@ public class Main extends BaseActivity implements OnClickListener {
 	private void intiSportValue(int step, int cal, int time) {
 
 		// 设置卡洛里
-		tvSportKal.setText(DataUtil.format(cal/1000f));
+		tvSportKal.setText(DataUtil.format(cal / 1000f));
 		// 设置距离
 		tvSportDistance.setText(DataUtil.getDistance(step));
 		// 设置时间
-		tvSportTime.setText(DataUtil.format(time/60f));
+		tvSportTime.setText(DataUtil.format(time / 60f));
 		// 设置完成度
 		tvSportComplete.setText("" + step);
 		// 设置圆环进度
@@ -387,35 +312,28 @@ public class Main extends BaseActivity implements OnClickListener {
 		tvSportTips.setText(start + DataUtil.getPercent(step, ccSport.getProgressMax()) + end);
 	}
 
-	
-	
 	/**
 	 * 初始化睡眠数据
 	 */
-	private void intiSleepValue(int deep ,int light,int awak) {
-		
-		//完成睡眠
-		tvSleepComplete.setText(deep+light+"");
-		ccSleep.setmProgress(light+deep);
-	
-		//深睡、浅睡、清醒
-		tvSleepDeep.setText(deep+"");
-		tvSleepLight.setText(light+"");
-		tvAwak.setText(awak+"");
-		//睡眠质量
-//		tvSleepTips.setText("睡眠质量 : 优");
+	private void intiSleepValue(int deep, int light, int awak) {
+		// 完成睡眠
+		tvSleepComplete.setText(deep + light + "");
+		ccSleep.setmProgress(light + deep);
+		// 深睡、浅睡、清醒
+		tvSleepDeep.setText(deep + "");
+		tvSleepLight.setText(light + "");
+		tvAwak.setText(awak + "");
+		// 睡眠质量
+		// tvSleepTips.setText("睡眠质量 : 优");
 		tvSleepTips.setText(getSleepAdvise(deep, light, awak));
-		
 	}
 
-	private String getSleepAdvise(int deep ,int light,int awak) {
+	private String getSleepAdvise(int deep, int light, int awak) {
 		String advise = "--";
-		
-		//计算
+		// 计算
 		advise = "睡眠质量 : 优";
 		return advise;
 	}
-
 
 	/**
 	 * 设置各view的listener事件
@@ -430,7 +348,6 @@ public class Main extends BaseActivity implements OnClickListener {
 
 		// sportV下拉刷新事件
 		sportPull.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
-
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 
@@ -446,13 +363,9 @@ public class Main extends BaseActivity implements OnClickListener {
 						// DataUtil.setLastUpdateTime(sportPull);
 					}
 				}, 2 * 1000);
-
 			}
-
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 		// sleepV下拉刷新事件
@@ -461,17 +374,16 @@ public class Main extends BaseActivity implements OnClickListener {
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ScrollView> refreshView) {
 				if (isConnected()) {
-					//刷新今天的睡眠信息
-					int[] dataSleeps = getDataForSport(new Date());
-					intiSleepValue(dataSleeps[0], dataSleeps[1], dataSleeps[2]);
-					
-				}
+					// 刷新今天的睡眠信息
+					int[] dataSleeps = LitePalManager.instance().getHistoryForCount(new Date());
+					intiSleepValue(dataSleeps[2], dataSleeps[3], dataSleeps[4]);
 
+				}
 				mHandler.postDelayed(new Runnable() {
 
 					@Override
 					public void run() {
-						
+
 						Toast.makeText(Main.this, "睡眠信息已刷新...", Toast.LENGTH_SHORT).show();
 						sleepPull.onPullDownRefreshComplete();
 						// DataUtil.setLastUpdateTime(sleepPull);
@@ -482,58 +394,13 @@ public class Main extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<ScrollView> refreshView) {
-				// TODO Auto-generated method stub
 
 			}
 		});
 
 	}
-	
-	
-	
-	
-	private int[] getDataForSport(Date date) {
-		 int dataSleep[] = new int[3];
-		String dateToString = DateUtil.dateToString(date, "yyyy-MM-dd");
-		String[] split = dateToString.split("-");
-		String year = split[0];
-		String month = split[1];
-		String day = split[2];
-		L.i(year);
-		L.i(month);
-		L.i(day);
-		for (int i = 0; i < 24; i++) {
-			String hour = String.valueOf(i).trim();
-			List<HistorySleep> sleepList = DataSupport.where("year=? and month =? and day = ? and hour = ? ", year, month, day, hour).find(HistorySleep.class);
-			if (sleepList != null && sleepList.size() > 0) {
-				// 获得每个小时的数据
-				HistorySleep sleep = sleepList.get(0);
-				// 0-20分钟
-				int sleepDeep_1 = sleep.getSleepDeep_1();
-				int sleepLight_1 = sleep.getSleepLight_1();
-				int sleepAwak_1 = sleep.getSleepAwak_1();
-				// 20-40分钟
-				int sleepDeep_2 = sleep.getSleepDeep_2();
-				int sleepLight_2 = sleep.getSleepLight_2();
-				int sleepAwak_2 = sleep.getSleepAwak_2();
-				// 40-60分钟
-				int sleepDeep_3 = sleep.getSleepDeep_3();
-				int sleepLight_3 = sleep.getSleepLight_3();
-				int sleepAwak_3 = sleep.getSleepAwak_3();
-				// 统计数据
-				
-				dataSleep[0] += (sleepDeep_1 + sleepDeep_2 + sleepDeep_3);
-				dataSleep[1] += (sleepLight_1 + sleepLight_2 + sleepLight_3);
-				dataSleep[2] += (sleepAwak_1 + sleepAwak_2 + sleepAwak_3);
-			} else {
-				L.e("数据库无睡眠数据");
-			}
-		}
-		return dataSleep;
-	}
-	
-	
-	
+
+
 	/**
 	 * 检查蓝牙
 	 */
@@ -546,12 +413,13 @@ public class Main extends BaseActivity implements OnClickListener {
 					// 确认蓝牙
 
 					if (!mSimpleBlueService.isEnable()) {
-//						if (onceEnter) {
-//							Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//							startActivityForResult(enableBtIntent, 1);
-//							// showIosDialog();
-//							onceEnter = false;
-//						}
+						// if (onceEnter) {
+						// Intent enableBtIntent = new
+						// Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+						// startActivityForResult(enableBtIntent, 1);
+						// // showIosDialog();
+						// onceEnter = false;
+						// }
 					} else {
 						if (null != mSimpleBlueService && mSimpleBlueService.isBinded() && mSimpleBlueService.getConnectState() != BluetoothProfile.STATE_CONNECTED) {
 							if (mSimpleBlueService.isScanning()) {
@@ -571,10 +439,28 @@ public class Main extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
+		/*** ----------------------for test block--------------------------- **/
+		// mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25010000"));
+		// mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25020000"));
+		// mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("910e61626364656667"));
+//		 mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("910e3d3e3f40414243"));
+		// mSimpleBlueService.writeCharacteristic(ProtocolForWrite.instance().getByteForWeather(0x01,
+		// 0x40 , 0x54));
+		// showdialog("hahhahah");
+
+//		DataSupport.deleteAll(HistorySleep.class);
+//		DataSupport.deleteAll(HistorySport.class);
+	
 		
-//		mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25010000"));
-		mSimpleBlueService.writeCharacteristic(DataUtil.getBytesByString("25020000"));
 		
+//		List<HistorySport> findAll = DataSupport.findAll(HistorySport.class);
+//		L.i(findAll.toString());
+//		for (HistorySport hs : findAll) {
+//			L.v(hs.toString());
+//		}
+		
+		/*** ------------ for test block ---------------- -------------------**/
+
 		ActionSheetDialog exitDialog = new ActionSheetDialog(this).builder();
 		exitDialog.setTitle("退出程序？");
 		exitDialog.addSheetItem("确定", SheetItemColor.Red, new OnSheetItemClickListener() {
@@ -586,28 +472,11 @@ public class Main extends BaseActivity implements OnClickListener {
 		// super.onBackPressed();
 		int tempInt = Integer.valueOf("-20");
 		Log.e("", "________________________tempInt : " + tempInt);
-		// mSimpleBlueService.writeCharacteristic(ProtocolForWrite.instance().getByteForWeather(0x01,
-		// 0x40 , 0x54));
-		// showdialog("hahhahah");
 
 	}
 
 	/**
-	 * 蓝牙状态 灰色：未连接
-	 */
-	// private void updateBlueState() {
-	// if(mBleManager.isConnectted()){
-	// tvTitle.setTextColor(Color.WHITE);
-	// }else {
-	// tvTitle.setTextColor(Color.GRAY);
-	// }
-	// }
-
-	/**
 	 * viewpager adapter
-	 * 
-	 * @author Administrator
-	 *
 	 */
 	private class ViewPagerAdapter extends PagerAdapter {
 		private List<View> listVs;
@@ -634,81 +503,92 @@ public class Main extends BaseActivity implements OnClickListener {
 
 		@Override
 		public void destroyItem(View container, int position, Object object) {
-			// TODO Auto-generated method stub
 			((ViewPager) container).removeView(listVs.get(position));
 		}
 	}
-//
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// 0 10001 00001 10011 0010 0010 0001 0001
+	//
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event) {
+	// 0 10001 00001 10011 0010 0010 0001 0001
 
-		// 0 00100 01001 00010 0011 0011 0100 0100
+	// 0 00100 01001 00010 0011 0011 0100 0100
 
-//		Object obj = I2WatchProtocolDataForNotify.instance().notifyHistory(DataUtil.getBytesByString("250322443322114433221144332211"));
-//		if (obj instanceof HistorySport) {
-//			HistorySport s = (HistorySport) obj;
-//			L.v(s.toString());
-//		}
+	// Object obj =
+	// I2WatchProtocolDataForNotify.instance().notifyHistory(DataUtil.getBytesByString("250322443322114433221144332211"));
+	// if (obj instanceof HistorySport) {
+	// HistorySport s = (HistorySport) obj;
+	// L.v(s.toString());
+	// }
 
-		// L.v((0b10011L&0b11111) + "");
-		// long value = 0b01000100001100110010001000010001L>>16&0b11111;
-		// L.v(value + "");
-		//
-		// int data_1 = 0b1100_0000_0000_0000_1111_1111_0101_1111;
-		// long s = data_1 & 0x0FFFFFFFFl;
-		// long type = s>>31;
-		//
-		// L.v(data_1+"");
-		// L.v(s+"");
-		// L.v(type+"");
-		// long ss = s>>4&0b11111;
-		// L.v(ss+"");
-//		mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForTimeSync(new Date(), this));
+	// L.v((0b10011L&0b11111) + "");
+	// long value = 0b01000100001100110010001000010001L>>16&0b11111;
+	// L.v(value + "");
+	//
+	// int data_1 = 0b1100_0000_0000_0000_1111_1111_0101_1111;
+	// long s = data_1 & 0x0FFFFFFFFl;
+	// long type = s>>31;
+	//
+	// L.v(data_1+"");
+	// L.v(s+"");
+	// L.v(type+"");
+	// long ss = s>>4&0b11111;
+	// L.v(ss+"");
+	// mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForTimeSync(new
+	// Date(), this));
 
-		// mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(this));
+	// mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(this));
 
-		// startActivity(new Intent(Main.this, VirtualActivity.class));
-//		if (null != mSimpleBlueService && mSimpleBlueService.isBinded() && mSimpleBlueService.getConnectState() == BluetoothProfile.STATE_CONNECTED) {
-//			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForHasCallingCount(MessageUtil.readMissCall(getApplicationContext())));
-//		}
-		
-//		Test.instance().CreateHistoryData();
-//		// 5.睡眠
-//		byte[] hexDataForSleepPeriodSync = I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(getApplicationContext());
-//		 mSimpleBlueService.writeCharacteristic(hexDataForSleepPeriodSync);
-		
-//		// 1.运动提醒
-//		byte[] byteActivityRemindSync = I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(getApplicationContext()).toByte();
-//		// mSimpleBlueService.writeCharacteristic(byteActivityRemindSync);
-//
-//		// 2.来电提醒
-//		byte[] protocolForCallingAlarmPeriodSync = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(getApplicationContext()).toByte();
-//		 mSimpleBlueService.writeCharacteristic(protocolForCallingAlarmPeriodSync);
-//
-//		// 3.防丢提醒
-//		byte[] hexDataForLostOnoffI2Watch = I2WatchProtocolDataForWrite.hexDataForLostOnoffI2Watch(getApplicationContext());
-//		 mSimpleBlueService.writeCharacteristic(hexDataForLostOnoffI2Watch);
+	// startActivity(new Intent(Main.this, VirtualActivity.class));
+	// if (null != mSimpleBlueService && mSimpleBlueService.isBinded() &&
+	// mSimpleBlueService.getConnectState() == BluetoothProfile.STATE_CONNECTED)
+	// {
+	// mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForHasCallingCount(MessageUtil.readMissCall(getApplicationContext())));
+	// }
 
-		// 4.闹钟
-		
-//		//闹钟设置数据 ：15007F0101007F0102007F0103 
-//		byte[] protocolDataForClockSync = I2WatchProtocolDataForWrite.protocolDataForClockSync(getApplicationContext()).toByte();
-//		mSimpleBlueService.writeCharacteristic((protocolDataForClockSync));
-		
-//		
-//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-//			if ((System.currentTimeMillis() - exitTime) > 2000) {
-//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-//				exitTime = System.currentTimeMillis();
-//			} else {
-//				finish();
-//				System.exit(0);
-//			}
-//			return true;
-//		}
-//		return super.onKeyDown(keyCode, event);
-//	}
+	// Test.instance().CreateHistoryData();
+	// // 5.睡眠
+	// byte[] hexDataForSleepPeriodSync =
+	// I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(getApplicationContext());
+	// mSimpleBlueService.writeCharacteristic(hexDataForSleepPeriodSync);
 
+	// // 1.运动提醒
+	// byte[] byteActivityRemindSync =
+	// I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(getApplicationContext()).toByte();
+	// // mSimpleBlueService.writeCharacteristic(byteActivityRemindSync);
+	//
+	// // 2.来电提醒
+	// byte[] protocolForCallingAlarmPeriodSync =
+	// I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(getApplicationContext()).toByte();
+	// mSimpleBlueService.writeCharacteristic(protocolForCallingAlarmPeriodSync);
+	//
+	// // 3.防丢提醒
+	// byte[] hexDataForLostOnoffI2Watch =
+	// I2WatchProtocolDataForWrite.hexDataForLostOnoffI2Watch(getApplicationContext());
+	// mSimpleBlueService.writeCharacteristic(hexDataForLostOnoffI2Watch);
+
+	// 4.闹钟
+
+	// //闹钟设置数据 ：15007F0101007F0102007F0103
+	// byte[] protocolDataForClockSync =
+	// I2WatchProtocolDataForWrite.protocolDataForClockSync(getApplicationContext()).toByte();
+	// mSimpleBlueService.writeCharacteristic((protocolDataForClockSync));
+
+	//
+	// if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() ==
+	// KeyEvent.ACTION_DOWN) {
+	// if ((System.currentTimeMillis() - exitTime) > 2000) {
+	// Toast.makeText(getApplicationContext(), "再按一次退出程序",
+	// Toast.LENGTH_SHORT).show();
+	// exitTime = System.currentTimeMillis();
+	// } else {
+	// finish();
+	// System.exit(0);
+	// }
+	// return true;
+	// }
+	// return super.onKeyDown(keyCode, event);
+	// }
+	
+	
 	
 }

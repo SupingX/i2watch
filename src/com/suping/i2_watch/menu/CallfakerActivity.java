@@ -1,6 +1,7 @@
 package com.suping.i2_watch.menu;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.VirtualActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -55,12 +56,14 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 		tvTitle = (TextView) findViewById(R.id.tv_title);
 		tvPhone = (TextView) findViewById(R.id.tv_phone);
 		rl = (RelativeLayout) findViewById(R.id.rl_call);
+		rlTest = (RelativeLayout) findViewById(R.id.rl_test);
 	}
 	
 	private void setClick() {
 		imgBack.setOnClickListener(this);
 		tvPhone.setOnClickListener(this);
 		rl.setOnClickListener(this);
+		rlTest.setOnClickListener(this);
 	}
 
 
@@ -81,6 +84,11 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 					CallfakerFromActivity.class);
 			startActivityForResult(intent, 1);
 			break;
+		case R.id.rl_test:
+			Intent intentTest = new Intent(this,
+					VirtualActivity.class);
+			startActivity(intentTest);
+			break;
 
 		default:
 			break;
@@ -88,6 +96,7 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 	}
 	// 连续按退出间隔时间
 	private long exitTime = 0;
+	private RelativeLayout rlTest;
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK

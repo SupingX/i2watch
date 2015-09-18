@@ -4,6 +4,7 @@ package com.suping.i2_watch.menu;
 
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,11 +25,16 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
+import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.SimpleBlueService;
+import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.view.ActionSheetDialog;
 import com.suping.i2_watch.view.ActionSheetDialog.OnSheetItemClickListener;
 import com.suping.i2_watch.view.ActionSheetDialog.SheetItemColor;
+import com.suping.i2_watch.view.AlertDialog;
 import com.suping.i2_watch.view.NoScrollViewPager;
 
 public class RecordActivity extends FragmentActivity implements OnClickListener{
@@ -42,18 +48,36 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 			,R.layout.fragment_record_sleep
 	};
 	private ActionSheetDialog dialogSync;
+	private ProgressDialog dialogSyncHistory;
 	private TextView tvSync;
+	private AbstractSimpleBlueService mSimpleBlueService;
 	private Handler mHandler = new Handler(){
 	};
 	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver(){
 		public void doSyncEnd() {
-			
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					if (dialogSyncHistory!=null && dialogSyncHistory.isShowing()) {
+						dialogSyncHistory.dismiss();
+					}
+				}
+			});
 		};
 		
 		public void doSyncStart() {
-			
+		
 		};
 	};
+	
+	public boolean isConnected(){
+		AbstractSimpleBlueService mSimpleBlueService = getSimpleBlueService();
+		return 	 (null!=mSimpleBlueService&&mSimpleBlueService.isBinded()&&mSimpleBlueService.getConnectState()==BluetoothProfile.STATE_CONNECTED) ;
+	}
+	/** 默认退出 **/
+	protected AbstractSimpleBlueService getSimpleBlueService() {
+		return ((XtremApplication)getApplication()).getSimpleBlueService();
+	}
 	
 	@Override
 	protected void onCreate(Bundle fragments) {
@@ -76,7 +100,21 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 		}
 	
 	}
-
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mSimpleBlueService = getSimpleBlueService();
+		registerReceiver(mReceiver, SimpleBlueService.getIntentFilter());
+		
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(mReceiver);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -159,43 +197,58 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 			break;
 		}
 	}
+	
+	private void showTipsDialog(){
+		if (dialogSyncHistory!=null && dialogSyncHistory.isShowing()) {
+			dialogSyncHistory.dismiss();dialogSyncHistory=null;
+		}
+		dialogSyncHistory = new ProgressDialog(getApplicationContext());
+		dialogSyncHistory.setCancelable(false);
+		dialogSyncHistory.setMessage("同步手环历史数据 ...");
+		dialogSyncHistory.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		dialogSyncHistory.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		dialogSyncHistory.show();
+		
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				L.e("同步历史数据超时");
+				if (dialogSyncHistory!=null &&dialogSyncHistory.isShowing()) {
+					dialogSyncHistory.dismiss();
+				}
+			}
+		}, 30*1000);
+
+	}
 	/**
 	 * 打开对话框
 	 */
 	private void showDialog() {
 		dialogSync = new ActionSheetDialog(this).builder().setCancelable(false).setCanceledOnTouchOutside(false)
 			.addSheetItem("同步所有历史记录", SheetItemColor.Blue, new OnSheetItemClickListener() {
-				
-				private ProgressDialog dialogSyncHistory;
-
 				@Override
 				public void onClick(int which) {
-					dialogSyncHistory = new ProgressDialog(getApplicationContext());
-					dialogSyncHistory.setCancelable(false);
-					dialogSyncHistory.setMessage("同步手环数据 ...");
-					dialogSyncHistory.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-					dialogSyncHistory.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-					dialogSyncHistory.show();
+		
 					Log.e("RecordFragment", "同步所有历史数据");
-					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(2, 0);
-					mHandler.postDelayed(new Runnable() {
-						
-						@Override
-						public void run() {
-							if (dialogSyncHistory!=null &&dialogSyncHistory.isShowing()) {
-								dialogSyncHistory.dismiss();
-							}
-						}
-					}, 30*1000);
-					
+					if (isConnected()) {
+						showTipsDialog();
+						mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForGetHistoryType(2, 0));
+					}else{
+						new AlertDialog(getApplicationContext()).builder().setMsg("没有绑定手环").setCancelable(true).show();
+					}
+				
 				}
 			})
 			.addSheetItem("同步今天记录", SheetItemColor.Blue, new OnSheetItemClickListener() {
-				
 				@Override
 				public void onClick(int which) {
 					Log.e("RecordFragment", "同步今天数据");
-					I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
+					if (isConnected()) {
+						showTipsDialog();
+						mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0));
+					}else{
+						new AlertDialog(getApplicationContext()).builder().setMsg("没有绑定手环").setCancelable(true).show();
+					}
 				}
 			});
 			dialogSync.show();

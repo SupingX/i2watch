@@ -1,6 +1,8 @@
 package com.suping.i2_watch;
 
+import com.suping.i2_watch.menu.CallfakerFromActivity;
 import com.suping.i2_watch.util.L;
+import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.SlipView;
 
 import android.R.layout;
@@ -70,18 +72,19 @@ public class VirtualActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Intent intent = getIntent();
-		String incoming_name = intent
-				.getStringExtra("");
-		String incoming_number = intent
-				.getStringExtra("");
+//		Intent intent = getIntent();
+		String incoming_name =(String) SharedPreferenceUtil.get(getApplicationContext(), CallfakerFromActivity.SHARE_PHONE_NAME, "王经理");
+//		= intent.getStringExtra("");
+		String incoming_number  = (String) SharedPreferenceUtil.get(getApplicationContext(), CallfakerFromActivity.SHARE_PHONE_NUMBER, "13047618255");
+//		= intent.getStringExtra("");
+		
 
-		if (incoming_name == null || incoming_name.equals("")) {
-			incoming_name = "老王";
-		}
-		if (incoming_number == null || incoming_number.equals("")) {
-			incoming_number = "15626570445";
-		}
+//		if (incoming_name == null || incoming_name.equals("")) {
+//			incoming_name = "老王";
+//		}
+//		if ( incoming_number== null || incoming_number.equals("")) {
+//			incoming_number = "15626570445";
+//		}
 		tv_incoming_number.setText(incoming_number);
 		tv_incoming_username.setText(incoming_name);
 		btn_hang_up.setOnClickListener(new View.OnClickListener() {

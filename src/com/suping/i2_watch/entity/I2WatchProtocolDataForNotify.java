@@ -94,100 +94,80 @@ public class I2WatchProtocolDataForNotify {
 		return order;
 	}
 
-	public Object notifyHistory(byte[] data) {
-
+	public History notifyHistory(byte[] data) {
+		History history = null;
 		if (getTypeFromData(data) == NOTIFY_HISTORY) {
 			String dataStr = DataUtil.byteToHexString(data);
 			// 协议［30位］ 0x 25 xx xx xxxxxxxx xxxxxxxx xxxxxxxx 　
 			// 表示: 0x [协议头]　[历史天数0~4] [小时0~23] [dat0-19] [dat20-39] [dat40-59]
-			// 1.解析日期
+			// 1.	解析日期
 			int dateDiff = Integer.valueOf(dataStr.substring(2, 4), 16);
 			Date date = DateUtil.getDateOfDiffDay(new Date(),-(dateDiff));
 			String dateStr = DateUtil.dateToString(date,"yyyyMMdd");
-		
-			// 2.解析时间
+			// 2.	解析时间
 			int hour = Integer.valueOf(dataStr.substring(4, 6), 16);
-	
-			// 3.数据1 
-//			long data_1 = getIntegerValue(new byte[] { data[3], data[4], data[5], data[6] });
+			history = new History();
+			history.setYear(dateStr.substring(0,4));
+			history.setMonth(dateStr.substring(4,6));
+			history.setDay(dateStr.substring(6,8));
+			history.setHour(String.valueOf(hour));
+			// 3.1	数据1 
 			long data_1 = Long.valueOf(dataStr.substring(6, 14),16);
-//			long data_1_long = DataUtil.getUnsignedIntt(data_1);
 			long type_1 = data_1 >> 31;
-			// 3.数据2
-//			long data_2 = getIntegerValue(new byte[] { data[7], data[8], data[9], data[10] });
-			long data_2 = Long.valueOf(dataStr.substring(14, 22),16);
-//			long data_2_long = DataUtil.getUnsignedIntt(data_2);
-			long type_2 = data_2 >> 31;
-			// 3.数据3
-//			long data_3 = getIntegerValue(new byte[] { data[11], data[12], data[13], data[14] });
-			long data_3 = Long.valueOf(dataStr.substring(22, 30),16);
-//			long data_3_long = DataUtil.getUnsignedIntt(data_3);
-			long type_3 = data_3 >> 31;
-			
-			if (type_1 == 0 && type_2 == 0 &&type_3 == 0) {//运动模式
-				L.v("解析-->运动数据");
-				HistorySport historySport = new HistorySport();
-				historySport.setYear(dateStr.substring(0,4));
-				historySport.setMonth(dateStr.substring(4,6));
-				historySport.setDay(dateStr.substring(6,8));
-				historySport.setHour(String.valueOf(hour));
-				//   0     10001        00001        10011       0010 0010 0001 0001
-				long sportStep_1 = data_1&0b1111_1111_1111_1111;
+			if (type_1==0) { //运动数据
+				long sportStep_1 = data_1&0b1111_1111_1111_1111L;
 				long sportTime_1 = (data_1>>16)&0b11111;
-				historySport.setSportStep_1(Integer.valueOf(String.valueOf(sportStep_1)));
-				historySport.setSportTime_1(Integer.valueOf(String.valueOf(sportTime_1)));
-				
-				long sportStep_2 = data_2&0b0111111111111111L;
-				long sportTime_2 = (data_2>>16)&0b11111L;
-				historySport.setSportStep_2(Integer.valueOf(String.valueOf(sportStep_2)));
-				historySport.setSportTime_2(Integer.valueOf(String.valueOf(sportTime_2)));
-		
-				long sportStep_3 = data_3&0b0111111111111111L;
-				long sportTime_3 = (data_3>>16)&0b11111L;
-				historySport.setSportStep_3(Integer.valueOf(String.valueOf(sportStep_3)));
-				historySport.setSportTime_3(Integer.valueOf(String.valueOf(sportTime_3)));
-				
-				return historySport;
-				
-			}else if (type_1 == 1 && type_2 == 1 &&type_3 == 1)  { //睡眠模式
-				L.v("解析-->睡眠数据");
-				HistorySleep historySleep = new HistorySleep();
-				historySleep.setYear(dateStr.substring(0,4));
-				historySleep.setMonth(dateStr.substring(4,6));
-				historySleep.setDay(dateStr.substring(6,8));
-				historySleep.setHour(String.valueOf(hour));
-				
-				long sleepOnself_1 = data_1&0b111111111111111;
-				long sleepAwak_1 = (data_1>>16)&0b11111;
-				long sleepLight_1 = (data_1>>21)&0b11111;
-				long sleepDeep_1 = (data_1>>26)&0b11111;
-				historySleep.setSleepOneself_1(Integer.valueOf(String.valueOf(sleepOnself_1)));
-				historySleep.setSleepAwak_1(Integer.valueOf(String.valueOf(sleepAwak_1)));
-				historySleep.setSleepLight_1(Integer.valueOf(String.valueOf(sleepLight_1)));
-				historySleep.setSleepDeep_1(Integer.valueOf(String.valueOf(sleepDeep_1)));
-				
-				long sleepOnself_2 = data_2&0b111111111111111;
-				long sleepAwak_2 = (data_2>>16)&0b11111;
-				long sleepLight_2 = (data_2>>21)&0b11111;
-				long sleepDeep_2 = (data_2>>26)&0b11111;
-				historySleep.setSleepOneself_2(Integer.valueOf(String.valueOf(sleepOnself_2)));
-				historySleep.setSleepAwak_2(Integer.valueOf(String.valueOf(sleepAwak_2)));
-				historySleep.setSleepLight_2(Integer.valueOf(String.valueOf(sleepLight_2)));
-				historySleep.setSleepDeep_2(Integer.valueOf(String.valueOf(sleepDeep_2)));
-				
-				long sleepOnself_3 = data_3&0b111111111111111;
-				long sleepAwak_3 = (data_3>>16)&0b11111;
-				long sleepLight_3 = (data_3>>21)&0b11111;
-				long sleepDeep_3 = (data_3>>26)&0b11111;
-				historySleep.setSleepOneself_1(Integer.valueOf(String.valueOf(sleepOnself_3)));
-				historySleep.setSleepAwak_1(Integer.valueOf(String.valueOf(sleepAwak_3)));
-				historySleep.setSleepLight_1(Integer.valueOf(String.valueOf(sleepLight_3)));
-				historySleep.setSleepDeep_1(Integer.valueOf(String.valueOf(sleepDeep_3)));
-				
-				return historySleep;
+				history.setSportStep_1(Integer.valueOf(String.valueOf(sportStep_1)));
+				history.setSportTime_1(Integer.valueOf(String.valueOf(sportTime_1)));
+			}else if (type_1==1) {//睡眠数据
+				long sleepOnself_1 = data_1&0b1111_1111_1111_1111L;
+				long sleepAwak_1 = (data_1>>16)&0b11111L;
+				long sleepLight_1 = (data_1>>21)&0b11111L;
+				long sleepDeep_1 = (data_1>>26)&0b11111L;
+				history.setSleepOneself_1(Integer.valueOf(String.valueOf(sleepOnself_1)));
+				history.setSleepAwak_1(Integer.valueOf(String.valueOf(sleepAwak_1)));
+				history.setSleepLight_1(Integer.valueOf(String.valueOf(sleepLight_1)));
+				history.setSleepDeep_1(Integer.valueOf(String.valueOf(sleepDeep_1)));
+			}
+			// 3.2	数据2
+			long data_2 = Long.valueOf(dataStr.substring(14, 22),16);
+			long type_2 = data_2 >> 31;
+			if (type_2==0) { //运动数据
+				long sportStep_2 = data_2&0b1111_1111_1111_1111L;
+				long sportTime_2= (data_2>>16)&0b11111;
+				history.setSportStep_2(Integer.valueOf(String.valueOf(sportStep_2)));
+				history.setSportTime_2(Integer.valueOf(String.valueOf(sportTime_2)));
+			}else if (type_2==1) {//睡眠数据
+				long sleepOnself_2 = data_2&0b1111_1111_1111_1111L;
+				long sleepAwak_2 = (data_2>>16)&0b11111L;
+				long sleepLight_2 = (data_2>>21)&0b11111L;
+				long sleepDeep_2 = (data_2>>26)&0b11111L;
+				history.setSleepOneself_2(Integer.valueOf(String.valueOf(sleepOnself_2)));
+				history.setSleepAwak_2(Integer.valueOf(String.valueOf(sleepAwak_2)));
+				history.setSleepLight_2(Integer.valueOf(String.valueOf(sleepLight_2)));
+				history.setSleepDeep_2(Integer.valueOf(String.valueOf(sleepDeep_2)));
+			}
+			// 3.3	数据3
+			long data_3 = Long.valueOf(dataStr.substring(22, 30),16);
+			long type_3 = data_3 >> 31;
+			if (type_3==0) { //运动数据
+				long sportStep_3 = data_3&0b1111_1111_1111_1111L;
+				long sportTime_3 = (data_3>>16)&0b11111;
+				history.setSportStep_3(Integer.valueOf(String.valueOf(sportStep_3)));
+				history.setSportTime_3(Integer.valueOf(String.valueOf(sportTime_3)));
+			}else if (type_3==1) {//睡眠数据
+				long sleepOnself_3 = data_3&0b1111_1111_1111_1111L;
+				long sleepAwak_3 = (data_3>>16)&0b11111L;
+				long sleepLight_3 = (data_3>>21)&0b11111L;
+				long sleepDeep_3 = (data_3>>26)&0b11111L;
+				history.setSleepOneself_3(Integer.valueOf(String.valueOf(sleepOnself_3)));
+				history.setSleepAwak_3(Integer.valueOf(String.valueOf(sleepAwak_3)));
+				history.setSleepLight_3(Integer.valueOf(String.valueOf(sleepLight_3)));
+				history.setSleepDeep_3(Integer.valueOf(String.valueOf(sleepDeep_3)));
 			}
 		}
-		return null;
+		L.v(history.toString());
+		return history;
 
 	}
 	

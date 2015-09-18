@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
@@ -46,6 +48,7 @@ public class SlipView extends View implements OnTouchListener {
 	private OnPhoneSlipListener mOnPhoneSlipListener;
 	public static final String SLIP_LEFT = "LEFT";
 	public static final String SLIP_RIGHT = "RIGHT";
+	private Paint paintRect;
 
 	public SlipView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -66,6 +69,10 @@ public class SlipView extends View implements OnTouchListener {
 	}
 
 	private void init() {
+		
+		//120,144,70
+		//172,68,84
+		
 		left_bitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.jog_tab_left_confirm_green);
 		right_bitmap = BitmapFactory.decodeResource(getResources(),
@@ -78,7 +85,13 @@ public class SlipView extends View implements OnTouchListener {
 
 		paint = new Paint();
 		paint.setAntiAlias(true);
-		paint.setColor(Color.parseColor("#96c0c0c0"));
+//		paint.setColor(Color.parseColor("#96c0c0c0"));
+		paint.setColor(Color.BLACK);
+		
+		paintRect = new Paint();
+		paintRect.setAntiAlias(true);
+//		paint.setColor(Color.parseColor("#96c0c0c0"));
+	
 		setOnTouchListener(this);
 	}
 
@@ -113,26 +126,30 @@ public class SlipView extends View implements OnTouchListener {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// TODO Auto-generated method stub
 		super.onDraw(canvas);
 		if (right_slip) {
 			canvas.drawBitmap(right_bitmap, nowRightX < view_width
 					- right_bitmap_width ? nowRightX : view_width
 					- right_bitmap_width, 0, paint);
+			LinearGradient  linearGradient = new LinearGradient
+					(nowRightX + right_bitmap_width, 0, right_bitmap_width, right_bitmap_height,Color.argb(155,172,68,84), Color.argb( 0,172, 68, 84), Shader.TileMode.CLAMP);
+			paintRect.setShader(linearGradient);
 			canvas.drawRect(nowRightX + right_bitmap_width, 0, view_width,
-					right_bitmap_height, paint);
+					right_bitmap_height-2, paintRect);
+			
 		} else {
 			canvas.drawBitmap(right_bitmap, view_width - right_bitmap_width, 0,
 					paint);
 		}
-
 		if (left_slip) {
 			canvas.drawBitmap(left_bitmap,
 					(nowLeftX > left_bitmap_width ? nowLeftX
 							- left_bitmap_width : 0), 0, paint);
-
+			LinearGradient  linearGradient = new LinearGradient
+					(nowRightX + right_bitmap_width, 0, right_bitmap_width, right_bitmap_height, Color.argb( 0,120,144,70), Color.argb(155,120,144,70),Shader.TileMode.CLAMP);
+			paintRect.setShader(linearGradient);
 			canvas.drawRect(0, 0, nowLeftX - left_bitmap_width,
-					left_bitmap_height, paint);
+					left_bitmap_height-2, paintRect);
 		} else {
 			canvas.drawBitmap(left_bitmap, 0, 0, paint);
 		}

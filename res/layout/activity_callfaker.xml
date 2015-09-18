@@ -10,52 +10,78 @@
         android:id="@+id/top"
         layout="@layout/top_layout" />
 
+    <TextView
+        android:id="@+id/tv_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="4dp"
+        android:text="@string/incoming_message" />
 
-  <TextView
-           android:layout_marginTop="40dp"
-      android:id="@+id/tv_call"
-      android:paddingLeft="20dp"
-      android:paddingTop="4dp"
-      android:paddingBottom="4dp"
-      android:paddingRight="20dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/incoming_message" />
-    <View
-        style="@style/line"
-        />
-         <RelativeLayout
-      
-                android:id="@+id/rl_call"
-                style="@style/itemlist"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:clickable="true"
-                android:focusable="true" >
+    <View style="@style/line" />
 
-                <TextView
-                    android:clickable="false"
-                      android:id="@+id/tv_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                       android:text="@string/cursor_random" />
+    <RelativeLayout
+        android:id="@+id/rl_call"
+        style="@style/itemlist"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:focusable="true" >
 
-                <ImageView
-                    android:contentDescription="@string/app_name"
-                    android:id="@+id/img_right_2"
-                     android:padding="8dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_right_arrow" />
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/cursor_random" />
 
-            </RelativeLayout>
+        <ImageView
+            android:id="@+id/img_right_2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/icon_right_arrow" />
+    </RelativeLayout>
 
     <View
         style="@style/line"
-        />
+        android:layout_marginLeft="20dp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_test"
+        style="@style/itemlist"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:focusable="true" >
+
+        <TextView
+            android:id="@+id/tv_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:text="测试" />
+
+        <ImageView
+            android:id="@+id/img_right_3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/icon_right_arrow" />
+    </RelativeLayout>
+
+    <View style="@style/line" />
 
 </LinearLayout>

@@ -37,9 +37,11 @@ public class DataUtil {
 		}
 		return result;
 	}
+
 	public static long getUnsignedIntt(long data) { // 将int数据转换为0~4294967295
 		return data & 0x0FFFFFFFFl;
 	}
+
 	/**
 	 * String 转变为16进制String字符, 每个字节2位, 不足补0
 	 */
@@ -315,10 +317,47 @@ public class DataUtil {
 		String text = formatDateTime(System.currentTimeMillis());
 		view.setLastUpdatedLabel(text);
 	}
+
 	public static String format(float value) {
 		DecimalFormat df = new DecimalFormat("0.00");
 		return df.format(value);
 
 	}
+
+	public static String getAscii(String str) {
+		String tmp;
+		StringBuffer sb = new StringBuffer(1000);
+		char c;
+		int i, j;
+		sb.setLength(0);
+		for (i = 0; i < str.length(); i++) {
+			c = str.charAt(i);
+			if (c > 255) {
+				sb.append("//u");
+				j = (c >>> 8);
+				tmp = Integer.toHexString(j);
+				if (tmp.length() == 1)
+					sb.append("0");
+				sb.append(tmp);
+				j = (c & 0xFF);
+				tmp = Integer.toHexString(j);
+				if (tmp.length() == 1)
+					sb.append("0");
+				sb.append(tmp);
+			} else {
+				sb.append(c);
+			}
+		}
+		return (new String(sb));
+	}
+	
+	//java 合并两个byte数组  
+	   public static byte[] byteMerger(byte[] byte_1, byte[] byte_2){  
+	        byte[] byte_3 = new byte[byte_1.length+byte_2.length];  
+	        System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);  
+	        System.arraycopy(byte_2, 0, byte_3, byte_1.length, byte_2.length);  
+	        return byte_3;  
+	    } 
+
 
 }

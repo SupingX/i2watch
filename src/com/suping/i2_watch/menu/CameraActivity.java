@@ -11,6 +11,7 @@ import com.suping.i2_watch.view.CameraInterface;
 import com.suping.i2_watch.view.CameraInterface.CamOpenOverCallback;
 import com.suping.i2_watch.view.CameraSurfaceView;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
@@ -52,7 +55,12 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);// 没有标题
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 拍照过程屏幕一直处于高亮
+		// //设置手机屏幕朝向，一共有7种
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.activity_camera);
 		initUI();
 		initViewParams();
