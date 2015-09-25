@@ -10,8 +10,10 @@ import java.util.List;
 import org.litepal.crud.DataSupport;
 
 import com.android.internal.telephony.ITelephony;
+import com.sina.weibo.sdk.api.MusicObject;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.VirtualActivity;
 import com.suping.i2_watch.entity.AbstractProtocolWrite;
 import com.suping.i2_watch.entity.History;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForNotify;
@@ -21,6 +23,7 @@ import com.suping.i2_watch.entity.SportRemindProtocol;
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.view.AlertDialog;
+import com.suping.i2_watch.view.SetPedoView;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothProfile;
@@ -118,6 +121,13 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			// 来电拒接
 			endCall();
 			break;
+		case I2WatchProtocolDataForNotify.NOTIFY_VIR:
+			L.i("虚拟来电");
+			// 虚拟来电
+			Intent intent = new Intent(this,VirtualActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			break;
 		case I2WatchProtocolDataForNotify.NOTIFY_INCOMING_SILENCE:
 			L.i("来电静音");
 			// 来电静音
@@ -127,6 +137,20 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 		case I2WatchProtocolDataForNotify.NOTIFY_INCOMING_CALLED:
 			L.i("已接来电");
 			// 已接来电
+			break;
+		case I2WatchProtocolDataForNotify.NOTIFY_FIND_PHOTO:
+			L.i("搜索手机");
+			// 搜索手机
+			mHander.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					showDialog();
+					prepareRing(R.raw.a2);
+				}
+			});
+		
 			break;
 		case I2WatchProtocolDataForNotify.NOTIFY_SYNC_HISTORY:
 			//同步开始 同步结束
@@ -149,6 +173,21 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 
 
 
+
+	private void showDialog() {
+		AlertDialog findPhoneDialog = new AlertDialog(getApplicationContext()).builder()
+				.setPositiveButton("返回", new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						closePlayer();
+					}
+				})
+				.setCancelable(false).setMsg("查找手机中...");
+		findPhoneDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		findPhoneDialog.show();
+		
+	}
+	
 
 	/**
 	 * 挂电话
@@ -208,17 +247,17 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 	@Override
 	public void onReconnectedOverTimeOut() {
 		// 断线提醒
-		prepareRing();
+		prepareRing(R.raw.a1);
 		mHander.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				if (player != null && player.isLooping()) {
+				if (player != null && player.isPlaying()) {
 					player.stop();
 					player.release();
 				}
 			}
-		}, 5000);
+		}, 10*1000);
 
 		if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
 			dialogSyncSetting.dismiss();
@@ -237,9 +276,11 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 	 * @throws Exception
 	 * @throws IOException
 	 */
-	public void prepareRing() {
+	public void prepareRing(int resID) {
+		
 		try {
-			player = MediaPlayer.create(getApplicationContext(), R.raw.a1);
+			closePlayer();
+			player = MediaPlayer.create(getApplicationContext(),resID);
 			player.setLooping(true);
 			player.setOnPreparedListener(new OnPreparedListener() {
 				@Override
@@ -253,6 +294,14 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		mHander.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				closePlayer();
+			}
+		}, 10*1000);
 	}
 
 	@Override
@@ -291,9 +340,7 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			byte[] protocolDataForClockSync = I2WatchProtocolDataForWrite.protocolDataForClockSync(getApplicationContext()).toByte();
 			writeCharacteristic(protocolDataForClockSync);
 
-			// 5.睡眠时间
-			byte[] hexDataForSleepPeriodSync = I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(getApplicationContext());
-			// writeCharacteristic(hexDataForSleepPeriodSync);
+		
 
 			// 6.亮度
 			byte[] hexDataDecrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(getApplicationContext());
@@ -309,32 +356,37 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			// 9 .今天的数据
 			// byte[] hexDataForGetHistoryType =
 			// I2WatchProtocolDataForWrite.hexDataForGetHistoryType(1, 0);
+			// 5.睡眠时间
+			byte[] hexDataForSleepPeriodSync = I2WatchProtocolDataForWrite.hexDataForSleepPeriodSync(getApplicationContext());
+			// writeCharacteristic(hexDataForSleepPeriodSync);
 			List<byte[]> values = new ArrayList<>();
+			values.add(hexDataForSleepPeriodSync);
 			values.add(byteActivityRemindSync);
 			values.add(protocolForCallingAlarmPeriodSync);
 			values.add(hexDataForLostOnoffI2Watch);
 			values.add(protocolDataForClockSync);
-			values.add(hexDataForSleepPeriodSync);
 			values.add(hexDataDecrease);
 			values.add(hexDataForSignatureSync);
 			values.add(hexDataForTimeSync);
 			// values.add(hexDataForGetHistoryType);
 
 			writeValueToDevice(values);
-	
 		}
 
 		mHander.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				L.i("同步手机设置超时");
+		
 				if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
+					L.i("同步手机设置超时");
 					dialogSyncSetting.dismiss();
+				}else{
+				
 				}
 			}
 		}, 30 * 1000);
 	}
-
+	
 	@Override
 	public void onWriteOver() {
 		L.e("同步手机设置结束");
@@ -342,4 +394,36 @@ public class SimpleBlueService extends AbstractSimpleBlueService {
 			dialogSyncSetting.dismiss();
 		}
 	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (dialogSyncSetting != null && dialogSyncSetting.isShowing()) {
+			dialogSyncSetting.dismiss();
+		}
+		closePlayer();
+	
+	}
+
+	private void closePlayer(){
+		if (player!=null &&player.isPlaying()) {
+			player.stop();
+			player.release();
+			player=null;
+		}
+	}
+	
+	@Override
+	public void onServicediscoveredFail() {
+		
+	}
+
+	@Override
+	public void onDisconnect() {
+		if (dialogSyncSetting!=null && dialogSyncSetting.isShowing()) {
+			dialogSyncSetting.dismiss();
+		}
+	}
+	
+	
 }

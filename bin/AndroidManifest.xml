@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.suping.i2_watch"
     android:versionCode="1"
-    android:versionName="i1.0.150918.001" >
+    android:versionName="1.0.150925.1901" >
 
     <!-- https://github.com/SupingX/i2watch.git -->
     <uses-sdk
@@ -32,7 +32,7 @@
 
     <!--
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     -->
 
     <uses-feature
@@ -56,7 +56,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
+        </receiver>
         -->
         <activity
             android:name=".Main"
@@ -297,6 +297,7 @@
             android:label="@string/title_activity_sina" >
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

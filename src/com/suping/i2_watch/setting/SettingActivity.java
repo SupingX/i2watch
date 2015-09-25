@@ -54,10 +54,14 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 	 * 设置本地绑定设备
 	 */
 	private void setCurrentDevice() {
-		String name = mSimpleBlueService.getBindedDeviceName();
-		String address = mSimpleBlueService.getBindedDeviceAddress();
-		tvDeviceInfo.setText(address.equals("") ? "未连接" : address);
-		
+		String text="未连接";
+		if (isConnected()) {
+			String name = mSimpleBlueService.getBindedDeviceName();
+			String address = mSimpleBlueService.getBindedDeviceAddress();
+			text = address.equals("--") ? "未连接" : address+"已连接";
+		}
+		tvDeviceInfo.setText(text);
+	
 	}
 
 	@Override

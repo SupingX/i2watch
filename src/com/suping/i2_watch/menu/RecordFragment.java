@@ -4,12 +4,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
-import org.litepal.crud.DataSupport;
+
+
+
+
 
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -21,11 +24,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sina.weibo.sdk.utils.Utility;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
 import com.suping.i2_watch.entity.LitePalManager;
-import com.suping.i2_watch.menu.async.LoadHistoryAsyncTask;
-import com.suping.i2_watch.menu.async.LoadHistoryAsyncTask.OnPostExecuteListener;
+import com.suping.i2_watch.menu.async.LoadHistoryCountAsyncTask;
+import com.suping.i2_watch.menu.async.LoadSleepHistoryAsyncTask;
+import com.suping.i2_watch.menu.async.LoadSportHistoryAsyncTask;
+import com.suping.i2_watch.menu.async.LoadSleepHistoryAsyncTask.OnPostExecuteListener;
 import com.suping.i2_watch.service.SimpleBlueService;
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.DateUtil;
@@ -51,6 +57,7 @@ public class RecordFragment extends Fragment {
 
 	};
 
+	
 	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		public void doSyncEnd() {
 			mHandler.post(new Runnable() {
@@ -72,44 +79,45 @@ public class RecordFragment extends Fragment {
 	private OnClickListener sportOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			showProgressDialogSport = showProgressDialog("加载运动数据...");
 			switch (v.getId()) {
 			case R.id.reduce:
 				Log.e("RecordFragment", "减少");
 				textViewDateChange(tvDate, -1);
-				String dateStr1 = tvDate.getText().toString();
+//				String dateStr1 = tvDate.getText().toString();
 				// sportCountView.setSteps(getRandomData());//模拟数据
-				int[] dataForSport1 = LitePalManager.instance().getDataForSport(dateStr1);
-				if (dataForSport1 != null) {
-					sportCountView.setSteps(dataForSport1);
-				}
-				int[] historyForCount1 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(dateStr1, "yyyy-MM-dd"));
-				updateSportInfo(historyForCount1[0], historyForCount1[1]);
+//				int[] dataForSport1 = LitePalManager.instance().getDataForSport(dateStr1);
+//				if (dataForSport1 != null) {
+//					sportCountView.setSteps(dataForSport1);
+//				}
+//				int[] historyForCount1 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(dateStr1, "yyyy-MM-dd"));
+//				updateSportInfo(historyForCount1[0], historyForCount1[1]);
 				break;
 			case R.id.increase:
 				Log.e("RecordFragment", "增加");
 				textViewDateChange(tvDate, 1);
 				// sportCountView.setSteps(getRandomData());//模拟数据
 
-				String dateStr2 = tvDate.getText().toString();
-				int[] dataForSport2 = LitePalManager.instance().getDataForSport(dateStr2);
-				if (dataForSport2 != null) {
-					sportCountView.setSteps(dataForSport2);
-				}
+//				String dateStr2 = tvDate.getText().toString();
+//				int[] dataForSport2 = LitePalManager.instance().getDataForSport(dateStr2);
+//				if (dataForSport2 != null) {
+//					sportCountView.setSteps(dataForSport2);
+//				}
 
-				int[] historyForCount2 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(dateStr2, "yyyy-MM-dd"));
-				updateSportInfo(historyForCount2[0], historyForCount2[1]);
+//				int[] historyForCount2 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(dateStr2, "yyyy-MM-dd"));
+//				updateSportInfo(historyForCount2[0], historyForCount2[1]);
 				break;
 			default:
 				break;
 			}
-			mHandler.post(new Runnable() {
-				
-				@Override
-				public void run() {
+//			mHandler.post(new Runnable() {
+//				
+//				@Override
+//				public void run() {
 					String dateStr1 = tvDate.getText().toString();
 					updateSportUI(dateStr1);
-				}
-			});
+//				}
+//			});
 
 		}
 	};
@@ -121,6 +129,7 @@ public class RecordFragment extends Fragment {
 
 		@Override
 		public void onClick(View v) {
+			showProgressDialog = showProgressDialog("加载睡眠数据...");
 			switch (v.getId()) {
 			case R.id.reduce_sleep:
 				Log.e("RecordFragment", "增加sleep");
@@ -147,13 +156,13 @@ public class RecordFragment extends Fragment {
 			default:
 				break;
 			}
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
+//			mHandler.post(new Runnable() {
+//				@Override
+//				public void run() {
 					String dateStr1 = tvDateSleep.getText().toString();
 					updateSleepUI(dateStr1);
-				}
-			});
+//				}
+//			});
 		
 		}
 	};
@@ -217,14 +226,14 @@ public class RecordFragment extends Fragment {
 			// getActivity().registerForContextMenu(textViewSyncSleep);
 			// //为按钮注册上下文菜单
 			setLinstener(2);
-			updateSleepUI(tvDateSleep.getText().toString().trim());
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
+//			updateSleepUI(tvDateSleep.getText().toString().trim());
+//			mHandler.post(new Runnable() {
+//				@Override
+//				public void run() {
 					updateSleepUI(tvDateSleep.getText().toString().trim());
 					
-				}
-			});
+//				}
+//			});
 
 			// 当是运动画面时
 		} else if (flag == R.layout.fragment_record_sport) {
@@ -252,42 +261,87 @@ public class RecordFragment extends Fragment {
 			}
 			setLinstener(1);
 			
-			mHandler.post(new Runnable() {
-				
-				@Override
-				public void run() {
+//			mHandler.post(new Runnable() {
+//				@Override
+//				public void run() {
 					updateSportUI(tvDate.getText().toString().trim());
 					
-				}
-			});
+//				}
+//			});
 		}
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	private ProgressDialog showProgressDialogSport;
 	private void updateSportUI(final String dateString) {
 	
 		// 更新运动数据
-		int[] dataForSport = LitePalManager.instance().getDataForSport(dateString);
-		if (dataForSport != null) {
-			int[] historyForCount2 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(tvDate.getText().toString().trim(), "yyyy-MM-dd"));
-			updateSportInfo(historyForCount2[0], historyForCount2[1]);
-		}
-		int[] dataForSport2 = LitePalManager.instance().getDataForSport(dateString);
-		if (dataForSport2 != null) {
-			sportCountView.setSteps(dataForSport2);
-		}
+//		int[] dataForSport = LitePalManager.instance().getDataForSport(dateString);
+		LoadHistoryCountAsyncTask loadHistoryCountAsyncTask = new LoadHistoryCountAsyncTask();
+		loadHistoryCountAsyncTask.setOnPostExecuteListener(new LoadHistoryCountAsyncTask.OnPostExecuteListener() {
+			@Override
+			public void onPreExecute() {
+			}
+			@Override
+			public void onPostExecute(int[] result) {
+				updateSportInfo(result[0], result[1]);
+			}
+		});
+		LoadSportHistoryAsyncTask loadSportHistoryAsyncTask = new LoadSportHistoryAsyncTask();
+		loadSportHistoryAsyncTask.setOnPostExecuteListener(new LoadSportHistoryAsyncTask.OnPostExecuteListener() {
+			@Override
+			public void onPostExecute(int[] result) {
+				sportCountView.setSteps(result);
+				if (showProgressDialogSport!=null  && showProgressDialogSport.isShowing()) {
+					showProgressDialogSport.dismiss();
+				}
+			}
+			@Override
+			public void onPreExecute() {
+			}
+		});
+		loadHistoryCountAsyncTask.execute(DateUtil.stringToDate(dateString, "yyyy-MM-dd"));
+		loadSportHistoryAsyncTask.execute(dateString);
+//		if (dataForSport != null) {
+//			int[] historyForCount2 = LitePalManager.instance().getHistoryForCount(DateUtil.stringToDate(tvDate.getText().toString().trim(), "yyyy-MM-dd"));
+//			updateSportInfo(historyForCount2[0], historyForCount2[1]);
+//		}
+//		int[] dataForSport2 = LitePalManager.instance().getDataForSport(dateString);
+//		if (dataForSport2 != null) {
+//			sportCountView.setSteps(dataForSport2);
+//		}
 	}
 
+	private ProgressDialog showProgressDialog;
 	private void updateSleepUI(final String dateString) {
-		LoadHistoryAsyncTask loadHistoryAsyncTask = new LoadHistoryAsyncTask();
-		loadHistoryAsyncTask.setOnPostExecuteListener(new OnPostExecuteListener() {
+		LoadHistoryCountAsyncTask loadHistoryCountAsyncTask = new LoadHistoryCountAsyncTask();
+		loadHistoryCountAsyncTask.setOnPostExecuteListener(new LoadHistoryCountAsyncTask.OnPostExecuteListener() {
 			
+			@Override
+			public void onPreExecute() {
+			
+			}
 			@Override
 			public void onPostExecute(int[] result) {
 				updateSleepInfo(result[2], result[3], result[4]);
 			}
 		});
+		LoadSleepHistoryAsyncTask loadHistoryAsyncTask = new LoadSleepHistoryAsyncTask();
+		loadHistoryAsyncTask.setOnPostExecuteListener(new OnPostExecuteListener() {
+			@Override
+			public void onPostExecute(int[] result) {
+				sleepCountView.setSleeps(result);
+				if (showProgressDialog!=null  && showProgressDialog.isShowing()) {
+					showProgressDialog.dismiss();
+				}
+			}
+			@Override
+			public void onPreExecute() {
+			}
+		});
+		loadHistoryCountAsyncTask.execute(DateUtil.stringToDate(dateString, "yyyy-MM-dd"));
 		loadHistoryAsyncTask.execute(dateString);
+		
 		
 		
 //		int[] dataForSleep = LitePalManager.instance().getDataForSleep(tvDateSleep.getText().toString().trim());
@@ -460,5 +514,20 @@ public class RecordFragment extends Fragment {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	/**
+	 * 等待框
+	 * @param msg
+	 * @return
+	 */
+	protected ProgressDialog showProgressDialog(String msg) {
+		ProgressDialog pDialog;
+		pDialog = new ProgressDialog(getActivity());
+			pDialog.setCancelable(false);
+			pDialog.setMessage(msg);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+			return pDialog;
 	}
 }

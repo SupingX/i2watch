@@ -115,8 +115,8 @@ public abstract class AbstractSimpleBluetooth implements IBluetooth {
 	}
 	public boolean isBinded(){
 //		String name = (String) SharedPreferenceUtil.get(context, DEVICE_NAME, "");
-		String address = (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "no_address");
-		if (!address.equals("no_address") ) {//地址 空则 返回false
+		String address = (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "--");
+		if (!address.equals("--") ) {//地址 空则 返回false
 			return true;
 		}else{
 			return false;
@@ -124,10 +124,10 @@ public abstract class AbstractSimpleBluetooth implements IBluetooth {
 	};
 	
 	public String getBindedName(){
-		return (String) SharedPreferenceUtil.get(context, DEVICE_NAME, "no_name");
+		return (String) SharedPreferenceUtil.get(context, DEVICE_NAME, "--");
 	};
 	public String getBindedAddress(){
-		return (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "no_address");
+		return (String) SharedPreferenceUtil.get(context, DEVICE_ADDRESS, "--");
 	};
 
 	@Override
@@ -155,8 +155,8 @@ public abstract class AbstractSimpleBluetooth implements IBluetooth {
 
 	@Override
 	public void unSaveDevice() {
-			SharedPreferenceUtil.put(context, DEVICE_NAME,"no_name" );
-			SharedPreferenceUtil.put(context, DEVICE_ADDRESS,"no_address");
+			SharedPreferenceUtil.put(context, DEVICE_NAME,"--" );
+			SharedPreferenceUtil.put(context, DEVICE_ADDRESS,"--");
 	}
 
 

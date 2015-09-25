@@ -91,10 +91,19 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 			super.doDiscoveredWriteService();
 			runOnUiThread(new Runnable() {
 				public void run() {
+					if (connectingDialog!=null && connectingDialog.isShowing()) {
+						connectingDialog.dismiss();
+					}
 					returnToMain();
 				}
 			});
 		}
+		
+		public void doDiscoveredWrongService() {
+			if (connectingDialog!=null && connectingDialog.isShowing()) {
+				connectingDialog.dismiss();
+			}
+		};
 
 	};
 
@@ -137,7 +146,9 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		super.onDestroy();
 		onceEnter = true;
 		unregisterReceiver(mReceiver);
-
+		if (connectingDialog!=null && connectingDialog.isShowing()) {
+			connectingDialog.dismiss();
+		}
 	}
 
 	@Override
@@ -212,6 +223,7 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		pBarRefresh = (ProgressBar) findViewById(R.id.progressbar);
 	}
 
+	private ProgressDialog connectingDialog;
 	public void setListener() {
 		imgBack.setOnClickListener(this);
 		pBarRefresh.setOnClickListener(this);
@@ -219,13 +231,13 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		imgExit.setOnClickListener(this);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
+
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 				final BluetoothDevice device = devices.get(position);
+				connectingDialog = showProgressDialog("正在连接...",true);
 				mSimpleBlueService.scanDevice(false);
-				if (mSimpleBlueService.getConnectState() == BluetoothProfile.STATE_CONNECTED) {
 					mSimpleBlueService.close();
-				}
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
@@ -251,7 +263,6 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
 	
 							// 1.先清除本地设备
 							mSimpleBlueService.unSaveDevice();
@@ -318,8 +329,8 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 			
 			return ;
 		}
-		tvDeviceName.setText(name.equals("") ? "[未绑定]" : "["+name+"]");
-		tvDeviceAddress.setText(name.equals("") ? "[未绑定]" : "["+address+"]");
+		tvDeviceName.setText(name.equals("--") ? "" : "["+name+"]");
+		tvDeviceAddress.setText(name.equals("--") ? "[未绑定]" : "["+address+"]");
 	}
 
 	/**

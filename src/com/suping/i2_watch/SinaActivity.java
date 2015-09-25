@@ -1,12 +1,22 @@
 package com.suping.i2_watch;
 
+import java.io.File;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.widget.ImageView;
+
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.api.share.BaseResponse;
 import com.sina.weibo.sdk.api.share.IWeiboHandler.Response;
 import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
-import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
@@ -14,14 +24,9 @@ import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.suping.i2_watch.util.AccessTokenKeeper;
+import com.suping.i2_watch.util.FileUtil;
 import com.suping.i2_watch.util.L;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import com.suping.i2_watch.util.ScreenShot;
 
 public class SinaActivity extends Activity implements WeiboAuthListener,Response{
 	  public static final String APP_KEY      = "1593767485";		   // 应用的APP_KEY
@@ -39,9 +44,9 @@ public class SinaActivity extends Activity implements WeiboAuthListener,Response
 		setContentView(R.layout.activity_sina);
 		
 		
-		shouquan();
-		shareWeiboAPI = WeiboShareSDK.createWeiboAPI(this, APP_KEY);
-		shareWeiboAPI.registerApp();//注册到微薄客户端
+//		shouquan();
+//		shareWeiboAPI = WeiboShareSDK.createWeiboAPI(this, APP_KEY);
+//		shareWeiboAPI.registerApp();//注册到微薄客户端
 		
 		
 		
@@ -109,8 +114,57 @@ public class SinaActivity extends Activity implements WeiboAuthListener,Response
 	}
 	
 	public void share(View v){
-		shareText();
+//		shareText();
+		Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, "test：红豆生南国国,此物最相思。愿君多采撷，春来发几枝。");
+		sendIntent.setType("text/plain");
+		startActivity(sendIntent);
+		
+		
+//		sendIntent.setType("image/*");
+//		sendIntent.putExtra(Intent.EXTRA_SUBJECT, "fen xiang ?");
+//				startActivity(Intent.createChooser(sendIntent, getTitle())); 
 	}
+	
+	public void share_text(View v){
+		Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, "test：红豆生南国国,此物最相思。愿君多采撷，春来发几枝。");
+		sendIntent.setType("text/plain");
+		startActivity(Intent.createChooser(sendIntent, "思杭")); 
+	}
+	
+	
+	public void share_img(View v){	
+		String filename = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+"xyx.jpg";
+		File file = new File(filename);
+		  Uri imageUri = Uri.fromFile(file);
+	    Intent shareIntent = new Intent();  
+	    shareIntent.setAction(Intent.ACTION_SEND);  
+	    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);  
+	    shareIntent.setType("image/jpeg");  
+	    startActivity(Intent.createChooser(shareIntent, "haha"));  
+	}
+	
+	public void screen(View v){
+		ImageView img = (ImageView) findViewById(R.id.img_screen);
+		Bitmap bitmap = ScreenShot.takeScreenShot(this);
+		String filename = FileUtil.getandSaveCurrentImage(this, bitmap);
+		if (bitmap!=null) {
+			img.setImageBitmap(bitmap);
+		}
+		
+		File file = new File(filename);
+		Uri imageUri = Uri.fromFile(file);
+	    Intent shareIntent = new Intent();  
+	    shareIntent.setAction(Intent.ACTION_SEND);  
+	    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);  
+	    shareIntent.setType("image/jpeg");  
+	    startActivity(Intent.createChooser(shareIntent, "haha")); 
+		
+	}
+	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -123,6 +177,9 @@ public class SinaActivity extends Activity implements WeiboAuthListener,Response
 		
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	
+	
 	
 	@Override
 	protected void onNewIntent(Intent intent) {

@@ -104,7 +104,6 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 		if (isConnected()) {
 			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForUpdatePhotographState(0));
 		}
-		
 		unregisterReceiver(mReceiver);
 		super.onStop();
 	}
@@ -150,7 +149,15 @@ public class CameraActivity extends BaseActivity implements CamOpenOverCallback 
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.img_camera:
-				CameraInterface.getInstance().doTakePicture();
+		
+		mHandler.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						CameraInterface.getInstance().doTakePicture();
+					}
+				});
 				break;
 			case R.id.img_back:
 				finish();

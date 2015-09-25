@@ -9,8 +9,10 @@ import org.litepal.crud.DataSupport;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -39,7 +41,10 @@ import com.suping.i2_watch.service.SimpleBlueService;
 import com.suping.i2_watch.setting.PedometerActivity;
 import com.suping.i2_watch.setting.SettingActivity;
 import com.suping.i2_watch.util.DataUtil;
+import com.suping.i2_watch.util.FileUtil;
 import com.suping.i2_watch.util.L;
+import com.suping.i2_watch.util.ScreenShot;
+import com.suping.i2_watch.util.ShareUtil;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 import com.suping.i2_watch.view.ActionSheetDialog;
 import com.suping.i2_watch.view.ActionSheetDialog.OnSheetItemClickListener;
@@ -48,7 +53,6 @@ import com.suping.i2_watch.view.ColorsCircle;
 
 /**
  * 主页
- * 
  * @author Administrator
  *
  */
@@ -93,17 +97,22 @@ public class Main extends BaseActivity implements OnClickListener {
 	private AbstractSimpleBlueService mSimpleBlueService;
 
 	private Handler mHandler = new Handler() {
-
+		public void handleMessage(Message msg) {
+			String path  = (String) msg.obj;
+			ShareUtil.shareImage(path, Main.this);
+		};
 	};
 	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
 		public void doDiscoveredWriteService() {
 			// doUpdateSetting();
 		};
 		public void doStepAndCalReceiver(long[] data) {
+			if (data!=null) {
 			int step = (int) data[0];
 			int cal = (int) data[1];
 			int time = (int) data[2];
 			intiSportValue(step, cal, time);
+			}
 		};
 
 	};
@@ -117,7 +126,7 @@ public class Main extends BaseActivity implements OnClickListener {
 		initViews();
 		initViewPager();
 		setListener();
-		intiSportValue(0, 0, 0);
+		intiSportValue(0, 0, 0); 
 		intiSleepValue(0, 0, 0);
 	}
 
@@ -193,8 +202,20 @@ public class Main extends BaseActivity implements OnClickListener {
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
 		case R.id.tv_title:
-			Intent intentBluetooth = new Intent(Main.this, SinaActivity.class);
-			startActivity(intentBluetooth);
+//			Intent intentBluetooth = new Intent(Main.this, SinaActivity.class);
+//			startActivity(intentBluetooth);
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+				Bitmap bitmap = ScreenShot.takeScreenShot(Main.this);
+				String path = FileUtil.getandSaveCurrentImage(Main.this,bitmap);
+				if (path!=null) {
+					Message msg = new Message();
+					msg.obj = path;
+					mHandler.sendMessage(msg);
+				}
+				}
+			});
 			break;
 		case R.id.color_circle_sport:
 			Intent recordIntent1 = new Intent(Main.this, RecordActivity.class);

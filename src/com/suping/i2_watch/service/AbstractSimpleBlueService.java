@@ -37,6 +37,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 	public final static String ACTION_REMOTE_RSSI = "ACTION_REMOTE_RSSI";
 	public final static String ACTION_CONNECTION_STATE = "ACTION_CONNECTION_STATE";
 	public final static String ACTION_SERVICE_DISCONNECTED_FOR_REMIND = "ACTION_SERVICE_DISCONNECTED_FOR_REMIND";
+	public final static String ACTION_SERVICE_DISCOVERED_WRONG_DEVICE = "ACTION_SERVICE_DISCOVERED_WRONG_DEVICE";
 
 	public final static String EXTRA_DEVICE = "EXTRA_DEVICE";
 	public final static String EXTRA_RSSI = "EXTRA_RSSI";
@@ -55,6 +56,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 				if (index >= values.size()) {
 					onWriteOver();
 					index = 0;
+					values.clear();
+					mHander.removeCallbacks(runWrite);
 				} else {
 					mHander.postDelayed(runWrite, 3000);
 				}
@@ -234,6 +237,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(ACTION_DEVICE_FOUND);
 		intentFilter.addAction(ACTION_SERVICE_DISCOVERED_WRITE_DEVICE);
+		intentFilter.addAction(ACTION_SERVICE_DISCOVERED_WRONG_DEVICE);
 		intentFilter.addAction(ACTION_REMOTE_RSSI);
 		intentFilter.addAction(ACTION_CONNECTION_STATE);
 		intentFilter.addAction(ACTION_SERVICE_DISCONNECTED_FOR_REMIND);
@@ -249,7 +253,9 @@ public abstract class AbstractSimpleBlueService extends Service {
 	};
 
 	private boolean isPrint = false;
-
+	
+	private long lastDiscoveredServiceTime = 0L;
+	
 	private class SimpleBluetooth extends AbstractSimpleBluetooth {
 
 		public SimpleBluetooth(Context context, BluetoothAdapter mBluetoothAdapter) {
@@ -291,19 +297,33 @@ public abstract class AbstractSimpleBlueService extends Service {
 					gatt.setCharacteristicNotification(characteristicNotify, true);
 					BluetoothGattDescriptor descriptor = characteristicNotify.getDescriptor(UUID.fromString(DESC_CCC));
 					descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-				
-
 					gatt.writeDescriptor(descriptor);
-					sendBroadcastForServiceDiscoveredWriteDevice(gatt, status);
-					onServicediscoveredSuccess();
 					saveDevice(gatt.getDevice());// 绑定蓝牙
 					isWrieteServiceFound = true;
+					
+					//发送通知
+					sendBroadcastForServiceDiscoveredWriteDevice(gatt, status);
+					long currentTimeMillis = System.currentTimeMillis();
+					//如果本次链接服务 和上次链接服务的时间差大于5秒 就做通知
+					if (currentTimeMillis-lastDiscoveredServiceTime>15000) {
+						L.i("服务距离上次链接超过5秒，所以需要重新同步手机设置");
+						lastDiscoveredServiceTime = currentTimeMillis;
+						onServicediscoveredSuccess();
+					}else{
+						L.i("服务距离上次链接没有超过5秒，所以不需要重新同步手机设置");
+						
+					}
+					
 					// 停止搜索？
 					scanDevice(false);
 				} else {
 					// 没有连接匹配的服务,断开连接.防止连接不匹配的蓝牙?
 					sendBroadcastForServiceDiscoveredWrongDevice();
+					onServicediscoveredFail();
 				}
+			}else{
+				sendBroadcastForServiceDiscoveredWrongDevice();
+				onServicediscoveredFail();
 			}
 		}
 
@@ -335,7 +355,9 @@ public abstract class AbstractSimpleBlueService extends Service {
 				logV("已断开");
 
 				connectState = newState;
-
+				
+				onDisconnect();
+				
 				// 首先，清空一些数据
 				isWrieteServiceFound = false; //
 				mBluetoothGattService = null;// 清空Service
@@ -449,7 +471,8 @@ public abstract class AbstractSimpleBlueService extends Service {
 	 * 连接了错误的设备 不匹配service
 	 */
 	private void sendBroadcastForServiceDiscoveredWrongDevice() {
-
+		Intent intent = new Intent(ACTION_SERVICE_DISCOVERED_WRONG_DEVICE);
+		sendBroadcast(intent);
 	}
 
 	/**
@@ -468,5 +491,7 @@ public abstract class AbstractSimpleBlueService extends Service {
 
 	/** 写数据结束 **/
 	public abstract void onWriteOver();
+	public abstract void onServicediscoveredFail();
+	public abstract void onDisconnect();
 
 }

@@ -48,6 +48,9 @@ public abstract class AbstractSimpleBluetoothBroadcastReceiver extends Broadcast
 			doSyncStart();
 		}else if (action.equals(SimpleBlueService.ACTION_SYNC_END)) {
 			doSyncEnd();
+		}else if (action.equals(SimpleBlueService.ACTION_SERVICE_DISCOVERED_WRONG_DEVICE)) {
+			Toast.makeText(context, "连接手环失败", Toast.LENGTH_SHORT).show();
+			doDiscoveredWrongService();
 		}
 	}
 
@@ -81,6 +84,7 @@ public abstract class AbstractSimpleBluetoothBroadcastReceiver extends Broadcast
 	 * 找到匹配设备
 	 */
 	public abstract void doDiscoveredWriteService();
+	public abstract void doDiscoveredWrongService();
 
 	/**
 	 * 搜索到设备

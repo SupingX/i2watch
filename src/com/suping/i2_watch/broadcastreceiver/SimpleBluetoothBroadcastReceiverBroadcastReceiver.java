@@ -81,6 +81,14 @@ public  class SimpleBluetoothBroadcastReceiverBroadcastReceiver extends Abstract
 		
 	}
 	
+	/**
+	 * 链接失败
+	 */
+	@Override
+	public void doDiscoveredWrongService() {
+		
+	}
+	
 	
 
 }

@@ -212,12 +212,12 @@ public class RecordActivity extends FragmentActivity implements OnClickListener{
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				L.e("同步历史数据超时");
 				if (dialogSyncHistory!=null &&dialogSyncHistory.isShowing()) {
 					dialogSyncHistory.dismiss();
+					L.e("同步历史数据超时");
 				}
 			}
-		}, 30*1000);
+		}, 60*1000);
 
 	}
 	/**

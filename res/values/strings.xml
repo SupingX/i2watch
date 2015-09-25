@@ -142,5 +142,6 @@
     <string name="virtual_call_record">Record</string>
     <string name="virtual_call_maintain">Maintain</string>
     <string name="title_activity_sina">SinaActivity</string>
+    <string name="title_activity_share">ShareActivity</string>
 
 </resources>

@@ -26,7 +26,6 @@ public class I2WatchProtocolDataForNotify {
 	public static final int NOTIFY_CAMERA_EXIT = 0X32;
 	public static final int NOTIFY_REMIND_ON = 0X41;
 	public static final int NOTIFY_REMIND_OFF = 0X00;
-	public static final int NOTIFY_REMIND_CONNECT = 0X43;
 	public static final int NOTIFY_SEARCH = 0X45;
 	public static final int NOTIFY_BRIGHT = 0X61;
 	public static final int NOTIFY_BRIGHT_ON = 0X65;
