@@ -12,7 +12,7 @@
         <attr name="progress_text_color" format="color" />
         <attr name="progress_text_size" format="dimension" />
     </declare-styleable>
-	
+
     <!-- 自定义view属性 -->
     <attr name="background_color" format="color" />
     <attr name="small_background_color" format="color" />
@@ -36,8 +36,7 @@
         <attr name="height" format="dimension"></attr>
         <attr name="progress_color" format="color" />
     </declare-styleable>
-    
-     <declare-styleable name="HoloCircleSeekBar">
+    <declare-styleable name="HoloCircleSeekBar">
         <attr name="wheel_size" format="dimension" />
         <attr name="pointer_size" format="dimension" />
         <attr name="max" />
@@ -54,8 +53,15 @@
         <attr name="text_color" format="string"></attr>
     </declare-styleable>
     
-     <declare-styleable name="CountView">
-         <attr name="rect_color" format="color" />
+    
+    <declare-styleable name="CountView">
+        <attr name="rect_color" format="color" />
+    </declare-styleable>
+    
+    
+    <declare-styleable name="NewCountView">
+        <attr name="line_color" format="color" />
+        <attr name="line_max" format="integer" />
     </declare-styleable>
 
 </resources>

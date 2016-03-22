@@ -9,16 +9,34 @@
     <include
         android:id="@+id/top"
         layout="@layout/top_layout" />
-
+	<com.suping.i2_watch.view.DampingScrollView 
+	    android:background="@color/grey_bg"
+	    android:layout_height="match_parent"
+	    android:layout_width="match_parent"
+	    android:scrollbars="none"
+	    
+	    >
+	    <LinearLayout 
+	        android:background="#fff"
+	        android:layout_height="match_parent"
+	        android:layout_width="match_parent"
+	        android:orientation="vertical"
+	        >
+	        <View   android:layout_height="40dp"
+  			    android:layout_width="match_parent"
+  			    android:background="@color/grey_bg"
+              />
+	        
     <TextView
+        android:background="@color/grey_bg"
         android:id="@+id/tv_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:paddingBottom="4dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="4dp"
+        style="@style/title_grey"
         android:text="@string/incoming_message" />
 
     <View style="@style/line" />
@@ -29,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:clickable="true"
-        android:focusable="true" >
+         >
 
         <TextView
             android:id="@+id/tv_phone"
@@ -63,13 +81,11 @@
         android:focusable="true" >
 
         <TextView
-            android:id="@+id/tv_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:clickable="false"
-            android:text="测试" />
+            android:text="@string/test_vartual" />
 
         <ImageView
             android:id="@+id/img_right_3"
@@ -83,5 +99,8 @@
     </RelativeLayout>
 
     <View style="@style/line" />
-
+</LinearLayout>
+	    
+	    
+	</com.suping.i2_watch.view.DampingScrollView>
 </LinearLayout>

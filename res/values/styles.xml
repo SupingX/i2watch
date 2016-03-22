@@ -71,12 +71,12 @@
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:paddingLeft">20dp</item>
+       
         <item name="android:background">@drawable/selector_bg_menu</item>
     </style>
 
     <style name="clock">
         <item name="android:padding">8dp</item>
-        <item name="android:background">@drawable/selector_clock_set_bg</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -146,6 +146,12 @@
     <style name="ActionSheetDialogAnimation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/actionsheet_dialog_in</item>
         <item name="android:windowExitAnimation">@anim/actionsheet_dialog_out</item>
+    </style>
+    <style name = "title_grey">
+        <item name="android:textColor">@color/grey_text</item>
+        <item name="android:textSize">12sp</item>
+        
+        
     </style>
 
 </resources>

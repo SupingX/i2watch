@@ -82,7 +82,7 @@ public class WeightActivity extends Activity {
 			numberPickerUnit.setValue(1);
 		}
 		numberPickerValue.setValue(value);
-		Log.e("[体重", "unit : " + unit + ",value : " + value + "]");
+		//Log.e("[体重", "unit : " + unit + ",value : " + value + "]");
 	}
 	
 	private void setClick() {

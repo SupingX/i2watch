@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="record_blue">#330099</color>
+    <color name="record_red">#FF0033</color>
     <color name="color_top_bg">#ff5298db</color>
     <color name="color_return_press">#ff5298ff</color>
     <color name="color_top_text">#ffffffff</color>

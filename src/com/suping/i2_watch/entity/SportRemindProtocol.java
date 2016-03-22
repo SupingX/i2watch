@@ -1,5 +1,7 @@
 package com.suping.i2_watch.entity;
 
+import android.util.Log;
+
 import com.suping.i2_watch.util.DataUtil;
 
 /**
@@ -94,6 +96,7 @@ public class SportRemindProtocol  {
 	 * @return
 	 */
 	public byte[] toByte(){
-		return DataUtil.getBytesByString(toString());
+//		Log.e("", "协议："+protocol + onoff + interval + repeat + startHour + startMin + endHour + endMin);
+		return DataUtil.getBytesByString(protocol + onoff + interval + repeat + startHour + startMin + endHour + endMin);
 	}
 }

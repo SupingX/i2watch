@@ -2,28 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context="${packageName}.${activityClass}" >
 
     <include layout="@layout/top_layout_right" />
 
-    <ScrollView
+    <com.suping.i2_watch.view.DampingScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="@color/grey_bg"
+        android:scrollbars="none" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:orientation="vertical" >
-            
-            <View  android:layout_height="12dp"
+
+            <View
                 android:layout_width="match_parent"
-                android:background="@color/grey_bg"
-                />
-                <View
-                style="@style/line"
-             />
+                android:layout_height="40dp"
+                android:background="@color/grey_bg" />
+
+            <View style="@style/line" />
+
             <RelativeLayout
                 android:id="@+id/rl_reminder"
                 style="@style/itemlist"
@@ -33,12 +36,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                    android:contentDescription="@string/app_name"
                     android:id="@+id/img_reminder"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_reminder" />
 
                 <TextView
@@ -52,13 +55,13 @@
                     android:text="@string/sport_reminder" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
 
                 <CheckBox
@@ -75,45 +78,232 @@
 
             <View
                 style="@style/line"
-                android:layout_marginLeft="55dp" /><RelativeLayout android:id="@+id/rl_incoming" style="@style/itemlist" android:layout_width="match_parent" android:layout_height="48dp" android:clickable="true" android:focusable="true">
+                android:layout_marginLeft="55dp" />
 
-                <ImageView android:id="@+id/img_incoming" android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:src="@drawable/ic_action_call" />
+            <RelativeLayout
+                android:id="@+id/rl_incoming"
+                style="@style/itemlist"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true" >
 
-                <TextView android:id="@+id/tv_incoming" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_gravity="center_vertical" android:layout_marginLeft="15dp" android:layout_toRightOf="@id/img_incoming" android:text="@string/incoming_reminder" />
+                <ImageView
+                    android:id="@+id/img_incoming"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_action_call" />
 
-                <ImageView android:id="@+id/img_right_00" android:layout_width="48dp" android:layout_height="48dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:padding="8dp" android:src="@drawable/icon_right_arrow" />
+                <TextView
+                    android:id="@+id/tv_incoming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_incoming"
+                    android:text="@string/incoming_reminder" />
 
-                <CheckBox android:id="@+id/cb_incoming" android:layout_width="50dp" android:layout_height="32dp" android:layout_centerVertical="true" android:layout_marginRight="20dp" android:layout_toLeftOf="@id/img_right_00" android:button="@drawable/selector_switch_checkbox" android:checked="false" android:clickable="true" />
+                <ImageView
+                    android:id="@+id/img_right_00"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
+                    android:src="@drawable/icon_right_arrow" />
 
+                <CheckBox
+                    android:id="@+id/cb_incoming"
+                    android:layout_width="50dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/img_right_00"
+                    android:button="@drawable/selector_switch_checkbox"
+                    android:checked="false"
+                    android:clickable="true" />
             </RelativeLayout>
-
-            
 
             <View
                 style="@style/line"
                 android:layout_marginLeft="55dp" />
 
-            
-                <RelativeLayout android:background="@color/white" android:id="@+id/rl_nf" android:layout_width="match_parent" android:layout_height="48dp" android:clickable="true" android:focusable="true" android:paddingBottom="8dp" android:paddingLeft="20dp" android:paddingTop="8dp">
-
-                <ImageView android:id="@+id/img_reminder_nf" android:layout_width="20dp" android:layout_height="20dp" android:layout_alignParentLeft="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:src="@drawable/ic_reminder_nf" />
-
-                <TextView android:id="@+id/tv_reminder_nf" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_gravity="center_vertical" android:layout_marginLeft="15dp" android:layout_toRightOf="@id/img_reminder_nf" android:text="@string/disconnect_reminder" />
-
-                <ImageView android:id="@+id/img_right_4" android:layout_width="48dp" android:layout_height="48dp" android:layout_alignParentRight="true" android:layout_centerVertical="true" android:contentDescription="@string/app_name" android:padding="8dp" android:src="@drawable/icon_right_arrow" android:visibility="invisible" />
-
-                <CheckBox android:id="@+id/cb_reminder_nf" android:layout_width="50dp" android:layout_height="32dp" android:layout_centerVertical="true" android:layout_marginRight="20dp" android:layout_toLeftOf="@id/img_right_4" android:button="@drawable/selector_switch_checkbox" android:checked="false" android:clickable="true" />
-            </RelativeLayout><View
-                style="@style/line"
-             />
-  <View  android:layout_height="20dp"
+            <!-- <RelativeLayout
+                android:id="@+id/rl_water"
+                style="@style/itemlist"
                 android:layout_width="match_parent"
-                android:background="@color/grey_bg"
-                />
-			
-      <View
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true" >
+
+                <ImageView
+                    android:id="@+id/img_water"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_water" />
+
+                <TextView
+                    android:id="@+id/tv_water"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_water"
+                    android:text="喝水提醒" />
+
+                <ImageView
+                    android:id="@+id/img_right_000"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
+                    android:src="@drawable/icon_right_arrow" />
+
+                <CheckBox
+                    android:id="@+id/cb_water"
+                    android:layout_width="50dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/img_right_000"
+                    android:button="@drawable/selector_switch_checkbox"
+                    android:checked="false"
+                    android:clickable="true" />
+            </RelativeLayout>
+
+            <View
                 style="@style/line"
-             />
+                android:layout_marginLeft="55dp" />
+                 -->
+
+            <RelativeLayout
+                android:id="@+id/rl_nf"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingBottom="8dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/img_reminder_nf"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_reminder_nf" />
+
+                <TextView
+                    android:id="@+id/tv_reminder_nf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_reminder_nf"
+                    android:text="@string/disconnect_reminder" />
+
+                <ImageView
+                    android:id="@+id/img_right_4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
+                    android:src="@drawable/icon_right_arrow"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/cb_reminder_nf"
+                    android:layout_width="50dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/img_right_4"
+                    android:button="@drawable/selector_switch_checkbox"
+                    android:checked="false"
+                    android:clickable="true" />
+            </RelativeLayout>
+              <View
+                style="@style/line"
+                android:layout_marginLeft="55dp" />
+            <!-- <RelativeLayout
+                android:id="@+id/rl_sign_on"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingBottom="8dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/img_sign_on"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_sign_on" />
+
+                <TextView
+                    android:id="@+id/tv_sign_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/img_sign_on"
+                    android:text="个性签名常亮" />
+
+                <ImageView
+                    android:id="@+id/img_right_55"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
+                    android:src="@drawable/icon_right_arrow"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/cb_sign_on"
+                    android:layout_width="50dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/img_right_55"
+                    android:button="@drawable/selector_switch_checkbox"
+                    android:checked="false"
+                    android:clickable="true" />
+            </RelativeLayout> -->
+
+            <View style="@style/line" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/grey_bg" />
+
+            <View style="@style/line" />
+
             <RelativeLayout
                 android:id="@+id/rl_sleep"
                 style="@style/itemlist"
@@ -121,19 +311,18 @@
                 android:layout_height="48dp"
                 android:clickable="true"
                 android:focusable="true" >
-	
+
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_monitor"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_monitor" />
 
                 <TextView
                     android:id="@+id/tv_monitor"
-                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -143,50 +332,48 @@
                     android:text="@string/sleep_monitor" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_2"
-                     android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
-                    <LinearLayout 
-                       android:layout_toLeftOf="@id/img_right_2"
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:orientation="horizontal"
-                    >
-                <TextView
-                    android:textColor="@color/grey_text"
-                    
-                    android:id="@+id/tv_monitor_sleep_start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:text="00:00" />
+                    android:layout_toLeftOf="@id/img_right_2"
+                    android:orientation="horizontal" >
+
                     <TextView
-                    android:textColor="@color/grey_text"
-                    
-                    android:id="@+id/tv_monitor_sleep"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:text=" - " />
-                        <TextView
-                    android:textColor="@color/grey_text"
-                    
-                    android:id="@+id/tv_monitor_sleep_end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:text="12:00" />
+                        android:id="@+id/tv_monitor_sleep_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="00:00"
+                        android:textColor="@color/grey_text" />
+
+                    <TextView
+                        android:id="@+id/tv_monitor_sleep"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text=" - "
+                        android:textColor="@color/grey_text" />
+
+                    <TextView
+                        android:id="@+id/tv_monitor_sleep_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="12:00"
+                        android:textColor="@color/grey_text" />
                 </LinearLayout>
-                
-                
             </RelativeLayout>
 
             <View
@@ -202,12 +389,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_clock"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_clock" />
 
                 <TextView
@@ -221,59 +408,64 @@
                     android:text="@string/clock" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_3"
-                     android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
-                <LinearLayout 
-                       android:layout_toLeftOf="@id/img_right_3"
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
-                    android:orientation="horizontal"
-                    >
+                    android:layout_toLeftOf="@id/img_right_3"
+                    android:orientation="horizontal" >
+
                     <TextView
-                    android:id="@+id/tv_clock_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/green_text"
-                    android:text="12:00" />
-                        <TextView
-                    android:textColor="@color/grey_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:text=" | " />
-                        <TextView
-                    android:id="@+id/tv_clock_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                                    android:textColor="@color/green_text"
-                    android:text="00:00" />
-                                   <TextView
-                    android:textColor="@color/grey_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                    android:text=" | " />
-                            <TextView
-                    android:id="@+id/tv_clock_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical"
-                                    android:textColor="@color/green_text"
-                    android:text="00:00" />
-                    </LinearLayout>
+                        android:id="@+id/tv_clock_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="12:00"
+                        android:textColor="@color/green_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text=" | "
+                        android:textColor="@color/grey_text" />
+
+                    <TextView
+                        android:id="@+id/tv_clock_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="00:00"
+                        android:textColor="@color/green_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text=" | "
+                        android:textColor="@color/grey_text" />
+
+                    <TextView
+                        android:id="@+id/tv_clock_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="00:00"
+                        android:textColor="@color/green_text" />
+                </LinearLayout>
             </RelativeLayout>
 
             <View
@@ -289,12 +481,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_camera"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_camera" />
 
                 <TextView
@@ -308,13 +500,13 @@
                     android:text="@string/remote_camera" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_5"
-                     android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
 
@@ -331,12 +523,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_search"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_search" />
 
                 <TextView
@@ -350,13 +542,13 @@
                     android:text="@string/seacrch_i2_watch" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_6"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
 
@@ -373,13 +565,13 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_record"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_reminder_nf" />
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_history" />
 
                 <TextView
                     android:id="@+id/tv_record"
@@ -392,13 +584,13 @@
                     android:text="@string/record" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_7"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
 
@@ -415,12 +607,12 @@
                 android:focusable="false" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_bright"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_lightset" />
 
                 <TextView
@@ -444,6 +636,7 @@
                     android:text="@string/five"
                     android:textColor="@color/grey"
                     android:textSize="22sp" />
+
                 <Button
                     android:id="@+id/btn_increase"
                     style="?android:attr/buttonStyleSmall"
@@ -451,23 +644,23 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:text="@string/add" 
-                    android:textSize="22sp"
-                    android:textColor="@color/blue_text"
                     android:background="@drawable/selector_btn_increase_bg"
-                    />
-                    <Button
+                    android:text="@string/add"
+                    android:textColor="@color/blue_text"
+                    android:textSize="22sp" />
+
+                <Button
                     android:id="@+id/btn_decrease"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/btn_increase"
                     android:layout_marginRight="-1dp"
-                    android:gravity="center"
-                     android:textSize="22sp"
-                    android:textColor="@color/blue_text"
+                    android:layout_toLeftOf="@id/btn_increase"
                     android:background="@drawable/selector_btn_decrease_bg"
-                    android:text="@string/jian" />
+                    android:gravity="center"
+                    android:text="@string/jian"
+                    android:textColor="@color/blue_text"
+                    android:textSize="22sp" />
             </RelativeLayout>
 
             <View
@@ -483,12 +676,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_signset"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_signset" />
 
                 <TextView
@@ -508,27 +701,28 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="25dp"
-                     android:maxLength="20"
-                     android:singleLine="true"
-                     
                     android:layout_toRightOf="@id/tv_signset"
+                    android:maxLength="20"
+                    android:singleLine="true"
                     android:text="@string/signature_is_not_set"
                     android:textColor="@color/grey" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_9"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-              <View
+
+            <View
                 style="@style/line"
                 android:layout_marginLeft="55dp" />
-			<RelativeLayout
+
+            <RelativeLayout
                 android:id="@+id/rl_callfaker"
                 style="@style/itemlist"
                 android:layout_width="match_parent"
@@ -537,12 +731,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_callfaker"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_action_cc_bcc" />
 
                 <TextView
@@ -556,25 +750,25 @@
                     android:text="@string/callfaker" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_0000"
-                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-                <View
-                style="@style/line"
-             />
-             <View  android:layout_height="20dp"
+
+            <View style="@style/line" />
+
+            <View
                 android:layout_width="match_parent"
-                android:background="@color/grey_bg"
-                />
-                <View
-                style="@style/line"
-             />
+                android:layout_height="20dp"
+                android:background="@color/grey_bg" />
+
+            <View style="@style/line" />
+
             <RelativeLayout
                 android:id="@+id/rl_shutdown"
                 style="@style/itemlist"
@@ -584,12 +778,12 @@
                 android:focusable="true" >
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_shutdown"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_shutdown" />
 
                 <TextView
@@ -603,27 +797,23 @@
                     android:text="@string/shutdown_i2_watch" />
 
                 <ImageView
-                        android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_0"
-                      android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:padding="8dp"
                     android:src="@drawable/icon_right_arrow" />
             </RelativeLayout>
-    <View
-                style="@style/line"
-             />
-           <View  android:layout_height="12dp"
-                android:layout_width="match_parent"
-                android:background="@color/grey_bg"
-                />
-           
-            
 
-          
+            <View style="@style/line" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:background="@color/grey_bg" />
         </LinearLayout>
-    </ScrollView>
+    </com.suping.i2_watch.view.DampingScrollView>
 
 </LinearLayout>

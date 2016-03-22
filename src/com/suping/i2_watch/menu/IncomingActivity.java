@@ -5,7 +5,8 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.AbstractProtocolWrite;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.entity.SportRemindProtocol;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 import android.app.Activity;
@@ -32,7 +33,8 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 	private TextView textViewStart,textViewEnd;
 	private RelativeLayout rlStart,rlEnd;
 	private long exitTime = 0;
-	private AbstractSimpleBlueService mSimpleBlueService;
+	private XBlueService xBlueService;
+//	private XplBluetoothService xplBluetoothService;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +48,28 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService  = getSimpleBlueService();
+//		xplBluetoothService = getXplBluetoothService();
+		
+		xBlueService = getXBlueService();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		doWriteToWatch();
+	
 		super.onDestroy();
 	}
 	
 	private void doWriteToWatch(){
 		AbstractProtocolWrite protocolForCallingAlarmPeriodSync = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(this);
-		Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + protocolForCallingAlarmPeriodSync.toString());
-		if (isConnected()) {
-			getSimpleBlueService().writeCharacteristic(protocolForCallingAlarmPeriodSync.toByte());
+//		if (isXplConnected()) {
+		if (xBlueService!=null && xBlueService.isAllConnected()) {
+			
+			
+			byte[] byte1 = protocolForCallingAlarmPeriodSync.toByte();
+//			xplBluetoothService.writeCharacteristic(byte1);
+			xBlueService.write(byte1);
 		}else{
-			showShortToast("手环未连接");
+			showShortToast(getString(R.string.no_binded_device));
 		}
 	}
 
@@ -70,7 +78,6 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 			super.onActivityResult(requestCode, resultCode, data);
 			
 			switch (requestCode) {
-			//from IncomingStarttimeActivity
 			case 1:
 				switch (resultCode) {
 				case RESULT_OK:
@@ -78,7 +85,7 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 					String min = b.getString("min");
 					String sec = b.getString("sec");
 					String value = min+":"+sec;
-					Log.e("incoming", "value : " + value);
+					//Log.e("incoming", "value : " + value);
 					textViewStart.setText(value);
 	//				SharedPreferenceUtil.put(getApplicationContext(), SHARE_INCOMING_START, value);
 					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING_START_HOUR, min);
@@ -117,6 +124,7 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 		case R.id.img_back:
 //			Intent retrunToMain = new Intent(IncomingActivity.this,MenuActivity.class);
 //			startActivity(retrunToMain);
+			doWriteToWatch();
 			this.finish();
 //			overridePendingTransition(R.anim.activity_from_left_to_right_enter,
 //					R.anim.activity_from_left_to_right_exit);
@@ -165,7 +173,13 @@ public class IncomingActivity extends BaseActivity implements OnClickListener{
 		textViewEnd.setText(incomingEndHour + ":" + incomingEndMin);
 		
 	}
-
+	
+	
+	@Override
+	public void onBackPressed() {
+		doWriteToWatch();
+		super.onBackPressed();
+	}
 	private void setClick() {
 		imgBack.setOnClickListener(this);
 		textViewTitle.setOnClickListener(this);

@@ -1,18 +1,10 @@
 package com.suping.i2_watch.entity;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 
-import android.content.Context;
-import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.suping.i2_watch.util.DataUtil;
 import com.suping.i2_watch.util.DateUtil;
-import com.suping.i2_watch.util.L;
-import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class I2WatchProtocolDataForNotify {
 	// -------------------------------------------------------
@@ -36,7 +28,7 @@ public class I2WatchProtocolDataForNotify {
 	public static final int NOTIFY_MSG_READED = 0X84;// 短信
 	public static final int NOTIFY_SIGN = 0X91;// 个性签名
 	// -------------------------------------------------------
-	public static final int NOTIFY_VIR = 0X05; // 虚拟来电
+	public static final int NOTIFY_VIR = 0x05; // 虚拟来电
 	public static final int NOTIFY_HISTORY = 0x25; // 历史记录
 	public static final int NOTIFY_SYNC_HISTORY = 0x26;//同步开始 同步结束
 	public static final int NOTIFY_PHOTO = 0x33;
@@ -45,15 +37,19 @@ public class I2WatchProtocolDataForNotify {
 	public static final int NOTIFY_INCOMING_SILENCE = 0x80;
 	public static final int NOTIFY_INCOMING_REJECT = 0x81;
 
-	private static I2WatchProtocolDataForNotify mProtocolForNotify;
+	private static volatile I2WatchProtocolDataForNotify mProtocolForNotify;
 
 	private I2WatchProtocolDataForNotify() {
 
 	}
-
+	
 	public static I2WatchProtocolDataForNotify instance() {
-		if (mProtocolForNotify == null) {
-			mProtocolForNotify = new I2WatchProtocolDataForNotify();
+		if (null == mProtocolForNotify) {
+			synchronized (I2WatchProtocolDataForNotify.class) {
+				if (null == mProtocolForNotify) {
+					mProtocolForNotify = new I2WatchProtocolDataForNotify();
+				}
+			}
 		}
 		return mProtocolForNotify;
 	}
@@ -61,10 +57,11 @@ public class I2WatchProtocolDataForNotify {
 	public int getTypeFromData(byte[] data) {
 		String dataStr = DataUtil.byteToHexString(data);
 		String pro = dataStr.substring(0, 2);
-		Log.v("", dataStr);
-		if (pro.equals("AA") && dataStr.length() == 4) {
-			return notifyOrder(dataStr);
-		} else if (pro.equals("25") && dataStr.length() == 30) {
+		////Log.v("", dataStr);
+//		if (pro.equals("AA") && dataStr.length() == 4) {
+//			return notifyOrder(dataStr);
+//		}
+		if (pro.equals("25") && dataStr.length() == 30) {
 			return NOTIFY_HISTORY;
 		} else if (pro.equals("26") && dataStr.length() == 4) {
 			return NOTIFY_SYNC_HISTORY;
@@ -72,12 +69,23 @@ public class I2WatchProtocolDataForNotify {
 			return NOTIFY_PHOTO;
 		} else if (pro.equals("43") && dataStr.length() == 2) {
 			return NOTIFY_FIND_PHOTO;
-		} else if (pro.equals("71") && dataStr.length() == 24) {
+		}  else if (pro.equals("05") && dataStr.length() == 2) {
+			return NOTIFY_VIR;
+		} 
+		else if (pro.equals("81") && dataStr.length() == 2) {
+			////Log.v("", "      来电拒接         ！！！！！！！！！");
+			return NOTIFY_INCOMING_REJECT;
+		} 
+		else if (pro.equals("80") && dataStr.length() == 2) {
+			////Log.v("", "      来电静音         ！！！！！！！！！");
+			return NOTIFY_INCOMING_SILENCE;
+		} 
+		else if (pro.equals("71") && dataStr.length() == 24) {
 			return NOTIFY_STEP_AND_CAL;
 		} else if (pro.equals("80") && dataStr.length() == 2) {
 			return NOTIFY_STEP_AND_CAL;
 		} else {
-			Log.v("", "错误的数据");
+			////Log.v("", "错误的数据");
 			return -1;
 		}
 	}
@@ -111,11 +119,13 @@ public class I2WatchProtocolDataForNotify {
 			history.setDay(dateStr.substring(6,8));
 			history.setHour(String.valueOf(hour));
 			// 3.1	数据1 
-			long data_1 = Long.valueOf(dataStr.substring(6, 14),16);
-			long type_1 = data_1 >> 31;
+			byte[] byte_1 = new byte[]{data[6],data[5],data[4],data[3]};
+			long data_1 = Long.valueOf(DataUtil.byteToHexString(byte_1),16);
+		
+			long type_1 = data_1 >> 31&0b1;
 			if (type_1==0) { //运动数据
-				long sportStep_1 = data_1&0b1111_1111_1111_1111L;
-				long sportTime_1 = (data_1>>16)&0b11111;
+				long sportStep_1 = data_1&0b1;
+				long sportTime_1 = (data_1>>16)&0b1;
 				history.setSportStep_1(Integer.valueOf(String.valueOf(sportStep_1)));
 				history.setSportTime_1(Integer.valueOf(String.valueOf(sportTime_1)));
 			}else if (type_1==1) {//睡眠数据
@@ -129,8 +139,9 @@ public class I2WatchProtocolDataForNotify {
 				history.setSleepDeep_1(Integer.valueOf(String.valueOf(sleepDeep_1)));
 			}
 			// 3.2	数据2
-			long data_2 = Long.valueOf(dataStr.substring(14, 22),16);
-			long type_2 = data_2 >> 31;
+			byte[] byte_2 = new byte[]{data[10],data[9],data[8],data[7]};
+			long data_2 = Long.valueOf(DataUtil.byteToHexString(byte_2),16);
+			long type_2 = data_2 >> 31&0x01;
 			if (type_2==0) { //运动数据
 				long sportStep_2 = data_2&0b1111_1111_1111_1111L;
 				long sportTime_2= (data_2>>16)&0b11111;
@@ -147,8 +158,9 @@ public class I2WatchProtocolDataForNotify {
 				history.setSleepDeep_2(Integer.valueOf(String.valueOf(sleepDeep_2)));
 			}
 			// 3.3	数据3
-			long data_3 = Long.valueOf(dataStr.substring(22, 30),16);
-			long type_3 = data_3 >> 31;
+			byte[] byte_3 = new byte[]{data[14],data[13],data[12],data[11]};
+			long data_3 = Long.valueOf(DataUtil.byteToHexString(byte_3),16);
+			long type_3 = data_3 >> 31&0b1;
 			if (type_3==0) { //运动数据
 				long sportStep_3 = data_3&0b1111_1111_1111_1111L;
 				long sportTime_3 = (data_3>>16)&0b11111;
@@ -165,11 +177,12 @@ public class I2WatchProtocolDataForNotify {
 				history.setSleepDeep_3(Integer.valueOf(String.valueOf(sleepDeep_3)));
 			}
 		}
-		L.v(history.toString());
+//		L.e(history.toString());
 		return history;
 
 	}
 	
+
 	/**
 	 * 同步开始和结束 1 开始  0结束
 	 * @param data
@@ -185,7 +198,7 @@ public class I2WatchProtocolDataForNotify {
 	}
 	
 	public int notifyPhoto(byte[] data){
-		L.i(getClass(),"拍照");
+//		L.i(getClass(),"拍照");
 		if (getTypeFromData(data)==NOTIFY_PHOTO) {
 			return 1;
 		}else{
@@ -232,7 +245,7 @@ public class I2WatchProtocolDataForNotify {
 	
 	public int notifyIncomingReject(byte[] data){
 		if (getTypeFromData(data)==NOTIFY_INCOMING_REJECT) {
-			L.v("来点拒绝");
+//			L.v("来点拒绝");
 			return 1;
 		}else{
 			return -1;

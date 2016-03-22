@@ -48,7 +48,7 @@ public class SportReminderIntervalActivity extends Activity {
 
 	private void initvalue() {
 		String interval = (String) SharedPreferenceUtil.get(SportReminderIntervalActivity.this,
-				I2WatchProtocolDataForWrite.SHARE_INTERVAL, "150");
+				I2WatchProtocolDataForWrite.SHARE_WATER_INTERVAL, "15");
 		if (interval.equals(values[0])) {
 			npInterval.setValue(0);
 		} else if (interval.equals(values[1])) {

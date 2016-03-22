@@ -56,7 +56,7 @@ public class BirthdayActivity extends Activity {
 		numberPickerYear.setFormatter(new Formatter() {
 			@Override
 			public String format(int value) {
-				return String.valueOf(value)+"年";
+				return String.valueOf(value);
 			}
 		});
 		numberPickerYear.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -88,7 +88,7 @@ public class BirthdayActivity extends Activity {
 		numberPickerMonth.setFormatter(new Formatter() {
 			@Override
 			public String format(int value) {
-				return String.valueOf(value)+"月";
+				return String.valueOf(value);
 			}
 		});
 		numberPickerMonth.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -143,7 +143,7 @@ public class BirthdayActivity extends Activity {
 		numberPickerDay.setFormatter(new Formatter() {
 			@Override
 			public String format(int value) {
-				return String.valueOf(value)+"日";
+				return String.valueOf(value);
 			}
 		});
 		

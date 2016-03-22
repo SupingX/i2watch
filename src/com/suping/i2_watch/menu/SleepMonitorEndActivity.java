@@ -40,7 +40,7 @@ public class SleepMonitorEndActivity extends AbstractSetTimeActivity {
 				I2WatchProtocolDataForWrite.SHARE_MONITOR_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
 		
 		if(hour <= Integer.parseInt(hourStart)){ //开始时间大于结束时间
-			Log.e("SportReminderEndTimeActivity", "开始时间大于结束时间，设置错误。");
+			//Log.e("SportReminderEndTimeActivity", "开始时间大于结束时间，设置错误。");
 			return false;
 		}
 		return true;

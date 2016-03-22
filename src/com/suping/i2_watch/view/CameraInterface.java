@@ -3,6 +3,7 @@ package com.suping.i2_watch.view;
 import java.io.IOException;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
@@ -26,18 +27,19 @@ public class CameraInterface {
 	private boolean isPreviewing = false;
 	private float mPreviwRate = -1f;
 	private static CameraInterface mCameraInterface;
+	private Context mContext;
 
 	public interface CamOpenOverCallback {
 		public void cameraHasOpened();
 	}
 
-	private CameraInterface() {
-
+	private CameraInterface(Context mContext) {
+		this.mContext = mContext;
 	}
 
-	public static synchronized CameraInterface getInstance() {
+	public static synchronized CameraInterface getInstance(Context mContext) {
 		if (mCameraInterface == null) {
-			mCameraInterface = new CameraInterface();
+			mCameraInterface = new CameraInterface( mContext);
 		}
 		return mCameraInterface;
 	}
@@ -48,13 +50,13 @@ public class CameraInterface {
 	 * @param callback
 	 */
 	public void doOpenCamera(CamOpenOverCallback callback) {
-		Log.i(TAG, "Camera open....");
+		//Log.i(TAG, "Camera open....");
 		try {
 			mCamera = Camera.open();
 		} catch (Exception e) {
-			Log.e("CameraInterface", "openCamera异常。。。");
+			//Log.e("CameraInterface", "openCamera异常。。。");
 		}
-		Log.i(TAG, "Camera open over....");
+		//Log.i(TAG, "Camera open over....");
 		
 		//开启预览？
 		callback.cameraHasOpened();
@@ -67,7 +69,7 @@ public class CameraInterface {
 	 * @param previewRate
 	 */
 	public void doStartPreview(SurfaceHolder holder, float previewRate) {
-		Log.i(TAG, "doStartPreview...");
+		//Log.i(TAG, "doStartPreview...");
 		if (isPreviewing) {
 			mCamera.stopPreview();
 			return;
@@ -113,12 +115,12 @@ public class CameraInterface {
 			mPreviwRate = previewRate;
 
 			mParams = mCamera.getParameters(); // 重新get一次
-			Log.i(TAG,
-					"最终设置:PreviewSize--With = " + mParams.getPreviewSize().width + "Height = "
-							+ mParams.getPreviewSize().height);
-			Log.i(TAG,
-					"最终设置:PictureSize--With = " + mParams.getPictureSize().width + "Height = "
-							+ mParams.getPictureSize().height);
+			//Log.i(TAG,
+//					"最终设置:PreviewSize--With = " + mParams.getPreviewSize().width + "Height = "
+//							+ mParams.getPreviewSize().height);
+			//Log.i(TAG,
+//					"最终设置:PictureSize--With = " + mParams.getPictureSize().width + "Height = "
+//							+ mParams.getPictureSize().height);
 		}
 	}
 
@@ -140,7 +142,7 @@ public class CameraInterface {
 	 * 拍照
 	 */
 	public synchronized void doTakePicture() {
-		Log.e("--- CameraInterface ----", "isPreviewing : " + isPreviewing);
+		//Log.e("--- CameraInterface ----", "isPreviewing : " + isPreviewing);
 		if (isPreviewing && (mCamera != null)) {
 			mCamera.takePicture(new MyShutterCallback(), null, new MyJpegPictureCallback());
 		}
@@ -153,7 +155,7 @@ public class CameraInterface {
 	
 		public void onShutter() {
 			// TODO Auto-generated method stub
-			Log.i(TAG, "myShutterCallback:onShutter...");
+			//Log.i(TAG, "myShutterCallback:onShutter...");
 		}
 	};
 	
@@ -161,7 +163,7 @@ public class CameraInterface {
 	private PictureCallback mRawCallback = new PictureCallback() {
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub
-			Log.i(TAG, "myRawCallback:onPictureTaken...");
+			//Log.i(TAG, "myRawCallback:onPictureTaken...");
 
 		}
 	};
@@ -171,7 +173,7 @@ public class CameraInterface {
 	
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// TODO Auto-generated method stub
-			Log.i(TAG, "myJpegCallback:onPictureTaken...");
+			//Log.i(TAG, "myJpegCallback:onPictureTaken...");
 			Bitmap b = null;
 			if (null != data) {
 				b = BitmapFactory.decodeByteArray(data, 0, data.length);// data是字节数据，将其解析成位图
@@ -198,9 +200,9 @@ public class CameraInterface {
 	private class SavePictureTask extends AsyncTask<Bitmap, String, Boolean> {
 		@Override
 		protected Boolean doInBackground(Bitmap... params) {
-			Log.i("CameraInterface", "SavePictureTask ...存贮预览" );
+			//Log.i("CameraInterface", "SavePictureTask ...存贮预览" );
 			try {
-				FileUtil.saveBitmap(params[0]);
+				FileUtil.saveBitmap(params[0],mContext);
 				return true;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -216,9 +218,9 @@ public class CameraInterface {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			if(result){
-				Log.i("CameraInterface", "SavePictureTask ...存贮成功" );
+				//Log.i("CameraInterface", "SavePictureTask ...存贮成功" );
 			} else {
-				Log.i("CameraInterface", "SavePictureTask ...存贮失败" );
+				//Log.i("CameraInterface", "SavePictureTask ...存贮失败" );
 			}
 		}
 	}

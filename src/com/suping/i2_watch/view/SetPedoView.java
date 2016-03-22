@@ -83,7 +83,7 @@ public class SetPedoView extends View {
 
 		// mThumbDrawable =
 		// mTypedArray.getDrawable(R.styleable.CircleSeekBar_android_thumb);
-		// Log.d("OB", "mThumbDrawable-->" + mThumbDrawable);
+		// //Log.d("OB", "mThumbDrawable-->" + mThumbDrawable);
 		// mThumbWidth = mThumbDrawable.getIntrinsicWidth();
 		// mThumbHeight = mThumbDrawable.getIntrinsicHeight();
 		//
@@ -160,7 +160,7 @@ public class SetPedoView extends View {
 //		 canvas.drawArc(this.mArcRectF, 0.0f-90f, 90f, false, mProgressPaint);
 		canvas.drawArc(this.mArcRectF, -90f, toAngle(mProgress), false,
 				mProgressPaint);
-		Log.d("OB", "toAngle"+toAngle(0));
+		//Log.d("OB", "toAngle"+toAngle(0));
 
 		// bar
 		double x = mCenterX + mRadius

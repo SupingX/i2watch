@@ -2,6 +2,7 @@ package com.suping.i2_watch.setting;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +17,9 @@ import android.widget.Toast;
 import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
-import com.suping.i2_watch.service.SimpleBlueService;
+import com.suping.i2_watch.SharedActivity;
+import com.suping.i2_watch.broadcastreceiver.ImpXplBroadcastReceiver;
+import com.suping.i2_watch.service.XplBluetoothService;
 
 public class SettingActivity extends BaseActivity implements OnClickListener {
 	private ImageView imgBack;
@@ -26,41 +27,37 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 	private RelativeLayout relativeInformation;
 	private RelativeLayout relativePedo;
 	private RelativeLayout relativeAbout;
-	private AbstractSimpleBlueService mSimpleBlueService;
-	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
-		@Override
-		public void doBlueDisconnect(int state) {
-			super.doBlueDisconnect(state);
+//	private AbstractSimpleBlueService mSimpleBlueService;
+	private ImpXplBroadcastReceiver xplReceiver = new ImpXplBroadcastReceiver(){
+		public void doConnectStateChange(BluetoothDevice device, final int state) {
 			runOnUiThread(new Runnable() {
 				public void run() {
-					tvDeviceInfo.setText("未连接");
+					if (state == BluetoothGatt.STATE_DISCONNECTED) {
+						tvDeviceInfo.setText(getString(R.string.disconnect));
+					}
 				}
 			});
-		}
-
-		@Override
-		public void doDiscoveredWriteService() {
-			super.doDiscoveredWriteService();
+		};
+		
+		public void doServiceDisCovered(BluetoothDevice device) {
 			runOnUiThread(new Runnable() {
 				public void run() {
 					setCurrentDevice();
 				}
 			});
-		}
-
+		};
 	};
 
 	/**
 	 * 设置本地绑定设备
 	 */
 	private void setCurrentDevice() {
-		String text="未连接";
+	/*	String text=getString(R.string.disconnect);
 		if (isConnected()) {
-			String name = mSimpleBlueService.getBindedDeviceName();
 			String address = mSimpleBlueService.getBindedDeviceAddress();
-			text = address.equals("--") ? "未连接" : address+"已连接";
+			text = address.equals("--") ? getString(R.string.disconnect) : address+"已连接";
 		}
-		tvDeviceInfo.setText(text);
+		tvDeviceInfo.setText(text);*/
 	
 	}
 
@@ -76,8 +73,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService = getSimpleBlueService();
-		registerReceiver(mReceiver, SimpleBlueService.getIntentFilter());
 	}
 
 	@Override
@@ -93,7 +88,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
 
@@ -105,6 +99,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 		relativePedo = (RelativeLayout) findViewById(R.id.rl_pedo);
 		relativeAbout = (RelativeLayout) findViewById(R.id.rl_about);
 		relativeDevice = (RelativeLayout) findViewById(R.id.rl_device);
+		relativeShare = (RelativeLayout) findViewById(R.id.rl_share);
 	}
 
 	public void setListener() {
@@ -113,6 +108,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 		relativePedo.setOnClickListener(this);
 		relativeAbout.setOnClickListener(this);
 		relativeDevice.setOnClickListener(this);
+		relativeShare.setOnClickListener(this);
 	}
 
 	@Override
@@ -155,6 +151,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 			// 左右是指手机屏幕的左右
 					R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
+		case R.id.rl_share:
+			Intent shareIntent = new Intent(SettingActivity.this, SharedActivity.class);
+			startActivity(shareIntent);
+			overridePendingTransition(
+					// 左右是指手机屏幕的左右
+					R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
+			break;
 		default:
 			break;
 		}
@@ -178,5 +181,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 //		}
 //		return super.onKeyDown(keyCode, event);
 //	}
+	private RelativeLayout relativeShare;
 
 }

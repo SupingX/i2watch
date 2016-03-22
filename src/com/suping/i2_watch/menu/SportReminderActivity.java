@@ -16,6 +16,8 @@ import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.entity.SportRemindProtocol;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SportReminderActivity extends BaseActivity implements OnClickListener {
@@ -37,9 +39,10 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 	private long exitTime = 0;
 	/** 重复次数    **/ 
 	private int repeatValue;
+	private XBlueService xBlueService;
+//	private XplBluetoothService xplBluetoothService;
 	/** broadcastReceiver  **/ 
 	/** 蓝牙  **/ 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,7 +50,9 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 		initViews();
 		setClick();
 		tvTitle.setText(getResources().getString(R.string.sport_reminder));
+//		xplBluetoothService = getXplBluetoothService();
 		
+		xBlueService = getXBlueService();
 	}
 
 	@Override
@@ -59,21 +64,32 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 	
 	@Override
 	protected void onDestroy() {
-		writeToWatch();
+	
 		
 		super.onDestroy();
 	}
 	
 	
 	private void writeToWatch(){
-
 		SportRemindProtocol sp = I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(this);
-		Log.d("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
-		if (isConnected()) {
-			getSimpleBlueService().writeCharacteristic(sp.toByte());
+//		Log.e("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
+//		if (isConnected()) {
+//		if (isXplConnected()) {
+		if (xBlueService!=null && xBlueService.isAllConnected()) {
+			
+//			Log.e("SportReminderActivity", "待发送的协议-运动提醒  : " + sp.toString());
+//			getSimpleBlueService().writeCharacteristic(sp.toByte());
+//			xplBluetoothService.writeCharacteristic(sp.toByte());
+			xBlueService.write(sp.toByte());
 		}else{
-			showShortToast("手环未连接");
+			showShortToast(getString(R.string.no_binded_device));
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		writeToWatch();
+		super.onBackPressed();
 	}
 	
 	@Override
@@ -87,11 +103,11 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 			case RESULT_INTERVAL:
 				Bundle b = data.getExtras();
 				String time = b.getString("time");
-				time = time == null ? I2WatchProtocolDataForWrite.DEFAULT_INTERVAL : time;
-				tvIntervalValue.setText(time);
-				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, time);
-				//写入数据 设置interval（间隔）
-//				mBleBleManager.writeCharactics(DataUtil.hexStringX2bytesToInt(time));
+				if (time !=null) {
+					tvIntervalValue.setText(time);
+//					Log.e("", "运动间隔 :"+ time);
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, time);
+				}
 				break;
 			default:
 				break;
@@ -145,6 +161,7 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 		case R.id.img_back:
 //			Intent retrunToMain = new Intent(SportReminderActivity.this, MenuActivity.class);
 //			startActivity(retrunToMain);
+			writeToWatch();
 			this.finish();
 //			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
 			break;
@@ -235,7 +252,7 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 	 */
 	private void initSetting() {
 		// interval
-		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, "00");
+		String reminder_interval = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INTERVAL, I2WatchProtocolDataForWrite.DEFAULT_INTERVAL);
 		tvIntervalValue.setText(reminder_interval);
 		// start
 		String reminder_start_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
@@ -252,8 +269,8 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 	 * 初始化周期
 	 */
 	private void initWeekday() {
-		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_REPEAT, 0b00000000);
-		Log.d("OB", "初始化repeatValue-->" + Integer.toBinaryString(repeatValue));
+		repeatValue = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_REPEAT, 0b01111111);
+		//Log.d("OB", "初始化repeatValue-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tvSun, WeekdayEnum.SUN.getDay());
 		updateTextview(tvMon, WeekdayEnum.MON.getDay());
 		updateTextview(tvTue, WeekdayEnum.TUE.getDay());
@@ -286,7 +303,7 @@ public class SportReminderActivity extends BaseActivity implements OnClickListen
 	 */
 	private void repeatWeekday(TextView tv, int weekday) {
 		repeatValue ^= weekday;
-		Log.d("OB", tv.getId() + "-->" + Integer.toBinaryString(repeatValue));
+		//Log.d("OB", tv.getId() + "-->" + Integer.toBinaryString(repeatValue));
 		updateTextview(tv, weekday);
 		SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_REPEAT, repeatValue);
 		//写入下位机  repeatValue ：01001111

@@ -43,7 +43,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setFinishOnTouchOutside(false);// 设置为true点击区域外消失
+		setFinishOnTouchOutside(true);// 设置为true点击区域外消失
 		setContentView(R.layout.activity_callfaker_from);
 		initViews();
 		setListener();
@@ -51,7 +51,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.e("onActivityResult","onActivityResult");
+		//Log.e("onActivityResult","onActivityResult");
 		switch (requestCode) {
 		case 1:
 			switch (resultCode) {
@@ -61,7 +61,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 				cursor.moveToFirst();
 				String num = getContactNumberFromCursor(cursor);
 				String name = getContactNameFromCursor(cursor);
-				Log.e("choose", num + " " + name);
+				//Log.e("choose", num + " " + name);
 				returnResult(name , num,RESULT_OK);
 				finish();
 				break;
@@ -83,7 +83,6 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 	
 	@Override
 	protected void onDestroy() {
-		returnResult(null,null, RESULT_CANCELED);
 		super.onDestroy();
 	}
 	@Override
@@ -93,23 +92,23 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 		case R.id.tv_positive:
 			// 当选中自定义
 			String name = edName.getText().toString().trim();
-			if(name==null||name.equals("")){Toast.makeText(CallfakerFromActivity.this, "姓名为空", Toast.LENGTH_SHORT).show();return;}
+			if(name==null||name.equals("")){Toast.makeText(CallfakerFromActivity.this, getString(R.string.name_is_null), Toast.LENGTH_SHORT).show();return;}
 			String phone = edPhone.getText().toString().trim();
-			if(phone==null||phone.equals("")){Toast.makeText(CallfakerFromActivity.this, "号码为空", Toast.LENGTH_SHORT).show();return;}
+			if(phone==null||phone.equals("")){Toast.makeText(CallfakerFromActivity.this, getString(R.string.number_is_null), Toast.LENGTH_SHORT).show();return;}
 			returnResult(name ,phone,RESULT_OK);
 			break;
 		case R.id.tv_negative:
 			returnResult(null,null,RESULT_CANCELED);
 			break;
 		case R.id.tv_random:
-			Log.e("listView", "随机--" );
+			//Log.e("listView", "随机--" );
 			update(1);
 			String[] random = getRandom();
 			rlOk.setVisibility(View.GONE);
 			returnResult(random[0],random[1],RESULT_OK);
 			break;
 		case R.id.tv_choose:
-			Log.e("listView", "导入--");
+			//Log.e("listView", "导入--");
 			update(2);
 			rlOk.setVisibility(View.GONE);
 			Intent intentPick = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -117,7 +116,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 //			finish();
 			break;
 		case R.id.tv_custom:
-			Log.e("listView", "自定义--" );
+			//Log.e("listView", "自定义--" );
 			update(3);
 			rlOk.setVisibility(View.VISIBLE);
 			break;
@@ -169,7 +168,11 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 		tvRandom.setOnClickListener(this);
 	}
 		
-		
+//	private List<Map<String, String>> getCursorList() {
+//		
+//	}
+	
+	
 	/**
 	 * 获取联系人姓名+电话Map<Integer,Map<String,String>>
 	 */
@@ -200,7 +203,7 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 							// // 遍历所有的电话号码
 							String phoneNumber = phonesCursor.getString(phonesCursor
 									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-							Log.v("通讯录", "联系人姓名： " + disPlayName + "，联系人电话: " + phoneNumber);
+							//Log.v("通讯录", "联系人姓名： " + disPlayName + "，联系人电话: " + phoneNumber);
 							Map<String, String> map = new HashMap<String, String>();
 							map.put(disPlayName, phoneNumber);
 							list.add(map);
@@ -223,21 +226,21 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 		List<Map<String, String>> list = getCursorList();
 		String name = "";
 		String phone = "";
-		Log.i("listView", "list.size()--" + list.size());
+		//Log.i("listView", "list.size()--" + list.size());
 		if (!(list == null || list.size() == 0)) {
 //			int i = (int) (Math.random() * list.size());
 			int i = new Random().nextInt(list.size());
-			Log.i("listView", "随机数--" + i);
-			Log.i("listView", "随机联系人--" + list.get(i).toString());
+			//Log.i("listView", "随机数--" + i);
+			//Log.i("listView", "随机联系人--" + list.get(i).toString());
 			Iterator<Entry<String, String>> iter = list.get(i).entrySet().iterator();
 			while (iter.hasNext()) {
 				Entry<String, String> s = iter.next();
 				name = s.getKey();
 				phone = s.getValue();
-				Log.i("listView", "随机：" +name + "--〉" + phone);
+				//Log.i("listView", "随机：" +name + "--〉" + phone);
 			}
 		} else {
-			Log.e("listView", "联系人列表为空...");
+			//Log.e("listView", "联系人列表为空...");
 		}
 		return new String[]{name,phone};
 	}
@@ -296,15 +299,18 @@ public class CallfakerFromActivity extends Activity implements OnClickListener {
 	 * 
 	 */
 	private void returnResult(String name,String phone,int result) {
-		Intent intentRandom  = new Intent(CallfakerFromActivity.this, CallfakerActivity.class);
-		Bundle b;
-		if (name!=null&&phone!=null) {
-			SharedPreferenceUtil.put(getApplicationContext(),SHARE_PHONE_NAME , name);			
-			SharedPreferenceUtil.put(getApplicationContext(), SHARE_PHONE_NUMBER, phone);			
-			b = new Bundle();
-			b.putString("cursor", name+" " +phone);
-			intentRandom.putExtras(b);
+		if (name==null || name.equals("")) {
+			name="王经理";
 		}
+		if (phone==null || phone.equals("")) {
+			phone="13048565858";
+		}
+		SharedPreferenceUtil.put(getApplicationContext(),SHARE_PHONE_NAME , name);		
+		SharedPreferenceUtil.put(getApplicationContext(), SHARE_PHONE_NUMBER, phone);
+		Bundle b = new Bundle();
+		b.putString("cursor", name+" " +phone);
+		Intent intentRandom  = new Intent(CallfakerFromActivity.this, CallfakerActivity.class);
+		intentRandom.putExtras(b);
 		setResult(result, intentRandom);
 		finish();
 	}

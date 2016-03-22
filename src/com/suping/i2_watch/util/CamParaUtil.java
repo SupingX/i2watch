@@ -31,7 +31,7 @@ public class CamParaUtil {
 	        int i = 0;  
 	        for(Size s:list){  
 	            if((s.width >= minWidth) && equalRate(s, th)){  
-	                Log.i(TAG, "PreviewSize:w = " + s.width + "h = " + s.height);  
+	                //Log.i(TAG, "PreviewSize:w = " + s.width + "h = " + s.height);  
 	                break;  
 	            }  
 	            i++;  
@@ -47,7 +47,7 @@ public class CamParaUtil {
 	        int i = 0;  
 	        for(Size s:list){  
 	            if((s.width >= minWidth) && equalRate(s, rate)){  
-	                Log.i(TAG, "PictureSize : w = " + s.width + "h = " + s.height);  
+	                //Log.i(TAG, "PictureSize : w = " + s.width + "h = " + s.height);  
 	                break;  
 	            }  
 	            i++;  
@@ -92,7 +92,7 @@ public class CamParaUtil {
 	        List<Size> previewSizes = params.getSupportedPreviewSizes();  
 	        for(int i=0; i< previewSizes.size(); i++){  
 	            Size size = previewSizes.get(i);  
-	            Log.i(TAG, "previewSizes:width = "+size.width+" height = "+size.height);  
+	            //Log.i(TAG, "previewSizes:width = "+size.width+" height = "+size.height);  
 	        }  
 	      
 	    }  
@@ -104,8 +104,8 @@ public class CamParaUtil {
 	        List<Size> pictureSizes = params.getSupportedPictureSizes();  
 	        for(int i=0; i< pictureSizes.size(); i++){  
 	            Size size = pictureSizes.get(i);  
-	            Log.i(TAG, "pictureSizes:width = "+ size.width  
-	                    +" height = " + size.height);  
+	            //Log.i(TAG, "pictureSizes:width = "+ size.width  
+//	                    +" height = " + size.height);  
 	        }  
 	    }  
 	    /**打印支持的聚焦模式 
@@ -114,7 +114,7 @@ public class CamParaUtil {
 	    public void printSupportFocusMode(Camera.Parameters params){  
 	        List<String> focusModes = params.getSupportedFocusModes();  
 	        for(String mode : focusModes){  
-	            Log.i(TAG, "focusModes--" + mode);  
+	            //Log.i(TAG, "focusModes--" + mode);  
 	        }  
 	    }  
 }

@@ -25,6 +25,15 @@
         android:contentDescription="@string/app_name"
         android:padding="10dp"
         android:src="@drawable/selector_left_back" />
+       <ImageView
+           android:id="@+id/img_switch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/app_name"
+        android:padding="4dp"
+        android:src="@drawable/ic_camera_selected" />
 
  <!--    <ImageView
         android:id="@+id/img_position"
@@ -37,6 +46,7 @@
         android:src="@drawable/selector_camera_select" /> -->
 
     <ImageView
+        android:visibility="invisible"
         android:id="@+id/img_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

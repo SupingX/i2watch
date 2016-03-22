@@ -4,12 +4,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -19,10 +24,10 @@ public class FileUtil {
 	private static final String TAG = "FileUtil";
 	// private static final File parentPath =
 	// Environment.getExternalStorageDirectory();
-	private static final File parentPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-
+    private static final File parentPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+    private static final File basePath = Environment.getExternalStorageDirectory();
 	private static String storagePath = "";
-	private static final String DST_FOLDER_NAME = "i2watch";
+	private static final String DST_FOLDER_NAME = "Watch";
 
 	/**
 	 * 获取SDCard的目录路径功能
@@ -70,7 +75,7 @@ public class FileUtil {
 				Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
 				fos.flush();
 				fos.close();
-				Toast.makeText(ac, "分享文件已保存至"+savePath+"目录下", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(ac, "分享文件已保存至"+savePath+"目录下", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,23 +109,27 @@ public class FileUtil {
 	 * 
 	 * @param b
 	 */
-	public static void saveBitmap(Bitmap b) {
-
+	public static void saveBitmap(Bitmap b,Context context) {
+		
+	
+		
 		String path = initPath();
 		long dataTake = System.currentTimeMillis();
 		String jpegName = path + "/" + dataTake + ".jpg";
-		Log.i(TAG, "saveBitmap:jpegName = " + jpegName);
+		//Log.i(TAG, "saveBitmap:jpegName = " + jpegName);
 		try {
 			FileOutputStream fout = new FileOutputStream(jpegName);
 			BufferedOutputStream bos = new BufferedOutputStream(fout);
-			b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+			b.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+			MediaStore.Images.Media.insertImage(context.getContentResolver(), b, jpegName,""); //
 			bos.flush();
 			bos.close();
-			Log.i(TAG, "saveBitmap成功");
+			//Log.i(TAG, "saveBitmap成功");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.i(TAG, "saveBitmap:失败");
+			//Log.i(TAG, "saveBitmap:失败");
 			e.printStackTrace();
 		}
 	}
+	
+	
 }

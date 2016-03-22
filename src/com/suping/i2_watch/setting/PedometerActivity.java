@@ -87,7 +87,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 	public void onProgressChanged(CircleSeekBar seekBar, int progress,
 			boolean fromUser) {
 		goal = progress;
-		Log.d("OB", progress+"");
+		//Log.d("OB", progress+"");
 		check(goal);
 		textViewStep.setText(goal+"");
 		
@@ -152,7 +152,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 	private void updateUI(int i){
 		switch (i) {
 		case 1:
-			Log.d("OB", "case1");
+			//Log.d("OB", "case1");
 			textViewLight.setTextColor(getResources().getColor(R.color.color_top_bg));
 			textViewMedium.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
@@ -161,7 +161,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 			setDrawable(textViewHeavy,R.drawable.ic_targetheavy_unless);
 			break;
 		case 2:
-			Log.d("OB", "case2");
+			//Log.d("OB", "case2");
 			textViewLight.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewMedium.setTextColor(getResources().getColor(R.color.color_top_bg));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
@@ -170,7 +170,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 			setDrawable(textViewHeavy,R.drawable.ic_targetheavy_unless);
 			break;
 		case 3:
-			Log.d("OB", "case3");
+			//Log.d("OB", "case3");
 			textViewLight.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewMedium.setTextColor(getResources().getColor(R.color.settings_goal_text_color));
 			textViewHeavy.setTextColor(getResources().getColor(R.color.color_top_bg));
@@ -195,7 +195,7 @@ public class PedometerActivity extends Activity implements OnClickListener,Circl
 	 * @param goal
 	 */
 	private void check(int goal){
-		Log.d("OB", "check-->"+goal);
+		//Log.d("OB", "check-->"+goal);
 		if(goal<6400&&goal>=1000){
 			updateUI(1);
 		}else if(goal<12800&&goal>=6400){

@@ -44,10 +44,10 @@ public class AboutActivity extends Activity {
 	         PackageManager manager = this.getPackageManager();
 	          PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
 	          String version = info.versionName;
-	         return "app版本 ：" + version;
+	         return getString(R.string.app_version) + version;
 	     } catch (Exception e) {
 	         e.printStackTrace();
 	     }
-	      return "未知";
+	      return getString(R.string.unknown);
 	 }
 }

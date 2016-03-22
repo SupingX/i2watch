@@ -25,7 +25,6 @@ import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.suping.i2_watch.util.AccessTokenKeeper;
 import com.suping.i2_watch.util.FileUtil;
-import com.suping.i2_watch.util.L;
 import com.suping.i2_watch.util.ScreenShot;
 
 public class SinaActivity extends Activity implements WeiboAuthListener,Response{
@@ -202,7 +201,6 @@ public class SinaActivity extends Activity implements WeiboAuthListener,Response
 		    AccessTokenKeeper.writeAccessToken(SinaActivity.this, mAccessToken); 
 		}else{
 			 String code = b.getString("code", "");
-			 L.e("签名不正确 ：" + code);
 		}
 	}
 
@@ -216,13 +214,13 @@ public class SinaActivity extends Activity implements WeiboAuthListener,Response
 	public void onResponse(BaseResponse response) {
 		switch (response.errCode) {
 		case WBConstants.ErrorCode.ERR_OK://接收微客户端博请求的数据。
-			L.i("接收微客户端博请求的数据  成功");
+//			L.i("接收微客户端博请求的数据  成功");
 			break;
 		case WBConstants.ErrorCode.ERR_CANCEL:
-			L.i("接收微客户端博请求的数据  取消");
+//			L.i("接收微客户端博请求的数据  取消");
 			break;
 		case WBConstants.ErrorCode.ERR_FAIL:
-			L.i("接收微客户端博请求的数据  失败");
+//			L.i("接收微客户端博请求的数据  失败");
 			break;
 
 		default:

@@ -41,7 +41,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.d(TAG, "camera is created");
+		//Log.d(TAG, "camera is created");
 		// The Surface has been created, now tell the camera where to draw the
 		// preview.
 //		try {
@@ -55,7 +55,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 //
 //		} catch (IOException e) {
 //			mCamera.release();
-//			Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+//			//Log.d(TAG, "Error setting camera preview: " + e.getMessage());
 //		}
 
 	}
@@ -86,14 +86,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 //			// startFaceDetection();
 //		} catch (Exception e) {
 //			mCamera.release();
-//			Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+//			//Log.d(TAG, "Error starting camera preview: " + e.getMessage());
 //		}
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// empty. Take care of releasing the Camera preview in your activity.
-		Log.d(TAG, "camera is destroyed");
+		//Log.d(TAG, "camera is destroyed");
 //		mCamera.release();
 //		mCamera = null;
 //		 CameraManager.getInstance().doStopCamera();  

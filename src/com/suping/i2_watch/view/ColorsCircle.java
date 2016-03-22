@@ -1,20 +1,18 @@
 package com.suping.i2_watch.view;
 
+import android.animation.ObjectAnimator;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.suping.i2_watch.R;
 
@@ -80,6 +78,7 @@ public class ColorsCircle extends View {
 	 * 进度改变时的监听
 	 */
 	private OnProgressChangeListener mOnProgressChangeListener = null;
+	private ObjectAnimator objAnimation;
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -156,15 +155,21 @@ public class ColorsCircle extends View {
 		mProgressPaint = new Paint();
 		mBackgroundPaint = new Paint();
 		mSmallPaint = new Paint();
+		mSmallPaint.setDither(true);
 	
 		mProgressPaint.setAntiAlias(true);
+		mProgressPaint.setDither(true);
 		mProgressPaint.setStyle(Paint.Style.STROKE);
 		mProgressPaint.setStrokeWidth(stroke);
+		mProgressPaint.setStrokeJoin(Paint.Join.ROUND);
+		mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
 	
 		mBackgroundPaint.setAntiAlias(true);
 		mBackgroundPaint.setColor(backgroundColor);
 		mBackgroundPaint.setStyle(Paint.Style.STROKE);
 		mBackgroundPaint.setStrokeWidth(stroke);
+		mBackgroundPaint.setStrokeJoin(Paint.Join.ROUND);
+		mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
 	
 		mSmallPaint.setAntiAlias(true);
 		mSmallPaint.setColor(small_backgroundColor);
@@ -232,12 +237,14 @@ public class ColorsCircle extends View {
 		this.mProgressMax = mProgressMax;
 		invalidate();
 	}
+	
+
 
 	public synchronized int getmProgress() {
 		return mProgress;
 	}
 
-	public synchronized void setmProgress(int mProgress) {
+	public  void setmProgress(int mProgress) {
 		if (mProgress < 0) {
 			this.mProgress = 0;
 		}
@@ -252,6 +259,52 @@ public class ColorsCircle extends View {
 			mOnProgressChangeListener.onProgressChanged(mProgress);
 		}
 		invalidate();
+	}
+	
+	public class ProgressItem{
+		private int progress;
+		public ProgressItem(int progress){
+			this.progress = progress;
+		}
+		public int getProgress() {
+			return progress;
+		}
+
+		public void setProgress(int progress) {
+			this.progress = progress;
+		}
+		
+	}
+	
+	public class MyTypeEvaluator implements TypeEvaluator<ProgressItem>  {
+
+		@Override
+		public ProgressItem evaluate(float fraction, ProgressItem startValue, ProgressItem endValue) { //(0-1)
+				int startFloat = startValue.getProgress();	
+				int end = endValue.getProgress();
+		        return new ProgressItem((int) (startFloat + end*fraction - startFloat));
+		}
+	}  
+	
+	public  void setmProgressAnimation(int mProgress) {
+		ProgressItem p = new ProgressItem(mProgress);
+		objAnimation = ObjectAnimator.ofObject(p, "progress", new MyTypeEvaluator(), new ProgressItem(0),new ProgressItem(mProgress));
+		objAnimation.addUpdateListener(new AnimatorUpdateListener() {
+			
+			@Override
+			public void onAnimationUpdate(ValueAnimator animation) {
+				ProgressItem animatedValue = (ProgressItem) animation.getAnimatedValue();
+				setmProgress(animatedValue.getProgress());
+			}
+		});
+		objAnimation.setDuration(200);
+		objAnimation.start();
+	}
+	
+	public void stopAnimation(){
+		if (objAnimation!=null) {
+			objAnimation.cancel();
+		}
 	}
 
 	/**

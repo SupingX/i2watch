@@ -43,6 +43,12 @@ public class AlertDialog {
 	public Window getWindow(){
 		return dialog.getWindow();
 	}
+	
+	public void dismiss(){
+		if (dialog!=null) {
+			dialog.dismiss();
+		}
+	}
 
 	public AlertDialog builder() {
 		// 获取Dialog布局
@@ -102,7 +108,7 @@ public class AlertDialog {
 			final OnClickListener listener) {
 		showPosBtn = true;
 		if ("".equals(text)) {
-			btn_pos.setText("确定");
+			btn_pos.setText(context.getString(R.string.confirm));
 		} else {
 			btn_pos.setText(text);
 		}
@@ -120,7 +126,7 @@ public class AlertDialog {
 			final OnClickListener listener) {
 		showNegBtn = true;
 		if ("".equals(text)) {
-			btn_neg.setText("取消");
+			btn_neg.setText(context.getString(R.string.cancel));
 		} else {
 			btn_neg.setText(text);
 		}
@@ -149,7 +155,7 @@ public class AlertDialog {
 		}
 
 		if (!showPosBtn && !showNegBtn) {
-			btn_pos.setText("确定");
+			btn_pos.setText(context.getString(R.string.confirm));
 			btn_pos.setVisibility(View.VISIBLE);
 			btn_pos.setBackgroundResource(R.drawable.alertdialog_single_selector);
 			btn_pos.setOnClickListener(new OnClickListener() {

@@ -1,7 +1,7 @@
 <resources>
 
     <dimen name="weekday">4dp</dimen>
-    <dimen name="dime_top_text">18sp</dimen>
+    <dimen name="dime_top_text">14sp</dimen>
     <dimen name="dimen_top_height">48dp</dimen>
     
         <dimen name="virtual_call_incoming_name_margintop">20dip</dimen>

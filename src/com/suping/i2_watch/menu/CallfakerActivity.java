@@ -61,7 +61,7 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 	
 	private void setClick() {
 		imgBack.setOnClickListener(this);
-		tvPhone.setOnClickListener(this);
+//		tvPhone.setOnClickListener(this);
 		rl.setOnClickListener(this);
 		rlTest.setOnClickListener(this);
 	}
@@ -79,7 +79,7 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 //					R.anim.activity_from_left_to_right_exit);
 			break;
 		case R.id.rl_call:
-			Log.e("Callfaker", "rl_call-----------------------");
+			//Log.e("Callfaker", "rl_call-----------------------");
 			Intent intent = new Intent(CallfakerActivity.this,
 					CallfakerFromActivity.class);
 			startActivityForResult(intent, 1);
@@ -99,18 +99,18 @@ public class CallfakerActivity extends Activity implements OnClickListener {
 	private RelativeLayout rlTest;
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK
-				&& event.getAction() == KeyEvent.ACTION_DOWN) {
-			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出程序",
-						Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-			} else {
-				finish();
-				System.exit(0);
-			}
-			return true;
-		}
+//		if (keyCode == KeyEvent.KEYCODE_BACK
+//				&& event.getAction() == KeyEvent.ACTION_DOWN) {
+//			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(getApplicationContext(), "再按一次退出程序",
+//						Toast.LENGTH_SHORT).show();
+//				exitTime = System.currentTimeMillis();
+//			} else {
+//				finish();
+//				System.exit(0);
+//			}
+//			return true;
+//		}
 		return super.onKeyDown(keyCode, event);
 	}
 }

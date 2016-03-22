@@ -19,11 +19,11 @@ public class SportRemindStartTimeActivity extends AbstractSetTimeActivity {
 	@Override
 	public void initValue() {
 		String hourStart = (String) SharedPreferenceUtil.get(SportRemindStartTimeActivity.this,
-				I2WatchProtocolDataForWrite.SHARE_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
+				I2WatchProtocolDataForWrite.SHARE_WATER_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
 		npHour.setValue(Integer.valueOf(hourStart));
 		
 		String min = (String) SharedPreferenceUtil.get(SportRemindStartTimeActivity.this,
-				I2WatchProtocolDataForWrite.SHARE_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
+				I2WatchProtocolDataForWrite.SHARE_WATER_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
 		npMin.setValue(Integer.valueOf(min));
 //		if (min.equals(values[0])) {
 //			npMin.setValue(0);
@@ -37,10 +37,10 @@ public class SportRemindStartTimeActivity extends AbstractSetTimeActivity {
 		int hour = npHour.getValue();
 		
 		String hourEnd = (String) SharedPreferenceUtil.get(SportRemindStartTimeActivity.this,
-				I2WatchProtocolDataForWrite.SHARE_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
+				I2WatchProtocolDataForWrite.SHARE_WATER_END_HOUR, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
 		
 		if(hour >= Integer.parseInt(hourEnd)){ //开始时间大于结束时间
-			Log.e("SportRemindStartTimeActivcity", "开始时间大于结束时间，设置错误。");
+			//Log.e("SportRemindStartTimeActivcity", "开始时间大于结束时间，设置错误。");
 			return false;
 		}
 		return true;

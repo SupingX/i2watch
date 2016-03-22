@@ -92,6 +92,15 @@
                     android:textColor="#ff959595" />
             </LinearLayout>
         </RelativeLayout>
+ <!--        <ImageView 
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/img_loading"
+            android:src="@drawable/ic_loading"
+            android:layout_centerHorizontal="true"
+android:layout_alignParentBottom="true"
+            /> -->
     </RelativeLayout>
 
     <TextView

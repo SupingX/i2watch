@@ -50,7 +50,7 @@ public abstract class AbstractSetTimeActivity extends Activity {
 		
 		
 		npMin = (NumberPicker) findViewById(R.id.np_sec);
-		npMin.setMaxValue(23);
+		npMin.setMaxValue(59);
 		npMin.setMinValue(0);
 		
 //		values = new String[] { "00", "30" };
@@ -85,10 +85,10 @@ public abstract class AbstractSetTimeActivity extends Activity {
 				int hour = npHour.getValue();
 				int min = npMin.getValue();
 				
-				if(!checkTime()){
-					Toast.makeText(AbstractSetTimeActivity.this, "时间设置有误！", Toast.LENGTH_LONG).show();
-					return;
-				}
+//				if(!checkTime()){
+//					Toast.makeText(AbstractSetTimeActivity.this, "时间设置有误！", Toast.LENGTH_LONG).show();
+//					return;
+//				}
 				
 				String minStr = hour < 10 ? "0" + hour : hour + "";
 				String secStr = min<10?"0"+min:min+"";

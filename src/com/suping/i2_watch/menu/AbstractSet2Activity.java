@@ -93,10 +93,10 @@ public abstract class AbstractSet2Activity extends Activity {
 				int sec = npMin.getValue();
 				String minStr = min < 10 ? "0" + min : min + "";
 				String secStr = sec < 10 ? "0" + sec : sec + "" ;
-				if(!checkTime()){
-					Toast.makeText(AbstractSet2Activity.this, "时间设置有误！", Toast.LENGTH_LONG).show();
-					return;
-				}
+//				if(!checkTime()){
+//					Toast.makeText(AbstractSet2Activity.this, "时间设置有误！", Toast.LENGTH_LONG).show();
+//					return;
+//				}
 				// Toast.makeText(getApplicationContext(), min+"|||||"+sec,
 				// 0).show();
 				b = new Bundle();

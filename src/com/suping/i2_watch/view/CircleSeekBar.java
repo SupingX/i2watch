@@ -142,6 +142,7 @@ public class CircleSeekBar extends View {
 		mColorWheelPaint.setStyle(Paint.Style.STROKE);
 		mColorWheelPaint.setStrokeWidth(mColorWheelStrokeWidth);
 
+
 		mPointerHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPointerHaloPaint.setColor(Color.BLACK);
 		mPointerHaloPaint.setAlpha(0x50);
@@ -156,6 +157,7 @@ public class CircleSeekBar extends View {
 		// mArcColor.setColor(Color.GREEN);
 		mArcColor.setStyle(Paint.Style.STROKE);
 		mArcColor.setStrokeWidth(mColorWheelStrokeWidth);
+		mArcColor.setStrokeCap(Paint.Cap.ROUND);
 
 		arc_finish_radians = (int) calculateAngleFromText(init_position) - 90;
 

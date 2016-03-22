@@ -37,11 +37,11 @@ public class IncomingEndtimeActivity extends AbstractSet2Activity {
 				I2WatchProtocolDataForWrite.SHARE_INCOMING_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
 		
 		if(hour < Integer.parseInt(hourStart)){ //开始时间大于结束时间
-			Log.e("IncomingEndtimeActivity", "开始时间大于结束时间，设置错误。");
+			//Log.e("IncomingEndtimeActivity", "开始时间大于结束时间，设置错误。");
 			return false;
 		} else if (hour == Integer.parseInt(hourStart)){
 			if(min<=Integer.parseInt(minStart)){
-				Log.e("IncomingEndtimeActivity", "开始分钟大于结束分钟，设置错误。");
+				//Log.e("IncomingEndtimeActivity", "开始分钟大于结束分钟，设置错误。");
 				return false;
 			}
 		}

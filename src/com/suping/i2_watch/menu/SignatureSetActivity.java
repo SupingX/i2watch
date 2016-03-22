@@ -13,14 +13,17 @@ import android.widget.Toast;
 import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SignatureSetActivity extends BaseActivity implements OnClickListener{
 	private EditText edSign;
 	private TextView tvConfirm;
 	private TextView tvCancel;
-	private AbstractSimpleBlueService mSimpleBlueService;
+//	private XplBluetoothService xplBluetoothService;
+	private XBlueService xBlueService;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,7 +37,9 @@ public class SignatureSetActivity extends BaseActivity implements OnClickListene
 	protected void onStart() {
 		super.onStart();
 		
-		mSimpleBlueService = getSimpleBlueService();
+//		xplBluetoothService = getXplBluetoothService();
+		
+		xBlueService = getXBlueService();
 		
 	}
 	
@@ -92,10 +97,11 @@ public class SignatureSetActivity extends BaseActivity implements OnClickListene
 			Intent intent = new Intent(SignatureSetActivity.this,MenuActivity.class);
 			intent.putExtras(b);
 			SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_SIGN_SET, ed);
-			if (isConnected()) {
-				mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
-			}else{
+//			if (isXplConnected()) {
+			if (xBlueService!=null && xBlueService.isAllConnected()) {
 				
+				xBlueService.write(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
+//				xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
 			}
 			setResult(RESULT_OK, intent);
 			finish();
@@ -107,5 +113,15 @@ public class SignatureSetActivity extends BaseActivity implements OnClickListene
 		default:
 			break;
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+//		if (isXplConnected()) {
+		if (xBlueService!=null && xBlueService.isAllConnected()) {
+//			xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
+			xBlueService.write(I2WatchProtocolDataForWrite.hexDataForSignatureSync(getApplicationContext()));
+		}
+		super.onBackPressed();
 	}
 }

@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/virtual_call_incoming_name_margintop"
-        android:text="测试"
         android:textColor="#ffffff"
         android:textSize="26sp" />
 
@@ -21,7 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
-        android:text="15626570445"
         android:textColor="#ffffff"
         android:textSize="20sp" />
 

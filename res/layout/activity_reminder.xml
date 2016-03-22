@@ -8,7 +8,8 @@
 
     <include layout="@layout/top_layout" />
 
-    <ScrollView
+  <com.suping.i2_watch.view.DampingScrollView
+      android:scrollbars="none"
                   android:background="@color/grey_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -29,8 +30,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                         android:textColor="@color/grey_text"
-                    android:text="时间设定" />
+                  style="@style/title_grey"
+                    android:text="@string/time_setting" />
 			    <LinearLayout 
 			        android:layout_height="wrap_content"
 			        android:layout_width="match_parent"
@@ -177,8 +178,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/grey_text"
-                    android:text="有效日期" />
+             style="@style/title_grey"
+                    android:text="@string/zhouqi" />
         	              <View
                 style="@style/line"
                />
@@ -253,6 +254,5 @@
                 style="@style/line"
                />
         </LinearLayout>
-    </ScrollView>
-
+</com.suping.i2_watch.view.DampingScrollView>
 </LinearLayout>

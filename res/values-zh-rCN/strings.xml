@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	  <string name="disconnected">未连接</string>
+
+    <string name="disconnected">未连接</string>
     <string name="incoming_message">来电联系人</string>
     <string name="cursor_random">通讯录随机抽取</string>
     <string name="pedometer">目标</string>
@@ -8,7 +9,7 @@
     <string name="sport_tips_start">你已经完成目标   </string>
     <string name="sport_tips_end">,加油！</string>
     <string name="sport_burned_value">3000</string>
-    <string name="sport_burned">卡洛里</string>
+    <string name="sport_burned">卡路里</string>
     <string name="sport_burned_unit">千卡</string>
     <string name="sport_time">时间</string>
     <string name="sport_time_unit">小时</string>
@@ -18,7 +19,7 @@
     <string name="disconnect_reminder">防丢提醒</string>
     <string name="remote_camera">遥控照相</string>
     <string name="seacrch_i2_watch">寻找手环</string>
-    <string name="record">记录</string>
+    <string name="record">历史记录</string>
     <string name="brightness">亮度</string>
     <string name="five">5</string>
     <string name="add">+</string>
@@ -27,7 +28,7 @@
     <string name="signature_is_not_set">签名未设置</string>
     <string name="incoming_reminder">来电提醒</string>
     <string name="callfaker">虚拟来电</string>
-    <string name="shutdown_i2_watch">关闭  I2 Watch</string>
+    <string name="shutdown_i2_watch">关闭手环</string>
     <string name="sleep">睡眠</string>
     <string name="deep_sleep">深睡</string>
     <string name="light_sleep">浅睡</string>
@@ -70,8 +71,8 @@
 
     <string name="is_close">确定关闭手环？</string>
     <string name="setting">设置</string>
-    <string name="personal_information">个人信息</string>
-    <string name="pedometer_target">运动目标</string>
+    <string name="personal_information">用户信息</string>
+    <string name="pedometer_target">计步目标</string>
     <string name="about">关于</string>
     <string name="name_personal">姓名</string>
     <string name="input_your_name_">请输入你的姓名</string>
@@ -87,7 +88,64 @@
     <string name="light">适量</string>
     <string name="medium">中等</string>
     <string name="heavy">大量</string>
-     <string name="sport_remind_tips">在xx:xx 到 xx:xx,如果xxx分钟内没有运动，I2 Watch 将会震动提醒.</string>
-       <string name="search_unconnected">蓝牙未连接...</string>
+    <string name="search_unconnected">蓝牙未连接</string>
+    <string name="xialashuaxin">下拉可以刷新</string>
+    <string name="time_setting">时间设定</string>
+    <string name="zhouqi">周期</string>
+    <string name="sync">同步</string>
+    <string name="hour">\'</string>
+    <string name="min">\"</string>
+    <string name="sleep_info">睡眠质量 : 优</string>
+    <string name="sleep_info_normal">睡眠质量 : 一般</string>
+    <string name="sleep_info_bad">睡眠质量 : 差</string>
+    <string name="sleep_info_default">睡眠质量 :无数据</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="disconnect">未连接</string>
+    <string name="connect_device">连接手环</string>
+    <string name="connectting">正在连接</string>
+    <string name="unbind">解除绑定</string>
+    <string name="no_binded_device">未绑定设备</string>
+    <string name="info_connect">[已连接]</string>
+    <string name="info_unconnected">[未连接]</string>
+    <string name="un_binded">[未绑定]</string>
+    <string name="_b17watch">绑定手环</string>
+    <string name="device_nearby">附近的设备</string>
+    <string name="app_version">app版本 ：</string>
+    <string name="unknown">未知</string>
+    <string name="sync_history">同步手环历史数据 </string>
+    <string name="sync_history_time_out">同步历史数据超时</string>
+    <string name="sync_history_all">同步所有历史记录</string>
+    <string name="sync_history_today">同步今天记录</string>
+    <string name="sleep_deep">"深睡 "</string>
+    <string name="hour_char">小时</string>
+    <string name="sleep_light">浅睡</string>
+    <string name="sleep_awak">清醒</string>
+    <string name="cal">"消耗 "</string>
+    <string name="unit_cal">千卡</string>
+    <string name="time">时间</string>
+    <string name="distance">距离</string>
+    <string name="unit_distance">千米</string>
+    <string name="bind_device">绑定手环</string>
+    <string name="weekday">周</string>
+    <string name="target_count">目标:</string>
+    <string name="fenxi">分析</string>
+    <string name="complete_percent">完成率</string>
+    <string name="frg_target">目标</string>
+    <string name="count">统计</string>
+    <string name="sleep_deep_count">深睡时间</string>
+    <string name="sleep_light_light">浅睡时间</string>
+    <string name="bushu">步数</string>
+    <string name="minute_unit">分钟</string>
+    <string name="unit_month">月</string>
+    <string name="unit_day">日</string>
+    <string name="confirm_exit">退出程序？</string>
+    <string name="share">分享</string>
+    <string name="name_is_null">姓名为空</string>
+    <string name="number_is_null">号码为空</string>
+    <string name="test_vartual">测试</string>
+    <string name="loading_sleep">正在加载睡眠数据</string>
+    <string name="sycn_setting_ing">同步手机设置中</string>
 
 </resources>

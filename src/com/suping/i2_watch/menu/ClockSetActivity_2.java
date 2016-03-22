@@ -17,7 +17,7 @@ public class ClockSetActivity_2 extends AbstractSetTimeActivity {
 	@Override
 	public void initValue() {
 		String hour = (String) SharedPreferenceUtil.get(ClockSetActivity_2.this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_2,
-				"07");
+				"12");
 		npHour.setValue(Integer.valueOf(hour));
 
 		String min = (String) SharedPreferenceUtil.get(ClockSetActivity_2.this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_2,

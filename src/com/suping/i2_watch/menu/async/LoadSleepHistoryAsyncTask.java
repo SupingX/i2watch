@@ -1,4 +1,4 @@
-package com.suping.i2_watch.menu.async;
+/*package com.suping.i2_watch.menu.async;
 
 import android.os.AsyncTask;
 
@@ -39,3 +39,4 @@ public class LoadSleepHistoryAsyncTask extends AsyncTask<String, Void, int[]> {
 		mOnPostExecuteListener = l;
 	}
 }
+*/

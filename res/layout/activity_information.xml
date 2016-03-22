@@ -8,16 +8,21 @@
 
     <include layout="@layout/top_layout" />
 
-    <ScrollView
+    <com.suping.i2_watch.view.DampingScrollView
+        android:scrollbars="none"
+                    android:background="@color/grey_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical" 
             >
-
+    <View
+                style="@style/line"
+            />
             <RelativeLayout
                 android:id="@+id/rl_name"
                 android:layout_width="match_parent"
@@ -38,6 +43,7 @@
                   	android:textSize="16sp"/>
 
                 <com.suping.i2_watch.view.CleanEditText
+                        android:textColor="@color/grey"
                     android:hint="@string/input_your_name_"
                     android:singleLine="true"
                     android:id="@+id/ed_name"
@@ -250,10 +256,10 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/icon_right_arrow" />
                 </RelativeLayout>
-                   <View
+                 <View
                 style="@style/line"
-                android:layout_marginLeft="20dp" />
+            />
         </LinearLayout>
-    </ScrollView>
+   </com.suping.i2_watch.view.DampingScrollView>
 
 </LinearLayout>

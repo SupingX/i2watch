@@ -28,7 +28,7 @@ public class DateUtil {
 	 */
 	public static int getTimeFormat(Context context) {
 //		String timeFormat = android.provider.Settings.System.getString(context.getContentResolver(), android.provider.Settings.System.TIME_12_24);
-//		Log.e("DateUtil", "timeFormat :" + timeFormat);
+//		//Log.e("DateUtil", "timeFormat :" + timeFormat);
 //		if (timeFormat.equals("24")) {
 //			return 0;
 //		} else if (timeFormat.equals("12")) {
@@ -37,8 +37,10 @@ public class DateUtil {
 //		return -1;
 		boolean is24HourFormat = android.text.format.DateFormat.is24HourFormat(context);
 		if (is24HourFormat) {
+			Log.v("xpl", "24小时");
 			return 0;
 		}else{
+			Log.v("xpl", "12小时");
 			return 1;
 		}
 	}
@@ -112,7 +114,7 @@ public class DateUtil {
 		c.setTime(date);
 		;
 		c.add(Calendar.MONTH, diff);
-		Log.v("", "偏移后的月份 ：" + c.get(Calendar.MONTH));
+		//Log.v("", "偏移后的月份 ：" + c.get(Calendar.MONTH));
 		return c.getTime();
 	}
 

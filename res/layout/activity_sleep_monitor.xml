@@ -8,10 +8,11 @@
 
     <include layout="@layout/top_layout" />
 
-    <ScrollView
+  <com.suping.i2_watch.view.DampingScrollView
+           android:scrollbars="none"
         android:layout_width="match_parent"
 
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,6 +152,6 @@
     />
                  </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.suping.i2_watch.view.DampingScrollView>
 
 </LinearLayout>

@@ -22,6 +22,33 @@ public class History extends DataSupport{
 	private int sleepOneself_1;
 	private int sleepOneself_2;
 	private int sleepOneself_3;
+	public History(String year, String month, String day, String hour, int sportStep_1, int sportStep_2, int sportStep_3, int sportTime_1, int sportTime_2, int sportTime_3, int sleepOneself_1,
+			int sleepOneself_2, int sleepOneself_3, int sleepAwak_1, int sleepAwak_2, int sleepAwak_3, int sleepLight_1, int sleepLight_2, int sleepLight_3, int sleepDeep_1, int sleepDeep_2,
+			int sleepDeep_3) {
+		super();
+		this.year = year;
+		this.month = month;
+		this.day = day;
+		this.hour = hour;
+		this.sportStep_1 = sportStep_1;
+		this.sportStep_2 = sportStep_2;
+		this.sportStep_3 = sportStep_3;
+		this.sportTime_1 = sportTime_1;
+		this.sportTime_2 = sportTime_2;
+		this.sportTime_3 = sportTime_3;
+		this.sleepOneself_1 = sleepOneself_1;
+		this.sleepOneself_2 = sleepOneself_2;
+		this.sleepOneself_3 = sleepOneself_3;
+		this.sleepAwak_1 = sleepAwak_1;
+		this.sleepAwak_2 = sleepAwak_2;
+		this.sleepAwak_3 = sleepAwak_3;
+		this.sleepLight_1 = sleepLight_1;
+		this.sleepLight_2 = sleepLight_2;
+		this.sleepLight_3 = sleepLight_3;
+		this.sleepDeep_1 = sleepDeep_1;
+		this.sleepDeep_2 = sleepDeep_2;
+		this.sleepDeep_3 = sleepDeep_3;
+	}
 	/** 1个小时内3个值  清醒时间　**/
 	private int sleepAwak_1;
 	private int sleepAwak_2;
@@ -177,32 +204,41 @@ public class History extends DataSupport{
 	public void setSleepDeep_3(int sleepDeep_3) {
 		this.sleepDeep_3 = sleepDeep_3;
 	}
-	
 	@Override
 	public String toString() {
-		return "[ 日期："+this.year+
-				"/"+this.month
-				+"/"+this.day
-				+"小时："+this.hour+""+"\n"
-				+"时段1 :"+sportStep_1
-				+"/"+sportTime_1
-				+"/"+sleepOneself_1
-				+"/"+sleepAwak_1
-				+"/"+sleepLight_1
-				+"/"+sleepDeep_1+"\n"
-				+"时段2 :"+sportStep_2
-				+"/"+sportTime_2
-				+"/"+sleepOneself_2
-				+"/"+sleepAwak_2
-				+"/"+sleepLight_2
-				+"/"+sleepDeep_2+"\n"
-				+"时段3 :"+sportStep_3
-				+"/"+sportTime_3
-				+"/"+sleepOneself_3
-				+"/"+sleepAwak_3
-				+"/"+sleepLight_3
-				+"/"+sleepDeep_3+"]";
-				
+		return "History [id=" + id + ", year=" + year + ", month=" + month + ", day=" + day + ", hour=" + hour + ", sportStep_1=" + sportStep_1 + ", sportStep_2=" + sportStep_2 + ", sportStep_3="
+				+ sportStep_3 + ", sportTime_1=" + sportTime_1 + ", sportTime_2=" + sportTime_2 + ", sportTime_3=" + sportTime_3 + ", sleepOneself_1=" + sleepOneself_1 + ", sleepOneself_2="
+				+ sleepOneself_2 + ", sleepOneself_3=" + sleepOneself_3 + ", sleepAwak_1=" + sleepAwak_1 + ", sleepAwak_2=" + sleepAwak_2 + ", sleepAwak_3=" + sleepAwak_3 + ", sleepLight_1="
+				+ sleepLight_1 + ", sleepLight_2=" + sleepLight_2 + ", sleepLight_3=" + sleepLight_3 + ", sleepDeep_1=" + sleepDeep_1 + ", sleepDeep_2=" + sleepDeep_2 + ", sleepDeep_3=" + sleepDeep_3
+				+ "]";
 	}
+	
+//	@Override
+//	public String toString() {
+//		return "[ 日期："+this.year+
+//				"/"+this.month
+//				+"/"+this.day
+//				+"小时："+this.hour+""+"\n"
+//				+"时段1 :"+sportStep_1
+//				+"/"+sportTime_1
+//				+"/"+sleepOneself_1
+//				+"/"+sleepAwak_1
+//				+"/"+sleepLight_1
+//				+"/"+sleepDeep_1+"\n"
+//				+"时段2 :"+sportStep_2
+//				+"/"+sportTime_2
+//				+"/"+sleepOneself_2
+//				+"/"+sleepAwak_2
+//				+"/"+sleepLight_2
+//				+"/"+sleepDeep_2+"\n"
+//				+"时段3 :"+sportStep_3
+//				+"/"+sportTime_3
+//				+"/"+sleepOneself_3
+//				+"/"+sleepAwak_3
+//				+"/"+sleepLight_3
+//				+"/"+sleepDeep_3+"]";
+//			
+	
+//	}
 	
 }

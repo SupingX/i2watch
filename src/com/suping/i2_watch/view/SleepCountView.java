@@ -149,8 +149,10 @@ public class SleepCountView extends View {
 	 * @param i
 	 */
 	private float getRectHeight(int value) {
-		mPaintRect.setColor(Color.rgb(15, 39, 135));
-		float height = (float) ((mHeight - 2 * spaceY) * 1) / 3;;
+//		mPaintRect.setColor(Color.rgb(15, 39, 135));
+		mPaintRect.setColor(Color.rgb(200, 98, 34));
+		float height = (float) ((mHeight - 2 * spaceY) * 3) / 3;
+//		float height = (float) ((mHeight - 2 * spaceY) * 1) / 3;;
 		switch (value) {
 		case 0:
 			mPaintRect.setColor(Color.rgb(15, 39, 135));

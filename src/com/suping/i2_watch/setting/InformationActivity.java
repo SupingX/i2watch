@@ -267,7 +267,7 @@ public class InformationActivity extends Activity implements OnClickListener {
 
 	private void initSex() {
 		isMale = (boolean) SharedPreferenceUtil.get(getApplicationContext(), SHARE_ISMALE, true);
-		Log.d("OB", "isMale:" + isMale);
+		//Log.d("OB", "isMale:" + isMale);
 		validateGender();
 		enableGender();
 	}

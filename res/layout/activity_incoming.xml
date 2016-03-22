@@ -8,20 +8,28 @@
 
     <include layout="@layout/top_layout" />
 
-    <View style="@style/line" 
-                  android:layout_marginTop="40dp"
-        />
+  
 
-    <ScrollView
-             android:background="@color/white"
+    <com.suping.i2_watch.view.DampingScrollView
+           android:scrollbars="none"
+             android:background="@color/grey_bg"
+          
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
 
         <LinearLayout
+            android:background="#fff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
        
             android:orientation="vertical" >
+     <View   android:layout_height="40dp"
+  			    android:layout_width="match_parent"
+  			    android:background="@color/grey_bg"
+              />
+         <View
+                style="@style/line"
+            />
             <RelativeLayout
       
                 android:id="@+id/rl_start"
@@ -103,6 +111,5 @@
                 style="@style/line"
                 />
         </LinearLayout>
-    </ScrollView>
-
+</com.suping.i2_watch.view.DampingScrollView>
 </LinearLayout>

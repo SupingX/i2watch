@@ -1,27 +1,26 @@
 package com.suping.i2_watch.setting;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import com.lee.pullrefresh.ui.PullToRefreshScrollView;
 import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
-import com.suping.i2_watch.R.id;
-import com.suping.i2_watch.R.layout;
-import com.suping.i2_watch.broadcastreceiver.SimpleBluetoothBroadcastReceiverBroadcastReceiver;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
-import com.suping.i2_watch.service.SimpleBlueService;
+import com.suping.i2_watch.broadcastreceiver.ImpXplBroadcastReceiver;
+import com.suping.i2_watch.service.AddressSaved;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueBroadcastReceiver;
+import com.suping.i2_watch.service.xblue.XBlueBroadcastUtils;
+import com.suping.i2_watch.service.xblue.XBlueService;
+import com.suping.i2_watch.service.xblue.XBlueUtils;
 import com.suping.i2_watch.view.ActionSheetDialog;
 import com.suping.i2_watch.view.ActionSheetDialog.OnSheetItemClickListener;
 import com.suping.i2_watch.view.ActionSheetDialog.SheetItemColor;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.bluetooth.BluetoothGatt;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,11 +32,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -52,9 +49,9 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	private ImageView img_refresh;
 	private TextView tvState;
 	private ListView mListView;
-	private List<BluetoothDevice> devices;
+	private List<BluetoothDevice> deviceList;
 	private BleDevicesAdapter mBleDevicesAdapter;
-	private AbstractSimpleBlueService mSimpleBlueService;
+	// private XplBluetoothService xplBluetoothService;
 
 	private static Handler mHandler = new Handler() {
 		@Override
@@ -63,46 +60,111 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		}
 	};
 
-	private SimpleBluetoothBroadcastReceiverBroadcastReceiver mReceiver = new SimpleBluetoothBroadcastReceiverBroadcastReceiver() {
-		@Override
-		public void doBlueDisconnect(int state) {
-			super.doBlueDisconnect(state);
-			runOnUiThread(new Runnable() {
+	private XBlueBroadcastReceiver receiver = new XBlueBroadcastReceiver() {
+		public void doDeviceFound(final java.util.ArrayList<BluetoothDevice> devices) {
+			mHandler.post(new Runnable() {
+				@Override
 				public void run() {
-					updateBlueState();
-				}
-			});
-		}
-
-		@Override
-		public void doDeviceFound(final BluetoothDevice device) {
-			super.doDeviceFound(device);
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					addDevice(device);
+					deviceList.clear();
+					if (devices!=null) {
+						deviceList.addAll(devices);
+					}
+					
 					mBleDevicesAdapter.notifyDataSetChanged();
 				}
 			});
 		}
 
 		@Override
-		public void doDiscoveredWriteService() {
-			super.doDiscoveredWriteService();
-			runOnUiThread(new Runnable() {
+		public void doServiceDiscovered(BluetoothDevice device) {
+			mHandler.post(new Runnable() {
+
+				@Override
 				public void run() {
-					if (connectingDialog!=null && connectingDialog.isShowing()) {
+					tvState.setText(getString(R.string.info_connect));
+					// updateBlueState();
+					setCurrentDevice();
+					if (connectingDialog != null && connectingDialog.isShowing()) {
 						connectingDialog.dismiss();
 					}
-					returnToMain();
 				}
 			});
 		}
-		
-		public void doDiscoveredWrongService() {
-			if (connectingDialog!=null && connectingDialog.isShowing()) {
-				connectingDialog.dismiss();
-			}
+
+		@Override
+		public void doStepAndCalReceiver(long[] data) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void doSyncStart() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void doSyncEnd() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void doCamera() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void doConnectStateChange(BluetoothDevice device, final int state) {
+			mHandler.post(new Runnable() {
+				public void run() {
+					if (state == BluetoothGatt.STATE_DISCONNECTED) {
+						// tvState.setText(getString(R.string.info_unconnected));
+						tvState.setText(getString(R.string.info_unconnected));
+					}
+					// updateBlueState();
+				}
+			});
+			
+		};
+	};
+
+	private ImpXplBroadcastReceiver xplReceiver = new ImpXplBroadcastReceiver() {
+		public void doDeviceFound(final BluetoothDevice device, int rssi) {
+			mHandler.post(new Runnable() {
+				public void run() {
+					addDevice(device);
+					mBleDevicesAdapter.notifyDataSetChanged();
+				}
+			});
+		};
+
+		public void doConnectStateChange(BluetoothDevice device, final int state) {
+			mHandler.post(new Runnable() {
+				public void run() {
+					if (state == BluetoothGatt.STATE_DISCONNECTED) {
+						// tvState.setText(getString(R.string.info_unconnected));
+						tvState.setText(getString(R.string.info_unconnected));
+					}
+					// updateBlueState();
+				}
+			});
+		};
+
+		public void doServiceDisCovered(BluetoothDevice device) {
+			mHandler.post(new Runnable() {
+				public void run() {
+					tvState.setText(getString(R.string.info_connect));
+					// updateBlueState();
+					setCurrentDevice();
+					if (connectingDialog != null && connectingDialog.isShowing()) {
+						connectingDialog.dismiss();
+					}
+					// returnToMain();
+
+				}
+			});
 		};
 
 	};
@@ -115,7 +177,7 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 
 		initViews();
 		setListener();
-		devices = new ArrayList<>();
+		deviceList = new ArrayList<>();
 		mBleDevicesAdapter = new BleDevicesAdapter();
 		mListView.setAdapter(mBleDevicesAdapter);
 	}
@@ -123,8 +185,11 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService = getSimpleBlueService();
-		registerReceiver(mReceiver, SimpleBlueService.getIntentFilter());
+		// xplBluetoothService = getXplBluetoothService();
+		xBlueService = getXBlueService();
+		Log.e("", "xBlueService : " + xBlueService);
+		// registerReceiver(xplReceiver, XplBluetoothService.getIntentFilter());
+		registerReceiver(receiver, XBlueBroadcastUtils.instance().getIntentFilter());
 	}
 
 	@Override
@@ -134,6 +199,7 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		checkBlue();
 		updateBlueState();
 
+		xBlueService.startScan();
 	}
 
 	@Override
@@ -145,8 +211,9 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		onceEnter = true;
-		unregisterReceiver(mReceiver);
-		if (connectingDialog!=null && connectingDialog.isShowing()) {
+		// unregisterReceiver(xplReceiver);
+		unregisterReceiver(receiver);
+		if (connectingDialog != null) {
 			connectingDialog.dismiss();
 		}
 	}
@@ -155,27 +222,27 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent arg2) {
 		switch (requestCode) {
 		case 1:
-	
+
 			if (resultCode == RESULT_OK) {
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						if (mSimpleBlueService.isEnable()) {
-							// 蓝牙打开
-							mSimpleBlueService.scanDevice(true);
-						} else {
-							// 未打开
-						}
+						// if (mSimpleBlueService.isEnable()) {
+						// // 蓝牙打开
+						// // mSimpleBlueService.scanDevice(true);
+						// } else {
+						// // 未打开
+						// }
 					}
 				}, 5000);
 			}
-	
+
 			break;
-	
+
 		default:
 			break;
 		}
-	
+
 		super.onActivityResult(requestCode, resultCode, arg2);
 	}
 
@@ -183,26 +250,51 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
-			mSimpleBlueService.scanDevice(false);
 			finish();
 			break;
 		case R.id.img_refresh:
-			Log.v("", "刷新搜索");
-			pBarRefresh.setVisibility(View.VISIBLE);
-			img_refresh.setVisibility(View.GONE);
-			devices.clear();
-			mSimpleBlueService.scanDevice(true);
-			mBleDevicesAdapter.notifyDataSetChanged();
+			// Log.v("", "刷新搜索");
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+
+					pBarRefresh.setVisibility(View.VISIBLE);
+					img_refresh.setVisibility(View.GONE);
+					// deviceList.clear();
+					// mBleDevicesAdapter.notifyDataSetChanged();
+					// if (xplBluetoothService!=null) {
+					// xplBluetoothService.scanDevice(true);
+					// }
+					deviceList.clear();
+					 mBleDevicesAdapter.notifyDataSetChanged();
+					if (xBlueService != null) {
+						xBlueService.startScan();
+					}
+				}
+			});
+
 			break;
 		case R.id.img_exit:
 			// 当蓝牙是连接状态时，就可以关闭蓝牙连接。
 			exitBinded();
 			break;
 		case R.id.progressbar:
-			Log.v("", "停止搜索");
-			pBarRefresh.setVisibility(View.GONE);
-			img_refresh.setVisibility(View.VISIBLE);
-			mSimpleBlueService.scanDevice(false);
+			// Log.v("", "停止搜索");
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					pBarRefresh.setVisibility(View.GONE);
+					img_refresh.setVisibility(View.VISIBLE);
+					/*
+					 * if (xplBluetoothService!=null) {
+					 * xplBluetoothService.scanDevice(false); }
+					 */
+					if (xBlueService != null) {
+						xBlueService.stopScan();
+					}
+				}
+			});
+
 			break;
 		default:
 			break;
@@ -216,14 +308,17 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		tvDeviceName = (TextView) findViewById(R.id.tv_device_name);
 		tvState = (TextView) findViewById(R.id.tv_state);
 		tvDeviceAddress = (TextView) findViewById(R.id.tv_device_address);
-		textViewTitle.setText("连接设备");
+		textViewTitle.setText(getString(R.string.connect_device));
 		mListView = (ListView) findViewById(R.id.lv_device);
 		imgExit = (ImageView) findViewById(R.id.img_exit);
 		img_refresh = (ImageView) findViewById(R.id.img_refresh);
 		pBarRefresh = (ProgressBar) findViewById(R.id.progressbar);
+
 	}
 
-	private ProgressDialog connectingDialog;
+	private android.app.AlertDialog connectingDialog;
+	private XBlueService xBlueService;
+
 	public void setListener() {
 		imgBack.setOnClickListener(this);
 		pBarRefresh.setOnClickListener(this);
@@ -231,19 +326,52 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 		imgExit.setOnClickListener(this);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-				final BluetoothDevice device = devices.get(position);
-				connectingDialog = showProgressDialog("正在连接...",true);
-				mSimpleBlueService.scanDevice(false);
-					mSimpleBlueService.close();
+				mHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						connectingDialog = showLoadingDialog(getString(R.string.connectting), false);
+						/*
+						 * xplBluetoothService.scanDevice(false); //
+						 * AddressSaved.disBindDevice(getApplicationContext());
+						 * // xplBluetoothService.setCurrentAddressEmpty(); //
+						 * setCurrentDevice(); xplBluetoothService.close();
+						 * updateBlueState(); mHandler.postDelayed(new
+						 * Runnable() {
+						 * 
+						 * @Override public void run() {
+						 * xplBluetoothService.connect(device.getAddress()); }
+						 * }, 2 * 1000);
+						 */
+
+						if (xBlueService!=null) {
+						xBlueService.stopScan();
+							xBlueService.closeAll();
+					
+						BluetoothDevice device = deviceList.get(position);
+						XBlueUtils.clear(DeviceActivity.this);
+						XBlueUtils.saveBlue(DeviceActivity.this, device.getAddress());
+						setCurrentDevice();
+//						device.createBond();
+						xBlueService.connect(device);
+						}
+					}
+				});
 				mHandler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						mSimpleBlueService.connect(device);
-					}
-				}, 1 * 000);
+						
+							if (connectingDialog != null&& connectingDialog.isShowing()) {
+								connectingDialog.dismiss();
+							}
+							
+							if (xBlueService==null || !xBlueService.isAllConnected()) {
+								showIosDialog(DeviceActivity.this, "连接超时，请重新连接");
+							}
+						}
+				}, 12 * 1000);
 			}
 		});
 	}
@@ -252,40 +380,54 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * 解除绑定设备
 	 */
 	private void exitBinded() {
-		if (mSimpleBlueService.isBinded()) {
+//		if (!AddressSaved.getBindedAddress(this).equals("")) {
+		if (!XBlueUtils.getBlue(this).equals("")) {
 			final ActionSheetDialog dialog = new ActionSheetDialog(this).builder();
-			dialog.setTitle("解除绑定");
+			dialog.setTitle(getString(R.string.unbind));
 			dialog.addSheetItem(getResources().getString(R.string.confirm), SheetItemColor.Red, new OnSheetItemClickListener() {
 				@Override
 				public void onClick(int which) {
-	
+
 					mHandler.post(new Runnable() {
-	
+
 						@Override
 						public void run() {
-	
-							// 1.先清除本地设备
-							mSimpleBlueService.unSaveDevice();
-							// 2.关闭连接（当时连接状态时）
-							// if (mSimpleBlueService.getConnectState() ==
-							// BluetoothProfile.STATE_CONNECTED) {
-							mSimpleBlueService.close();
-							mSimpleBlueService.setConnectState(BluetoothProfile.STATE_DISCONNECTED);
-							Intent intent = new Intent(AbstractSimpleBlueService.ACTION_CONNECTION_STATE);
-							intent.putExtra(AbstractSimpleBlueService.EXTRA_CONNECT_STATE, BluetoothProfile.STATE_DISCONNECTED);
-							sendBroadcast(intent);
-	
-							// }
-							// 3.更新UI
-							updateBlueState();
+							
+							XBlueUtils.clear(DeviceActivity.this);
+							
+							if (xBlueService!=null) {
+								xBlueService.closeAll();
+							}
 							setCurrentDevice();
-							// setDeviceConnectState(BluetoothProfile.STATE_DISCONNECTED);
-						}
+							updateBlueState();
+							
+							/*
+							 * // 1.先清除本地设备
+							 * AddressSaved.disBindDevice(getApplicationContext
+							 * ());
+							 * xplBluetoothService.setCurrentAddressEmpty(); //
+							 * 2.关闭连接（当时连接状态时） // mSimpleBlueService.close(); //
+							 * mSimpleBlueService
+							 * .setConnectState(BluetoothProfile
+							 * .STATE_DISCONNECTED); // Intent intent = new
+							 * Intent
+							 * (AbstractSimpleBlueService.ACTION_CONNECTION_STATE
+							 * ); // intent.putExtra(AbstractSimpleBlueService.
+							 * EXTRA_CONNECT_STATE,
+							 * BluetoothProfile.STATE_DISCONNECTED); //
+							 * sendBroadcast(intent);
+							 * xplBluetoothService.close();
+							 * 
+							 * // } // 3.更新UI updateBlueState();
+							 * setCurrentDevice(); //
+							 * setDeviceConnectState(BluetoothProfile
+							 * .STATE_DISCONNECTED);
+							 */}
 					});
 				}
 			}).show();
 		} else {
-			showShortToast("未绑定设备");
+			showShortToast(R.string.no_binded_device);
 		}
 	}
 
@@ -295,8 +437,8 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * @param device
 	 */
 	private void addDevice(BluetoothDevice device) {
-		if (!devices.contains(device)) {
-			devices.add(device);
+		if (!deviceList.contains(device)) {
+			deviceList.add(device);
 		}
 	}
 
@@ -306,13 +448,10 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * @param device
 	 */
 	private void updateBlueState() {
-		// if
-		// (null!=mSimpleBlueService&&mSimpleBlueService.isBinded()&&mSimpleBlueService.getConnectState()==BluetoothProfile.STATE_CONNECTED)
-		// {
-		if (isConnected()) {
-			tvState.setText("[已连接]");
+		if (xBlueService.isAllConnected()) {
+			tvState.setText(getString(R.string.info_connect));
 		} else {
-			tvState.setText("[未连接]");
+			tvState.setText(getString(R.string.info_unconnected));
 		}
 
 	}
@@ -321,16 +460,19 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * 设置本地绑定设备
 	 */
 	private void setCurrentDevice() {
-		String name = mSimpleBlueService.getBindedDeviceName();
-		String address = mSimpleBlueService.getBindedDeviceAddress();
-		if (address.equals("")) {
-			tvDeviceAddress.setText("[未绑定]");
-			tvDeviceName.setText("");
-			
-			return ;
+		// String address = AddressSaved.getBindedAddress(this);
+		// if (address.equals("")) {
+		// tvDeviceAddress.setText(getString(R.string.un_binded));
+		// address="--";
+		// }
+		// tvDeviceAddress.setText("[" + address + "]");
+//		HashSet<String> blues = XBlueUtils.getBlues(this);
+		String blue = XBlueUtils.getBlue(this);
+		if (blue .equals("")) {
+			tvDeviceAddress.setText(getString(R.string.un_binded));
+		} else {
+			tvDeviceAddress.setText(blue);
 		}
-		tvDeviceName.setText(name.equals("--") ? "" : "["+name+"]");
-		tvDeviceAddress.setText(name.equals("--") ? "[未绑定]" : "["+address+"]");
 	}
 
 	/**
@@ -348,35 +490,31 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 	 * 检查蓝牙
 	 */
 	private void checkBlue() {
-		Log.e("", "-----检查蓝牙-----");
-		mHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if (mSimpleBlueService != null) {
-					// 确认蓝牙
+		// Log.e("", "-----检查蓝牙-----");
+		/*
+		 * mHandler.postDelayed(new Runnable() {
+		 * 
+		 * @Override public void run() { if (xplBluetoothService != null) { if
+		 * (!xplBluetoothService.isBluetoothEnable()) { if (onceEnter) { Intent
+		 * enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		 * // startActivityForResult(enableBtIntent, 1);
+		 * startActivity(enableBtIntent); // showIosDialog(); onceEnter = false;
+		 * } } else { if (!(null != mSimpleBlueService &&
+		 * mSimpleBlueService.isBinded() && mSimpleBlueService.getConnectState()
+		 * == BluetoothProfile.STATE_CONNECTED)) { if
+		 * (mSimpleBlueService.isScanning()) {
+		 * mSimpleBlueService.scanDevice(false); }
+		 * mSimpleBlueService.scanDevice(true); }
+		 * 
+		 * // if (isXplConnected()) { // xplBluetoothService.scanDevice(true);
+		 * // } } } else { // Log.e("", "-----检查蓝牙-----service为空"); }
+		 * 
+		 * } },1000);
+		 */
 
-					if (!mSimpleBlueService.isEnable()) {
-						if (onceEnter) {
-							Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//							startActivityForResult(enableBtIntent, 1);
-							startActivity(enableBtIntent);
-							// showIosDialog();
-							onceEnter = false;
-						}
-					} else {
-						if (!(null != mSimpleBlueService && mSimpleBlueService.isBinded() && mSimpleBlueService.getConnectState() == BluetoothProfile.STATE_CONNECTED)) {
-							if (mSimpleBlueService.isScanning()) {
-								mSimpleBlueService.scanDevice(false);
-							}
-							mSimpleBlueService.scanDevice(true);
-						}
-					}
-				} else {
-					Log.e("", "-----检查蓝牙-----service为空");
-				}
-
-			}
-		});
+		if (!xBlueService.isAllConnected()) {
+			xBlueService.startScan();
+		}
 	}
 
 	/**
@@ -389,12 +527,12 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 
 		@Override
 		public int getCount() {
-			return devices.size();
+			return deviceList.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return devices.get(position);
+			return deviceList.get(position);
 		}
 
 		@Override
@@ -415,8 +553,12 @@ public class DeviceActivity extends BaseActivity implements OnClickListener {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			BluetoothDevice device = (BluetoothDevice) devices.get(position);
-			holder.deviceName.setText(device.getName());
+			BluetoothDevice device = (BluetoothDevice) deviceList.get(position);
+			String name = device.getName();
+			if (name==null || name.equals("")) {
+				name= "WATCH";
+			}
+			holder.deviceName.setText(name);
 			holder.deviceAddress.setText(device.getAddress());
 			return convertView;
 		}

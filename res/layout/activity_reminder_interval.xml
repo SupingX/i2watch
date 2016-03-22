@@ -20,7 +20,7 @@
                 android:layout_toRightOf="@+id/np_interval"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="分钟"
+                android:text="@string/unit_min"
                 android:textSize="@dimen/dime_top_text" />
 
             <NumberPicker
@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
            	android:focusable="true"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:background="@drawable/selector_bottom_left_bg"
             android:textColor="@drawable/selector_text_cancel" />
 		
@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
                android:gravity="center"
-            android:text="Confirm"
+            android:text="@string/confirm"
                   android:background="@drawable/selector_bottom_right_bg"
             android:clickable="true"
             android:focusable="true"

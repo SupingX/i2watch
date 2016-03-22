@@ -12,7 +12,8 @@ import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.R;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
 import com.suping.i2_watch.entity.SleepMonitorProtocol;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class SleepMonitorActivity extends BaseActivity implements OnClickListener {
@@ -31,8 +32,9 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 	private RelativeLayout rlStart, rlEnd, rlTarget;
 
 	private long exitTime = 0;
+	private XBlueService xBlueService;
+//	private XplBluetoothService xplBluetoothService;
 	/** 蓝牙  **/ 
-	private AbstractSimpleBlueService mSimpleBlueService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +48,24 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService = getSimpleBlueService();
+//		xplBluetoothService = getXplBluetoothService();
+		
+		xBlueService = getXBlueService();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		doWriteToWatch();
+
 		super.onDestroy();
 	}
 	
 	private void doWriteToWatch() {
-		if (isConnected()) {
-			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForSleepPeriodSync(this).toByte());
+
+		if (xBlueService!=null && xBlueService.isAllConnected()) {
+//			xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForSleepPeriodSync(this).toByte());
+			xBlueService.write(I2WatchProtocolDataForWrite.protocolDataForSleepPeriodSync(this).toByte());
 		}else{
-			showShortToast("手环未连接");
+			showShortToast(getString(R.string.no_binded_device));
 		}
 	}
 
@@ -75,11 +81,10 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 				Bundle b = data.getExtras();
 				String min = b.getString("min");
 				String sec = b.getString("sec");
-				String value = min + " 小时 " + sec+" 分钟 ";
+				String value = min + getString(R.string.hour) + sec+getString(R.string.min);
 				tvTargetValue.setText(value);
 				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR, min);
 				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN, sec);
-
 				break;
 			default:
 				break;
@@ -126,11 +131,18 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 			break;
 		}
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+		doWriteToWatch();
+		super.onBackPressed();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.img_back:
+			doWriteToWatch();
 //			Intent retrunToMain = new Intent(SleepMonitorActivity.this, MenuActivity.class);
 //			startActivity(retrunToMain);
 			this.finish();
@@ -203,7 +215,7 @@ public class SleepMonitorActivity extends BaseActivity implements OnClickListene
 		// target
 		String targetHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
 		String targetMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_TARGET_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);
-		tvTargetValue.setText(targetHour + " 小时 " + targetMin +"分钟");
+		tvTargetValue.setText(targetHour + getString(R.string.hour) + targetMin +getString(R.string.min));
 		// start
 		String startHour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_HOUR, I2WatchProtocolDataForWrite.DEFAULT_START_HOUR);
 		String startMin = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_MONITOR_START_MIN, I2WatchProtocolDataForWrite.DEFAULT_START_MIN);

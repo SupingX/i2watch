@@ -20,18 +20,18 @@
             android:paddingRight="20dp"
              >
     <TextView
-
+	style="@style/title_grey"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="绑定B17Watch"
+        android:text="@string/_b17watch"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/grey_text" />
+ />
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
                 android:id="@+id/tv_state"
         android:layout_alignParentRight="true"
-        android:textColor="@color/grey_text" />
+    	style="@style/title_grey" />
     </RelativeLayout>
 
     <LinearLayout
@@ -91,8 +91,8 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="20dp"
-            android:text="附近的设备"
-            android:textColor="@color/grey_text" />
+            android:text="@string/device_nearby"
+       	style="@style/title_grey"/>
             <ImageView
                 android:contentDescription="@string/app_name"
             android:id="@+id/img_refresh"
@@ -101,9 +101,10 @@
                    android:padding="8dp"
               android:layout_alignParentRight="true"
             android:src="@drawable/ic_refresh"
-            android:visibility="gone" />
+        />
 
         <ProgressBar
+                 android:visibility="gone"
             android:id="@+id/progressbar"
             android:padding="8dp"
             android:layout_width="48dp"

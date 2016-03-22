@@ -77,7 +77,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 //		@Override
 //		public void onPictureTaken(byte[] data, Camera camera) {
 //			File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-//			Log.d(TAG, "pictureFile:" + pictureFile);
+//			//Log.d(TAG, "pictureFile:" + pictureFile);
 //			if (pictureFile == null) {
 //				return;
 //			}
@@ -86,9 +86,9 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 //				fos.write(data);
 //				fos.close();
 //			} catch (FileNotFoundException e) {
-//				Log.d(TAG, "File not found: " + e.getMessage());
+//				//Log.d(TAG, "File not found: " + e.getMessage());
 //			} catch (IOException e) {
-//				Log.d(TAG, "Error accessing file: " + e.getMessage());
+//				//Log.d(TAG, "Error accessing file: " + e.getMessage());
 //			}
 //		}
 //	};
@@ -136,7 +136,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 			// Create our Preview view and set it as the content of our activity.
 			preview = (FrameLayout) findViewById(R.id.frame);
 			preview.addView(mPreview);
-			Log.e("CameraActivity", "mCamera : " + mCamera);
+			//Log.e("CameraActivity", "mCamera : " + mCamera);
 		} catch (Exception e) {
 			Toast.makeText(getApplicationContext(), "相机不可用", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
@@ -233,7 +233,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 		Camera c = null;
 		try {
 			// int i = c.getNumberOfCameras();
-			// Log.d(TAG, c.getNumberOfCameras()+"");
+			// //Log.d(TAG, c.getNumberOfCameras()+"");
 			c = Camera.open(i); // attempt to get a Camera instance
 			currentNum = 0;
 			// Camera.open(int). //访问特定的摄像头
@@ -287,7 +287,7 @@ public class TestCameraActivity extends Activity implements OnClickListener  {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-				Log.d("MyCameraApp", "failed to create directory");
+				//Log.d("MyCameraApp", "failed to create directory");
 				return null;
 			}
 		}

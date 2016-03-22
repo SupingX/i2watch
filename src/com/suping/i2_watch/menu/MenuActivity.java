@@ -24,10 +24,12 @@ import android.widget.Toast;
 import com.suping.i2_watch.BaseActivity;
 import com.suping.i2_watch.Main;
 import com.suping.i2_watch.R;
+import com.suping.i2_watch.WaterActivity;
 import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.entity.AbstractProtocolWrite;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class MenuActivity extends BaseActivity implements OnClickListener {
@@ -40,13 +42,16 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	private ImageView imgBack;
 	private TextView tvTitle, tvSignset, tvBright;
 	private Button btnIncrease, btnDecrease;
-	private CheckBox cbActivityReminder, cbReminderOnOff, cbIncoming;
+	private CheckBox cbActivityReminder, cbReminderOnOff, cbIncoming
+	/**
+	 * 个性签名常亮 （新加）
+	 */
+//		,cbSignOn
+	;
 	private RelativeLayout rlActivityReminder, rlSleep, rlClock, rlCamera, rlSignset, rlIncoming, rlCallfaker, rlSearch, rlShutDown, rlRecord;
-	private AbstractSimpleBlueService mSimpleBlueService;
 	private Handler mHandler = new Handler() {
-
+		
 	};
-	// 连续按退出间隔时间
 	private TextView tvClock1;
 	private TextView tvClock2;
 	private TextView tvClock3;
@@ -66,7 +71,10 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService = getSimpleBlueService();
+		
+//		xplBluetoothService = getXplBluetoothService();
+		xBlueService = getXBlueService();
+		
 	}
 
 	@Override
@@ -75,7 +83,18 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 
 		super.onResume();
 	}
-
+	
+	@Override
+	protected void onStop() {
+	
+		super.onStop();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+	
 	private void updateTextView() {
 		// 闹钟设置时间
 		String hourFirst = (String) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_1, I2WatchProtocolDataForWrite.DEFAULT_END_HOUR);
@@ -99,6 +118,13 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private long lastLightSetTime = 0;
+	private XBlueService xBlueService;
+//	private XplBluetoothService xplBluetoothService;
+	/**
+	 * 喝水提醒 （新加）
+	 */
+//	private RelativeLayout rlWater;
+//	private CheckBox cbWater;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,7 +145,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			if (resultCode == RESULT_OK) {
 				//
 			} else if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(getApplicationContext(), "相机权限被禁止使用！", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), "相机权限被禁止使用！", Toast.LENGTH_SHORT).show();
 			}
 			break;
 		default:
@@ -144,6 +170,15 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			// this.finish();
 			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
 			break;
+			/**
+			 * 喝水提醒 （新加）
+			 */
+	/*	case R.id.rl_water:
+			Intent waterIntent = new Intent(MenuActivity.this, WaterActivity.class);
+			startActivity(waterIntent);
+			// this.finish();
+			overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
+			break;*/
 
 		// 睡眠
 		case R.id.rl_sleep:
@@ -223,11 +258,15 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			long diff = currentDecreaseTime - lastLightSetTime;
 			// 现在按的时刻大于上次按的时刻
 			if (diff > 1000L) {
+			
 				lastLightSetTime = currentDecreaseTime;
 				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, tvBright.getText().toString().trim());
-				if (isConnected()) {
+//				if(isXplConnected()){
+				if (xBlueService!=null  && xBlueService.isAllConnected()) {
+					
 					byte[] hexDataDecrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(this);
-					mSimpleBlueService.writeCharacteristic(hexDataDecrease);
+//					xplBluetoothService.writeCharacteristic(hexDataDecrease);
+					xBlueService.write(hexDataDecrease);
 					lastLightSetTime = System.currentTimeMillis();
 				}
 			}
@@ -246,9 +285,10 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			if (diffIncrease > 1000L) {
 				lastLightSetTime = currentIncreaseTime;
 				SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, tvBright.getText().toString().trim());
-				if (isConnected()) {
+//				if(isXplConnected()){
+				if (xBlueService!=null  && xBlueService.isAllConnected()) {
 					byte[] hexDataIncrease = I2WatchProtocolDataForWrite.hexDataForUpdateBrightness(this);
-					mSimpleBlueService.writeCharacteristic(hexDataIncrease);
+					xBlueService.write(hexDataIncrease);
 				}
 			}
 			break;
@@ -258,22 +298,39 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 			String message = resources.getString(R.string.is_close);
 			String confirm = resources.getString(R.string.confirm);
 			String cancel = resources.getString(R.string.cancel);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(message).setPositiveButton(confirm, new DialogInterface.OnClickListener() {
+			
+			com.suping.i2_watch.view.AlertDialog shutDownDialog = new com.suping.i2_watch.view.AlertDialog(this)
+			.builder().setMsg(message).setPositiveButton(confirm, new OnClickListener() {
+				
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
+				public void onClick(View v) {
 					byte[] hexData = I2WatchProtocolDataForWrite.hexDataForCloseI2Watch();
-					// XtremApplication.finishActivity();
-					// mBleManager.writeCharactics(hexData);
-					if (isConnected()) {
-						mSimpleBlueService.writeCharacteristic(hexData);
+					if (xBlueService!=null  && xBlueService.isAllConnected()) {
+//						xplBluetoothService.writeCharacteristic(hexData);
+						xBlueService.write(hexData);
 					}
 				}
-			}).setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+			}).setNegativeButton(cancel, new OnClickListener() {
+				
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
+				public void onClick(View v) {
+					
 				}
-			}).create().show();
+			});
+			shutDownDialog.show();
+			
+			
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setMessage(message).setPositiveButton(confirm, new DialogInterface.OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//				
+//				}
+//			}).setNegativeButton(cancel, new DialogInterface.OnClickListener() {
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+//				}
+//			}).create().show();
 			break;
 
 		default:
@@ -281,20 +338,6 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-//			if ((System.currentTimeMillis() - exitTime) > 2000) {
-//				Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-//				exitTime = System.currentTimeMillis();
-//			} else {
-//				finish();
-//				System.exit(0);
-//			}
-//			return true;
-//		}
-//		return super.onKeyDown(keyCode, event);
-//	}
 
 	private void initViews() {
 		imgBack = (ImageView) findViewById(R.id.img_back);
@@ -315,13 +358,16 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		rlCamera = (RelativeLayout) findViewById(R.id.rl_camera);
 		rlSignset = (RelativeLayout) findViewById(R.id.rl_signset);
 		rlIncoming = (RelativeLayout) findViewById(R.id.rl_incoming);
+//		rlWater = (RelativeLayout) findViewById(R.id.rl_water);
 		rlCallfaker = (RelativeLayout) findViewById(R.id.rl_callfaker);
 		rlSearch = (RelativeLayout) findViewById(R.id.rl_search);
 		rlShutDown = (RelativeLayout) findViewById(R.id.rl_shutdown);
 		rlRecord = (RelativeLayout) findViewById(R.id.rl_record);
 		cbActivityReminder = (CheckBox) findViewById(R.id.cb_reminder);
 		cbReminderOnOff = (CheckBox) findViewById(R.id.cb_reminder_nf);
+//		cbWater = (CheckBox) findViewById(R.id.cb_water);/**新加 **/
 		cbIncoming = (CheckBox) findViewById(R.id.cb_incoming);
+//		cbSignOn = (CheckBox) findViewById(R.id.cb_sign_on);/**新加 **/
 		initValues();
 
 	}
@@ -330,7 +376,6 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 	 * 初始化值
 	 */
 	private void initValues() {
-
 		// 标题
 		tvTitle.setText(getResources().getString(R.string.menu));
 
@@ -339,7 +384,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		tvSignset.setText(signature);
 
 		// 亮度
-		String bright = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, "5");
+		String bright = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_BRIGHT, "10");
 		tvBright.setText(bright);
 
 		// 提醒
@@ -349,6 +394,10 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		cbReminderOnOff.setChecked(reminder_nf);
 		boolean reminder_incoming = (boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING, false);
 		cbIncoming.setChecked(reminder_incoming);
+		boolean reminder_water = (boolean) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WATER_ON_OFF, false);
+//		cbWater.setChecked(reminder_water);/**新加 **/
+		boolean  isSignOn = (boolean) SharedPreferenceUtil.get(this, I2WatchProtocolDataForWrite.SHARE_SIGN_ON, false);
+//		cbSignOn.setChecked(isSignOn);/**新加 **/
 	}
 
 	private void setClick() {
@@ -366,6 +415,7 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 		rlCallfaker.setOnClickListener(this);
 		rlSearch.setOnClickListener(this);
 		rlRecord.setOnClickListener(this);
+//		rlWater.setOnClickListener(this);/**新加 **/
 
 		// 运动提醒开关
 		cbActivityReminder.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -377,16 +427,41 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_ACTIVITY, false);
 				}
 
-				Log.v("MenuActivity", "运动提醒 ：" + isChecked);
+				//Log.v("MenuActivity", "运动提醒 ：" + isChecked);
 				mHandler.post(new Runnable() {
 					public void run() {
-						if (isConnected()) {
-							mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(MenuActivity.this).toByte());
+//						if(isXplConnected()){
+						if (xBlueService!=null  && xBlueService.isAllConnected()) {
+//							xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(MenuActivity.this).toByte());
+							xBlueService.write(I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(MenuActivity.this).toByte());
 						}
 					}
 				});
 			}
 		});
+		/**新加 **/
+		/*cbWater.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WATER_ON_OFF, true);
+				} else {
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WATER_ON_OFF, false);
+				}
+				
+				//Log.v("MenuActivity", "运动提醒 ：" + isChecked);
+				mHandler.post(new Runnable() {
+					public void run() {
+//						if(isXplConnected()){
+						if (xBlueService!=null  && xBlueService.isAllConnected()) {
+							byte[] protocolDataForWater = I2WatchProtocolDataForWrite.protocolDataForWater(MenuActivity.this);
+//							xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.protocolDataForActivityRemindSync(MenuActivity.this).toByte());
+							xBlueService.write(protocolDataForWater);
+						}
+					}
+				});
+			}
+		});*/
 
 		// 防丢提醒开关
 		cbReminderOnOff.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -397,13 +472,14 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 				} else {
 					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_NON, false);
 				}
-				Log.v("MenuActivity", "防丢提醒 ：" + isChecked);
+				//Log.v("MenuActivity", "防丢提醒 ：" + isChecked);
 				mHandler.post(new Runnable() {
 					public void run() {
-						if (isConnected()) {
+						if (xBlueService!=null  && xBlueService.isAllConnected()) {
 							// 写入属性
 							byte[] hexData = I2WatchProtocolDataForWrite.hexDataForLostOnoffI2Watch(MenuActivity.this);
-							mSimpleBlueService.writeCharacteristic(hexData);
+//							xplBluetoothService.writeCharacteristic(hexData);
+							xBlueService.write(hexData);
 						}
 					}
 				});
@@ -420,18 +496,44 @@ public class MenuActivity extends BaseActivity implements OnClickListener {
 					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_INCOMING, false);
 				}
 				// 写入属性
-				Log.v("MenuActivity", "来电提醒 ：" + isChecked);
+				//Log.v("MenuActivity", "来电提醒 ：" + isChecked);
 				mHandler.post(new Runnable() {
 					public void run() {
-						if (isConnected()) {
-
+//						if(isXplConnected()){
+						if (xBlueService!=null  && xBlueService.isAllConnected()) {
 							AbstractProtocolWrite p = I2WatchProtocolDataForWrite.protocolForCallingAlarmPeriodSync(MenuActivity.this);
-							mSimpleBlueService.writeCharacteristic(p.toByte());
+//							xplBluetoothService.writeCharacteristic(p.toByte());
+							xBlueService.write(p.toByte());
 						}
 					}
 				});
 			}
 		});
+		/**新加 **/
+/*		cbSignOn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_SIGN_ON, true);
+				} else {
+					SharedPreferenceUtil.put(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_SIGN_ON, false);
+				}
+				if (xBlueService!=null  && xBlueService.isAllConnected()) {
+					byte[] p = I2WatchProtocolDataForWrite.writeForSingOn(MenuActivity.this);
+//					xplBluetoothService.writeCharacteristic(p.toByte());
+					xBlueService.write(p);
+				}
+			}
+		});*/
+		
+		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+		overridePendingTransition(R.anim.activity_from_right_to_left_enter, R.anim.activity_from_right_to_left_exit);
+		super.onBackPressed();
 	}
 
 }

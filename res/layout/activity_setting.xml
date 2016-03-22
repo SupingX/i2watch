@@ -7,19 +7,26 @@
     tools:context="${packageName}.${activityClass}" >
 
     <include layout="@layout/top_layout" />
-    <View
-                style="@style/line"
-               android:layout_marginTop="40dp" />
-    <ScrollView
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
+    <com.suping.i2_watch.view.DampingScrollView
+       android:scrollbars="none"
+        android:background="@color/grey_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+   
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:orientation="vertical" >
- 
+            
+  			<View   android:layout_height="40dp"
+  			    android:layout_width="match_parent"
+  			    android:background="@color/grey_bg"
+              />
+  			    <View
+                style="@style/line"
+            />
             <RelativeLayout
                 
                 android:id="@+id/rl_information"
@@ -54,7 +61,7 @@
                 <ImageView
                     android:contentDescription="@string/app_name"
                     android:id="@+id/img_right_1"
-                     android:padding="8dp"
+                    android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
@@ -147,11 +154,11 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/img_about"
-                    android:text="Bind Device" />
+                    android:text="@string/bind_device" />
 
                 <ImageView
                     android:id="@+id/img_right_3"
-                    android:padding="8dp"
+                     android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
@@ -159,12 +166,14 @@
                     android:src="@drawable/icon_right_arrow" />
                 
                  <TextView
+                     android:visibility="invisible"
                     android:id="@+id/tv_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_toLeftOf="@id/img_right_3"
+                    	style="@style/title_grey"
                     android:text="--" />
             </RelativeLayout>
                 <View
@@ -179,6 +188,47 @@
                 style="@style/line"
              />
 
+                 <RelativeLayout
+                     android:id="@+id/rl_share"
+                     android:layout_width="match_parent"
+                     android:layout_height="48dp"
+                     android:background="@drawable/selector_bg_menu"
+                     android:clickable="true"
+                     android:focusable="true"
+                     android:paddingBottom="8dp"
+                     android:paddingLeft="20dp"
+                     android:paddingTop="8dp" >
+
+                     <ImageView
+                         android:id="@+id/img_share"
+                         android:layout_width="20dp"
+                         android:layout_height="20dp"
+                         android:layout_alignParentLeft="true"
+                         android:layout_centerVertical="true"
+                         android:src="@drawable/ic_action_share" />
+
+                     <TextView
+                         android:id="@+id/tv_share"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_centerVertical="true"
+                         android:layout_gravity="center_vertical"
+                         android:layout_marginLeft="15dp"
+                         android:layout_toRightOf="@id/img_share"
+                         android:text="分享" />
+
+                     <ImageView
+                         android:id="@+id/img_right_5"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:layout_alignParentRight="true"
+                         android:layout_centerVertical="true"
+                         android:padding="8dp"
+                         android:src="@drawable/icon_right_arrow" />
+                 </RelativeLayout>
+    <View
+                style="@style/line"
+                android:layout_marginLeft="55dp" />
             <RelativeLayout
                 android:id="@+id/rl_about"
                 android:layout_width="match_parent"
@@ -210,7 +260,7 @@
 
                 <ImageView
                     android:id="@+id/img_right_4"
-                    android:padding="8dp"
+                 android:padding="8dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentRight="true"
@@ -222,6 +272,6 @@
              />
         </LinearLayout>
         
-    </ScrollView>
+    </com.suping.i2_watch.view.DampingScrollView>
 
 </LinearLayout>

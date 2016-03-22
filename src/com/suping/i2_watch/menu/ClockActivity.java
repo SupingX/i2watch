@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.suping.i2_watch.BaseActivity;
@@ -18,7 +19,8 @@ import com.suping.i2_watch.R;
 import com.suping.i2_watch.XtremApplication;
 import com.suping.i2_watch.entity.ClockSetProtocol;
 import com.suping.i2_watch.entity.I2WatchProtocolDataForWrite;
-import com.suping.i2_watch.service.AbstractSimpleBlueService;
+import com.suping.i2_watch.service.XplBluetoothService;
+import com.suping.i2_watch.service.xblue.XBlueService;
 import com.suping.i2_watch.util.SharedPreferenceUtil;
 
 public class ClockActivity extends BaseActivity implements OnClickListener {
@@ -34,6 +36,9 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	private ImageView textViewImgBack;
 	private TextView textViewTitle;
 	// 闹钟设置
+	LinearLayout llSet_1;
+	LinearLayout llSet_2;
+	LinearLayout llSet_3;
 	private TextView textViewSet_1;
 	private TextView textViewSet_2;
 	private TextView textViewSet_3;
@@ -68,8 +73,10 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	private int clockValue_1 = 0x11111111;
 	private int clockValue_2 = 0x11111111;
 	private int clockValue_3 = 0x11111111;
+//	private XplBluetoothService xplBluetoothService;
+	private XBlueService xBlueService;
 	
-	private AbstractSimpleBlueService mSimpleBlueService;
+//	private AbstractSimpleBlueService mSimpleBlueService;
 	
 //	private BroadcastReceiver mReceiver;
 	@Override
@@ -85,21 +92,28 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mSimpleBlueService  = getSimpleBlueService();
+//		mSimpleBlueService  = getSimpleBlueService();
+//		xplBluetoothService = getXplBluetoothService();
+		
+		xBlueService = getXBlueService();
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		doWriteToWatch();
+	
 		
 	}
 	
 	private void doWriteToWatch() {
-		if (isConnected()) {
-			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForClockSync(this));
+//		if (isConnected()) {
+//		if (isXplConnected()) {
+		if (xBlueService !=null && xBlueService.isAllConnected()) {
+			xBlueService.write(I2WatchProtocolDataForWrite.hexDataForClockSync(this));
+//			xplBluetoothService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForClockSync(this));
+//			mSimpleBlueService.writeCharacteristic(I2WatchProtocolDataForWrite.hexDataForClockSync(this));
 		}else{
-			showShortToast("手环未连接");
+			showShortToast(getString(R.string.no_binded_device));
 		}
 	}
 	
@@ -123,7 +137,7 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 				//闹钟开启
 //				alarmReceiver = new AlarmReceiver();
 //				Calendar mCalendar = Calendar.getInstance();
-//				Log.d("MAIN", mCalendar.toString());
+//				//Log.d("MAIN", mCalendar.toString());
 //				 mCalendar.set(Calendar.MONTH,  5);
 //		         mCalendar.set(Calendar.YEAR, 2015);
 //		         mCalendar.set(Calendar.DAY_OF_MONTH, 17);
@@ -186,6 +200,7 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 //			mBleManager.writeCharactics(cp);
 //			Intent retrunToMenu = new Intent(ClockActivity.this, MenuActivity.class);
 //			startActivity(retrunToMenu);
+			doWriteToWatch();
 			this.finish();
 			
 			overridePendingTransition(R.anim.activity_from_left_to_right_enter, R.anim.activity_from_left_to_right_exit);
@@ -274,15 +289,15 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 //			updateWeekDay(3);
 //			repeatWeekday(textViewSat_3, WeekdayEnum.SAT.getDay(), clockValue_3, I2WatchProtocolDataForWrite.SHARE_WEEKDAY_3);
 //			break;
-		case R.id.tv_clock_1:
+		case R.id.ll_clock_1:
 			Intent intent_1 = new Intent(ClockActivity.this, ClockSetActivity_1.class);
 			startActivityForResult(intent_1, REQ_1);
 			break;
-		case R.id.tv_clock_2:
+		case R.id.ll_clock_2:
 			Intent intent_2 = new Intent(ClockActivity.this, ClockSetActivity_2.class);
 			startActivityForResult(intent_2, REQ_2);
 			break;
-		case R.id.tv_clock_3:
+		case R.id.ll_clock_3:
 			Intent intent_3 = new Intent(ClockActivity.this, ClockSetActivity_3.class);
 			startActivityForResult(intent_3, REQ_3);
 			break;
@@ -324,6 +339,11 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 		textViewSet_1 = (TextView) findViewById(R.id.tv_clock_1);
 		textViewSet_2 = (TextView) findViewById(R.id.tv_clock_2);
 		textViewSet_3 = (TextView) findViewById(R.id.tv_clock_3);
+		llSet_1 = (LinearLayout) findViewById(R.id.ll_clock_1);
+		llSet_2 = (LinearLayout) findViewById(R.id.ll_clock_2);
+		llSet_3 = (LinearLayout) findViewById(R.id.ll_clock_3);
+		
+		
 		checkBoxItem_1 = (CheckBox) findViewById(R.id.cb_item_1);
 		checkBoxItem_2 = (CheckBox) findViewById(R.id.cb_item_2);
 		checkBoxItem_3 = (CheckBox) findViewById(R.id.cb_item_3);
@@ -343,13 +363,13 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	 * 初始化时刻
 	 */
 	private void initTime() {
-		String clock_1_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_1, "07");
+		String clock_1_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_1, "12");
 		String clock_1_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_1, "00");
 		textViewSet_1.setText(clock_1_hour + ":" + clock_1_min);
-		String clock_2_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_2, "07");
+		String clock_2_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_2, "12");
 		String clock_2_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_2, "00");
 		textViewSet_2.setText(clock_2_hour + ":" + clock_2_min);
-		String clock_3_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_3, "07");
+		String clock_3_hour = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_HOUR_3, "12");
 		String clock_3_min = (String) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_CLOCK_SETTIME_MIN_3, "00");
 		textViewSet_3.setText(clock_3_hour + ":" + clock_3_min);
 	}
@@ -423,9 +443,9 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 //		textViewFri_3.setOnClickListener(this);
 //		textViewSat_3.setOnClickListener(this);
 //		textViewSun_3.setOnClickListener(this);
-		textViewSet_1.setOnClickListener(this);
-		textViewSet_2.setOnClickListener(this);
-		textViewSet_3.setOnClickListener(this);
+		llSet_1.setOnClickListener(this);
+		llSet_2.setOnClickListener(this);
+		llSet_3.setOnClickListener(this);
 
 		checkBoxItem_1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -478,7 +498,7 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 	private void repeatWeekday(TextView tv, int weekday, int value, String addr) {
 		// 抑或 ：选择的那一天和以前的value抑或，就能把这一天的值改变。比如选择星期一 0b00000010 ^ 0b01111111 = 0b011111101
 		value ^= weekday;
-		Log.i("clockActivity", "设置-->" + Integer.toBinaryString(value));
+		//Log.i("clockActivity", "设置-->" + Integer.toBinaryString(value));
 		updateTextview(tv, weekday, value);
 		SharedPreferenceUtil.put(getApplicationContext(), addr, value);
 	}
@@ -505,34 +525,40 @@ public class ClockActivity extends BaseActivity implements OnClickListener {
 		// 更新第一行
 		case 1:
 			clockValue_1 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_1, 0b11111111);
-			// Log.e("app", clockValue_1+"");
-			Log.d("OB", "读取clockSet_1-->" + Integer.toBinaryString(clockValue_1));
+			// //Log.e("app", clockValue_1+"");
+			//Log.d("OB", "读取clockSet_1-->" + Integer.toBinaryString(clockValue_1));
 			break;
 		// 更新第二行
 		case 2:
 			clockValue_2 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_2, 0b11111111);
-			Log.d("OB", "读取clockSet_2-->" + Integer.toBinaryString(clockValue_2));
+			//Log.d("OB", "读取clockSet_2-->" + Integer.toBinaryString(clockValue_2));
 			break;
 		// 更新第三行
 		case 3:
 			clockValue_3 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_3, 0b11111111);
-			Log.d("OB", "读取clockSet_3-->" + Integer.toBinaryString(clockValue_3));
+			//Log.d("OB", "读取clockSet_3-->" + Integer.toBinaryString(clockValue_3));
 			break;
 		// 更新所有
 		case 4:
-			Log.i("test", "测试");
+			//Log.i("test", "测试");
 			clockValue_1 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_1, 0b11111111);
-			Log.d("OB", "读取clockSet_1-->" + Integer.toBinaryString(clockValue_1));
+			//Log.d("OB", "读取clockSet_1-->" + Integer.toBinaryString(clockValue_1));
 			clockValue_2 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_2, 0b11111111);
-			Log.d("OB", "读取clockSet_2-->" + Integer.toBinaryString(clockValue_2));
+			//Log.d("OB", "读取clockSet_2-->" + Integer.toBinaryString(clockValue_2));
 			clockValue_3 = (int) SharedPreferenceUtil.get(getApplicationContext(), I2WatchProtocolDataForWrite.SHARE_WEEKDAY_3, 0b11111111);
-			Log.d("OB", "读取clockSet_3-->" + Integer.toBinaryString(clockValue_3));
+			//Log.d("OB", "读取clockSet_3-->" + Integer.toBinaryString(clockValue_3));
 			break;
 
 		default:
 			break;
 		}
 
+	}
+	
+	@Override
+	public void onBackPressed() {
+		doWriteToWatch();
+		super.onBackPressed();
 	}
 
 }
